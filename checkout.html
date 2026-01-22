@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Checkout - HawkerHub</title>
+    <link rel="stylesheet" href="StylesCheckout.css" />
+  </head>
+
+  <body>
+    <!-- Navbar (same structure as Cart/Home Guest) -->
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <img src="img/Dashboard button.png" alt="Menu" class="icon-btn" />
+
+        <div class="brand">
+          <img src="img/Logo.png" alt="HawkerHub Logo" class="logo" />
+        </div>
+
+        <nav class="navlinks">
+          <a href="#" class="navlink">Browse</a>
+          <a href="#" class="navlink">History</a>
+          <a href="#" class="navlink">Cart</a>
+        </nav>
+
+        <a class="btn btn-signin" href="#">Sign in</a>
+      </div>
+    </header>
+
+    <!-- Full-width orange strip (aligned like Cart page) -->
+    <section class="page-banner-wrap">
+      <div class="page-banner">
+        <a class="back-link" href="#">← Back to Cart</a>
+        <h1 class="page-title">Checkout</h1>
+      </div>
+    </section>
+
+    <!-- Main layout (1100px centered like Cart) -->
+    <main class="checkout-layout">
+      <!-- LEFT COLUMN -->
+      <section class="checkout-left">
+        <!-- Contact Info -->
+        <section class="card">
+          <div class="card-title">
+            <span class="card-icon">👤</span>
+            <span>Contact Information</span>
+          </div>
+
+          <div class="form-grid">
+            <label class="field">
+              <span class="label">Full Name *</span>
+              <input type="text" placeholder="Enter your name" />
+            </label>
+
+            <label class="field">
+              <span class="label">Phone Number *</span>
+              <input type="text" placeholder="+65 XXXX XXXX" />
+            </label>
+          </div>
+        </section>
+
+        <!-- Pickup Details -->
+        <section class="card">
+          <div class="card-title">
+            <span class="card-icon">🕒</span>
+            <span>Pickup Details</span>
+          </div>
+
+          <div class="form-grid">
+            <label class="field">
+              <span class="label">Collection Method</span>
+              <select>
+                <option>Pickup</option>
+                <option>Delivery (if available)</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span class="label">Special instructions (Optional)</span>
+              <input type="text" placeholder="E.g., less spicy, no onions, etc" />
+            </label>
+          </div>
+        </section>
+
+        <!-- Payment Method -->
+        <section class="card">
+          <div class="card-title">
+            <span class="card-icon">💳</span>
+            <span>Payment Method</span>
+          </div>
+
+          <div class="payment-list">
+            <label class="pay-option">
+              <input type="radio" name="pay" checked />
+              <span>Credit Card/Debit Card</span>
+              <span class="pay-badges">●● VISA</span>
+            </label>
+
+            <label class="pay-option">
+              <input type="radio" name="pay" />
+              <span>PayNow</span>
+              <span class="pay-badges">PAYNOW</span>
+            </label>
+
+            <label class="pay-option">
+              <input type="radio" name="pay" />
+              <span>Cash on Pickup</span>
+            </label>
+          </div>
+        </section>
+      </section>
+
+      <!-- RIGHT COLUMN: Summary -->
+      <aside class="summary">
+        <h2>Order Summary</h2>
+
+        <div class="summary-items">
+          <div class="item">
+            <div class="name">Steamed Chicken Rice x2</div>
+            <div class="price">$3.50</div>
+          </div>
+          <div class="item">
+            <div class="name">Ah Seng Chicken Rice</div>
+            <div class="price">$5.50</div>
+          </div>
+          <div class="item">
+            <div class="name">Crispy Pata x1</div>
+            <div class="price">$2.00</div>
+          </div>
+          <div class="note-small">Spring Leaf Pasta</div>
+        </div>
+
+        <div class="discount">
+          <input type="text" placeholder="Enter Discount..." />
+          <button type="button">Apply</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="row">
+          <span>Subtotal</span>
+          <span>$9.00</span>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="row total">
+          <span>Total</span>
+          <span>$9.00</span>
+        </div>
+
+        <button class="cta" type="button">Proceed to Checkout</button>
+        <div class="footnote">Pickup time will be confirmed after checkout</div>
+      </aside>
+    </main>
+  </body>
+</html>

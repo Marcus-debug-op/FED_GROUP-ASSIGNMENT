@@ -73,14 +73,13 @@ body{
 .navlinks{
   margin-left: auto;
   display: flex;
-  justify-content: space-between;
   gap: 36px;
 }
 
 .navlink{
   text-decoration: none;
   color: var(--text);
-  font-weight: bold;
+  font-weight: 700;
   font-size: 20px;
 }
 .navlink:hover{ opacity: 0.8; }
@@ -97,7 +96,7 @@ body{
 .btn-signin{
   background-color: var(--accent);
   color: #fff;
-  font-weight: bold;
+  font-weight: 700;
   font-size: 20px;
   margin-left: 32px;
 }
