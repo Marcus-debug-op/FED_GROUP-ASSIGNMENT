@@ -8,7 +8,7 @@
 
   --accent: #F97316;
   --accent-red: #F43C13;
-  
+
   --radius: 18px;
 }
 
@@ -22,8 +22,9 @@ body{
 }
 
 .container{
-  width: 1100px;
-  height:auto;
+  max-width: 1100px;
+  width: 100%;
+  padding: 0 16px;
   margin: 0 auto;
 }
 
@@ -54,6 +55,7 @@ body{
   padding: 8px 10px;
   border-radius: 10px;
 }
+
 .icon-btn:hover{
   background: rgba(0,0,0,.06);
 }
@@ -65,16 +67,14 @@ body{
 }
 
 .logo{
-  height: 130px;  /* ✅ navbar-friendly */
+  height: 130px;
   width: auto;
-  
 }
-
 
 .navlinks{
   margin-left: auto;
   display: flex;
-  justify-content:space-between;
+  justify-content: space-between;
   gap: 36px;
 }
 
@@ -84,6 +84,7 @@ body{
   font-weight: bold;
   font-size: 20px;
 }
+
 .navlink:hover{
   opacity: 0.8;
 }
@@ -102,8 +103,7 @@ body{
   color: #fff;
   font-weight: bold;
   font-size: 20px;
-  margin-left: 32px; 
-
+  margin-left: 32px;
 }
 
 .btn-signin:hover{
@@ -111,7 +111,130 @@ body{
 }
 
 /* =========================================
-   3) Hero Section
+   3) Dashboard (Overlay + Side Panel)
+========================================= */
+.overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(2px);
+  z-index: 900;
+}
+
+.dashboard{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 300px;
+  height: 100vh;
+
+  background: linear-gradient(to bottom, #fff7dc, #ffffff);
+  padding: 24px 20px;
+  z-index: 1000;
+
+  display: flex;
+  flex-direction: column;
+
+  transform: translateX(-100%);
+  transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  box-shadow: 6px 0 24px rgba(0,0,0,0.18);
+}
+
+.dashboard.show{
+  transform: translateX(0);
+}
+
+.dashboard-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding-top: 72px;
+  margin-bottom: 28px;
+}
+
+.dashboard-brand{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-weight: 800;
+  font-size: 22px;
+}
+
+.dashboard-brand img{
+  height: 100px;
+  width: auto;
+}
+
+.dashboard a{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 16px 12px;
+  margin-bottom: 10px;
+
+  font-size: 18px;
+  font-weight: 600;
+
+  border-radius: 12px;
+
+  text-decoration: none;   
+  color: var(--text); 
+}
+
+.dashboard a:hover{
+  background: rgba(249,115,22,0.15);
+}
+
+#close-btn{
+  position: absolute;
+  top: 16px;        /* aligns with topbar / ☰ icon */
+  right: 16px;
+
+  font-size: 30px;
+  background: none;
+  border: 1px solid #FFF7DC;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.dashboard-footer{
+  margin-top: auto;
+  padding: 20px;
+  background: #F97316;
+  border-radius: 14px;
+  text-align: center;
+}
+
+.dashboard-footer p{
+  color: white;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.dashboard-footer a{
+  display: block;
+  background: white;
+  color: #F97316;
+  padding: 12px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+
+/* Utility */
+.hidden{
+  display: none;
+}
+
+/* =========================================
+   4) Hero Section
 ========================================= */
 .hero{
   position: relative;
@@ -122,19 +245,13 @@ body{
 .hero-bg{
   position: absolute;
   inset: 0;
-
   background-image:
-    linear-gradient(
-      rgba(0, 0, 0, 0.45),
-      rgba(0, 0, 0, 0.45)
-    ),
+    linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
     url("img/Home_Box background.jpg");
-
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
 }
-
 
 .hero-content{
   position: relative;
@@ -160,43 +277,10 @@ body{
   font-size: 20px;
   color: #fff;
   border-radius: 16px;
-  padding: 20px   ;
-
+  padding: 20px;
 }
+
 .btn-cta:hover{
-  filter: brightness(.80);
-}
-
-/* =========================================
-   4) Quick Actions Section
-========================================= */
-.section{
-  padding: 18px 0;
-}
-
-.section-title{
-  margin: 0 0 14px;
-  font-size: 20px;
-
-}
-
-.quick-actions{
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /*"repeat" pattern which has "3" columns taking "1" fraction of available space(so 1/3 of space each time)*/
-  gap: 16px;
-}
-
-.qa-btn{
-  background: var(--accent-red);
-  color: #fff;
-  padding: 16px 18px;
-  border-radius: 16px;
-  text-align: center;
-  font-weight: bold;
-  font-size: 20px;
-  text-decoration: none;
-}
-.qa-btn:hover{
   filter: brightness(.80);
 }
 
@@ -204,12 +288,17 @@ body{
    5) Trending Section
 ========================================= */
 .trending{
-  background-color: rgba(249, 115, 22, 0.6); /* 60% opacity */
+  background-color: rgba(249, 115, 22, 0.6);
   padding: 18px 0 26px;
 }
 
-.section-title.color{
-  color: black
+.section-title{
+  margin: 0 0 14px;
+  font-size: 20px;
+}
+
+.section-title-color{
+  color: black;
 }
 
 .trend-row{
@@ -227,8 +316,8 @@ body{
   font-size: 30px;
   cursor: pointer;
   background: rgba(255,255,255,.55);
-
 }
+
 .arrow-btn:hover{
   background: rgba(255,255,255,.7);
 }
@@ -245,16 +334,13 @@ body{
   background: #fff;
   border-radius: var(--radius);
   overflow: hidden;
-
 }
-
 
 .food-img{
   width: 100%;
   height: 140px;
-  object-fit: cover;   /*Dont delete, this allows the img to fit to the box*/
-} 
-
+  object-fit: cover;
+}
 
 .food-body{
   padding: 12px 14px 14px;
@@ -287,6 +373,7 @@ body{
   font-weight: 900;
   cursor: pointer;
 }
+
 .food-btn:hover{
   filter: brightness(.98);
 }
@@ -305,6 +392,16 @@ body{
 ========================================= */
 @media (max-width: 860px){
   .navlinks{ display: none; }
-  .quick-actions{ grid-template-columns: 1fr; }
-  .food-card{ flex-basis: 100%; }
+
+  .logo{ height: 64px; }
+
+  .btn-signin{
+    font-size: 16px;
+    padding: 10px 16px;
+    margin-left: 0;
+  }
+
+  .topbar-inner{
+    gap: 10px;
+  }
 }

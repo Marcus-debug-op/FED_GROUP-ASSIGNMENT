@@ -3,33 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sign-In-HawkerHub</title>
+  <title>HawkerHub Home Page</title>
   <link rel="stylesheet" href="styles.css" />
-
 </head>
+
 <body>
   <!-- Top Nav -->
   <header class="topbar">
     <div class="container topbar-inner">
-        <img src="img/Dashboard button.png" alt="Dashboard" class="icon-btn" />
-
+      <img src="img/Dashboard button.png" alt="Dashboard" class="icon-btn" id="menu-btn" />
 
       <div class="brand">
         <img src="img/Logo.png" alt="HawkerHub Logo" class="logo" />
-        <div class="brand-text">
-          
-        </div>
       </div>
 
       <nav class="navlinks">
-        <a href="#" class="navlink">Browse</a>
-        <a href="#" class="navlink">History</a>
-        <a href="#" class="navlink">Cart</a>
+        <a href="browse.html" class="navlink">Browse</a>
+        <a href="history.html" class="navlink">History</a>
+        <a href="cart.html" class="navlink">Cart</a>
       </nav>
 
       <a class="btn btn-signin" href="Sign in/sign-in.html">Sign in</a>
     </div>
   </header>
+
+  <!-- Overlay -->
+  <div id="overlay" class="overlay hidden"></div>
+
+  <!-- Dashboard -->
+  <div id="dashboard" class="dashboard hidden">
+    <div class="dashboard-header">
+      <div class="dashboard-brand">
+        <img src="img/Logo.png" alt="HawkerHub" class="logo" />
+        <span>HawkerHub</span>
+      </div>
+      <button id="close-btn" type="button">✕</button>
+    </div>
+
+    <a href="browse.html">Browse</a>
+    <a href="history.html">History</a>
+    <a href="cart.html">  Cart</a>
+
+
+    <div class="dashboard-footer">
+  <p>Hungry? Let's get started!</p>
+  <a href="Sign in/sign-in.html">Sign in</a>
+</div>
+
+  </div>
 
   <!-- Hero -->
   <section class="hero">
@@ -38,34 +59,20 @@
     <div class="container hero-content">
       <p class="hero-small">Discover & Order from Hawker Centres</p>
       <h1 class="hero-title">Explore hawker stalls, discover popular dishes, and order ease</h1>
-      <a class="btn btn-cta" href="#">Browse stalls →</a>
-    </div>
-  </section>
-
-  <!-- Quick Actions -->
-  <section class="section">
-    <div class="container">
-      <h2 class="section-title">Quick Actions</h2>
-
-      <div class="quick-actions">
-        <a class="qa-btn" href="#">Feedback →</a>
-        <a class="qa-btn" href="#">View Orders →</a>
-        <a class="qa-btn" href="#">Hygiene Grades →</a>
-      </div>
+      <a class="btn btn-cta" href="browse.html">Browse stalls →</a>
     </div>
   </section>
 
   <!-- Trending -->
   <section class="trending">
     <div class="container">
-      <h2 class="section-title color">Trending from Community</h2>
+      <h2 class="section-title-color">Trending from Community</h2>
 
       <div class="trend-row">
         <button class="arrow-btn" aria-label="Previous">‹</button>
 
         <div class="trend-cards">
           <article class="food-card">
-
             <img src="img/grilling_action.jpg" alt="Grilling satay" class="food-img" />
             <div class="food-body">
               <div class="food-title">Satay King</div>
