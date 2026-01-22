@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HawkerHub Profile</title>
+    <link rel="stylesheet" href="vendorProfile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="topbar">
+        <div class="container topbar-inner">
+            <div class="brand">
+                <i class="fa-solid fa-bars icon-btn"></i>
+                
+                <img src="/img/Logo.png" alt="HawkerHub Logo" class="logo">
+            </div>
+
+            <div class="navlinks">
+                <a href="#" class="navlink">Browse</a>
+                <a href="#" class="navlink">History</a>
+                <a href="#" class="navlink" style="position: relative;">
+                    Orders <span class="notification-dot"></span>
+                </a>
+                <a href="#" class="navlink">Inspection</a>
+                
+                <div class="user-pill">
+                    <i class="fa-regular fa-user"></i> XCLYMG <span class="orange-dot"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <header class="profile-header">
+        <div class="header-content">
+            <h1>My Profile</h1>
+            <p>Manage your account and view your discount code</p>
+        </div>
+        
+        <div class="header-tabs">
+            <div class="tab active">Profile</div>
+            <div class="tab">Complaints</div>
+            <div class="tab">Stall</div>
+        </div>
+    </header>
+
+    <main class="main-body">
+        <div class="content-wrapper">
+            
+            <aside class="left-sidebar">
+                <div class="profile-card">
+                    
+                    <div class="avatar-container">
+                        <img src="/img/profile.jpg" alt="Profile Picture" class="avatar-img">
+                    </div>
+
+                    <div class="info-item">
+                        <label>Name</label>
+                        <p><i class="fa-regular fa-user"></i> XCLYMG</p>
+                    </div>
+
+                    <div class="info-item">
+                        <label>Email</label>
+                        <p><i class="fa-regular fa-envelope"></i> DtoyLikesRoblox@gmail.com</p>
+                    </div>
+
+                    <button class="logout-btn">Logout</button>
+                </div>
+            </aside>
+
+            <section class="discount-section">
+                <h2 class="section-title">
+                    <i class="fa-solid fa-tag rotated-icon"></i> Available Discount Code
+                </h2>
+                
+                <div id="discount-container">
+                    
+                    <div class="voucher-card">
+                        <div class="vc-details">
+                            <span class="tag-badge">
+                                FIRSTORDER <i class="fa-solid fa-tag"></i>
+                            </span>
+                            <h3>First Order Discount</h3>
+                            <p class="offer">35% Off. No Limits!</p>
+                        </div>
+                        <div class="vc-actions">
+                            <span class="status-active">Active</span>
+                            <button class="redeem-btn">Redeem</button>
+                            <span class="validity">Valid until <strong>No Deadline</strong></span>
+                        </div>
+                    </div>
+
+                    <div class="voucher-card">
+                        <div class="vc-details">
+                            <span class="tag-badge">
+                                HAWKER20 <i class="fa-solid fa-tag"></i>
+                            </span>
+                            <h3>Support Local Hawkers</h3>
+                            <p class="offer">$5 off orders above $10</p>
+                        </div>
+                        <div class="vc-actions">
+                            <span class="status-active">Active</span>
+                            <button class="redeem-btn">Redeem</button>
+                            <span class="validity">Valid until <strong>15 Mar 2026</strong></span>
+                        </div>
+                    </div>
+
+                    <div class="voucher-card">
+                        <div class="vc-details">
+                            <span class="tag-badge">
+                                FREESHIP <i class="fa-solid fa-tag"></i>
+                            </span>
+                            <h3>Free Delivery</h3>
+                            <p class="offer">Free Delivery on all orders</p>
+                        </div>
+                        <div class="vc-actions">
+                            <span class="status-active">Active</span>
+                            <button class="redeem-btn">Redeem</button>
+                            <span class="validity">Valid until <strong>31 Jan 2026</strong></span>
+                        </div>
+                    </div>
+
+                    <div class="voucher-card">
+                        <div class="vc-details">
+                            <span class="tag-badge">
+                                WEEKDAY80 <i class="fa-solid fa-tag"></i>
+                            </span>
+                            <h3>Weekday Special</h3>
+                            <p class="offer">15% Off</p>
+                        </div>
+                        <div class="vc-actions">
+                            <span class="status-active">Active</span>
+                            <button class="redeem-btn">Redeem</button>
+                            <span class="validity">Valid until <strong>31 Dec 2026</strong></span>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+        </div>
+    </main>
+</body>
+</html>
