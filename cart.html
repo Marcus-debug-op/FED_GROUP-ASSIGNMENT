@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cart - HawkerHub</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <!-- Navbar (keep as-is) -->
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <img src="img/Dashboard button.png" alt="Menu" class="icon-btn" />
+
+        <div class="brand">
+          <img src="img/Logo.png" alt="HawkerHub Logo" class="logo" />
+        </div>
+
+        <nav class="navlinks">
+          <a href="#" class="navlink">Browse</a>
+          <a href="#" class="navlink">History</a>
+          <a href="cart.html" class="navlink">Cart</a>
+        </nav>
+
+        <a class="btn btn-signin" href="#">Sign in</a>
+      </div>
+    </header>
+
+    <!-- Cart Page -->
+    <main class="cart-page cart-empty-only">
+      <!-- FULL-WIDTH ORANGE STRIP -->
+<section class="cart-banner-wrap">
+  <div class="cart-banner">
+    <div class="cart-banner-left">
+      <a class="cart-continue">
+        ← Continue Shopping
+      </a>
+
+      <div class="cart-mini">
+        <div class="cart-mini-icon">
+          <img src="img/cart icon.png" alt="Cart" />
+        </div>
+        <div class="cart-mini-text">
+          <div class="cart-mini-title">Your Cart</div>
+          <div class="cart-mini-sub">0 items</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+      <!-- MAIN GRID -->
+      <section class="cart-layout">
+        <!-- LEFT EMPTY STATE -->
+        <section class="cart-empty-state">
+          <!-- small gray cart icon -->
+          <img
+          src="img/cart icon.png"
+          class="cart-empty-icon"
+          alt="Empty cart"
+          />
+
+
+          <h1 class="cart-empty-title">Your cart is empty</h1>
+          <p class="cart-empty-desc">Add some delicious items to get started!</p>
+
+          <div class="cart-empty-action">
+            <button class="cart-browse-btn" type="button">Browse stalls →</button>
+          </div>
+        </section>
+
+        <!-- RIGHT ORDER SUMMARY -->
+        <aside class="cart-summary">
+          <h2>Order Summary</h2>
+          <div class="subhead">Optional Add-ons</div>
+
+          <label class="addon">
+            <input type="checkbox" />
+            <div>
+              <div class="name">Eco Packaging</div>
+              <div class="desc">Sustainable containers<br />for a better environment</div>
+            </div>
+            <div class="price">+$0.20</div>
+          </label>
+
+          <div class="summary-divider"></div>
+
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span>$0.00</span>
+          </div>
+
+          <div class="summary-divider"></div>
+
+          <div class="summary-row summary-total">
+            <span>Total</span>
+            <span>$0.00</span>
+          </div>
+
+          <button class="btn-checkout" type="button">Proceed to Checkout</button>
+          <div class="note">Pickup time will be confirmed after checkout</div>
+        </aside>
+      </section>
+    </main>
+  </body>
+</html>
