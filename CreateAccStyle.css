@@ -1,10 +1,13 @@
 :root {
-      --orange: #ff8a1f;
-      --orange-dark: #f37400;
-      --cream: #fff7eb;
-      --text-dark: #2c2c2c;
-      --muted: #6b6b6b;
-      --card-border: #e6e6e6;
+     --bg: #FFF7DC;
+  --text: #1f1f1f;
+  --faded-text: #6b6b6b;
+
+  --accent: #F97316;
+  --accent-red: #F43C13;
+  
+  --radius: 18px;
+
     }
 
     * {

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HawkerHub – My Stall</title>
+
+  <style>
+    :root {
+      --orange: #ff8a1f;
+      --orange-dark: #f37400;
+      --cream: #fff7eb;
+      --text: #111;
+      --border: rgba(0,0,0,.12);
+    }
+
+    * { box-sizing: border-box; font-family: "Segoe UI", system-ui, -apple-system, sans-serif; }
+
+    body {
+      margin: 0;
+      background: url("img/bg.png") no-repeat center top;
+      background-size: cover;
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 80px;
+      width: 100%;
+    }
+
+    /* TOP NAV */
+    .top-nav {
+      height: 150px; /* Adjusted height to look cleaner while fixed */
+      background: var(--cream);
+      display: flex;
+      align-items: center;
+      position: fixed; /* Keep it at the top */
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000; /* High z-index to stay above everything */
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* Added shadow for depth while scrolling */
+    }
+
+    .nav-inner {
+      width: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; margin-left: 20px; }
+    .brand img { height: 150px; }
+
+    .nav-right { margin-left: auto; display: flex; align-items: center; gap: 56px; }
+
+    .nav-links { display: flex; align-items: center; gap: 56px; font-weight: 900; font-size: 28px; }
+    .nav-links a { color: var(--text); text-decoration: none; position: relative; }
+    
+    .dot {
+      position: absolute;
+      right: -10px; top: 0px;
+      width: 10px; height: 10px;
+      background: #e4002b;
+      border-radius: 50%;
+    }
+
+    .user-pill {
+      background: var(--orange-dark);
+      color: white;
+      padding: 14px 18px;
+      border-radius: 18px;
+      font-weight: 900;
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+    }
+
+    /* ORANGE BANNER */
+    .banner {
+      margin-top: 92px; /* Matches the height of the fixed nav bar */
+      height: 300px;
+      background: var(--orange-dark);
+      position: relative;
+      z-index: 9;
+      padding-top: 85px;
+    }
+
+    .banner-tabs {
+      display: flex;
+      justify-content: flex-end;
+      gap: 22px;
+      color: white;
+      font-weight: 900;
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .banner-text h1 { margin: 0; font-size: 44px; color: white; font-weight: 1000; }
+    .banner-text p { margin: 8px 0 0; color: rgba(255,255,255,.95); font-weight: 600; font-size: 20px; }
+
+    /* DROPDOWN MENU LOGIC */
+    .dropdown-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,.95);
+      border: 1px solid var(--border);
+      padding: 14px 24px;
+      border-radius: 12px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.08);
+      font-weight: 900;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 110%;
+      left: 0;
+      background: white;
+      min-width: 200px;
+      border-radius: 12px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+      list-style: none;
+      padding: 10px 0;
+      margin: 0;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      z-index: 50;
+    }
+
+    /* Show dropdown on hover */
+    .dropdown-container:hover .dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .dropdown-menu li a {
+      display: block;
+      padding: 12px 20px;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    .dropdown-menu li a:hover {
+      background: var(--cream);
+      color: var(--orange-dark);
+    }
+
+    /* CONTENT GRID */
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 30px 0;
+    }
+
+    .plus-btn {
+      font-size: 40px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 50px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 14px 34px rgba(0,0,0,.10);
+    }
+
+    .card img { width: 100%; height: 230px; object-fit: cover; }
+    .card-body { padding: 20px; }
+    
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; }
+    .card-title { font-weight: 1000; font-size: 18px; margin: 0; }
+    
+    .likes-stack { text-align: center; }
+    .heart-icon { 
+      border: 1px solid #ccc; border-radius: 50%; width: 30px; height: 30px; 
+      display: flex; align-items: center; justify-content: center; margin-bottom: 4px;
+    }
+
+    .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
+    .price { color: var(--orange-dark); font-weight: 1000; font-size: 20px; }
+    .edit-icon { border: 1px solid #ccc; padding: 6px; border-radius: 8px; cursor: pointer; }
+
+    /* FOOTER SPACER */
+    .footer-spacer {
+      height: 100px;
+      background: transparent;
+    }
+
+    @media (max-width: 992px) {
+      .hamburger { display: block; }
+      
+      .nav-links {
+        position: absolute;
+        top: 80px;
+        left: 0;
+        width: 100%;
+        background: white;
+        flex-direction: column;
+        gap: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+        box-shadow: 0 10px 10px rgba(0,0,0,0.05);
+      }
+
+      .nav-links a {
+        padding: 20px;
+        border-bottom: 1px solid var(--cream);
+      }
+
+      #menu-toggle:checked ~ .nav-links {
+        max-height: 400px;
+      }
+
+      .banner-tabs { justify-content: flex-start; font-size: 14px; }
+    }
+
+    @media (max-width: 480px) {
+      .banner h1 { font-size: 28px; }
+      .grid { grid-template-columns: 1fr; }
+      .nav-right { gap: 15px; }
+      .user-pill { font-size: 14px; padding: 8px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-nav">
+    <div class="container nav-inner">
+      <div style="font-size: 30px; cursor: pointer;">☰</div>
+      <div class="brand"><img src="img/logo.png" alt="HawkerHub"></div>
+      <div class="nav-right">
+        <nav class="nav-links">
+          <a href="#">Browse</a>
+          <a href="#">History</a>
+          <a href="#">Orders <span class="dot"></span></a>
+          <a href="#">Inspection</a>
+        </nav>
+        <div class="user-pill">
+          👤 XCLYMG <span class="dot" style="right: -5px; top: -5px;"></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="banner">
+    <div class="container">
+      <div class="banner-tabs">
+        <span>Profile <span class="dot" style="width:8px; height:8px; right:-12px; top:0;"></span></span>
+        <span style="opacity:0.6">|</span>
+        <span>Complaints</span>
+        <span style="opacity:0.6">|</span>
+        <span>Stall</span>
+      </div>
+      <div class="banner-text">
+        <h1>My Stall</h1>
+        <p>Manage your Menu items and Rental Status</p>
+      </div>
+    </div>
+  </section>
+
+  <main class="container">
+    <div class="toolbar">
+      <div class="dropdown-container">
+        <div class="dropdown-trigger">
+          Menu <span>⌵</span>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="#">All Items</a></li>
+          <li><a href="#">Satay Specials</a></li>
+          <li><a href="#">Drinks</a></li>
+          <li><a href="#">Hidden Items</a></li>
+        </ul>
+      </div>
+      
+      <button class="plus-btn">+</button>
+    </div>
+
+    <div class="grid">
+      <article class="card">
+        <img src="img/satay menu.jpg" alt="Chicken Satay">
+        <div class="card-body">
+          <div class="card-header">
+            <h3 class="card-title">Chicken Satay (10PC)</h3>
+            <div class="likes-stack">
+              <div class="heart-icon">♡</div>
+              <span style="font-size: 12px; font-weight: 700;">1.4k likes</span>
+            </div>
+          </div>
+          <p style="color: #666; font-size: 14px;">Grilled chicken skewers with peanut sauce</p>
+          <div class="card-footer">
+            <span class="price">$9.00</span>
+            <div class="edit-icon">✎</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <img src="img/satay menu.jpg" alt="Beef Satay">
+        <div class="card-body">
+          <div class="card-header">
+            <h3 class="card-title">Beef Satay (10PC)</h3>
+            <div class="likes-stack">
+              <div class="heart-icon">♡</div>
+              <span style="font-size: 12px; font-weight: 700;">900 likes</span>
+            </div>
+          </div>
+          <p style="color: #666; font-size: 14px;">Grilled beef skewers with peanut sauce</p>
+          <div class="card-footer">
+            <span class="price">$12.00</span>
+            <div class="edit-icon">✎</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <img src="img/satay menu.jpg" alt="Mutton Satay">
+        <div class="card-body">
+          <div class="card-header">
+            <h3 class="card-title">Mutton Satay (10PC)</h3>
+            <div class="likes-stack">
+              <div class="heart-icon">♡</div>
+              <span style="font-size: 12px; font-weight: 700;">400 likes</span>
+            </div>
+          </div>
+          <p style="color: #666; font-size: 14px;">Grilled mutton skewers with peanut sauce</p>
+          <div class="card-footer">
+            <span class="price">$10.00</span>
+            <div class="edit-icon">✎</div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </main>
+  <footer class="footer-spacer"></footer>
+
+</body>
+</html>
