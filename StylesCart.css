@@ -1,0 +1,342 @@
+/* =========================================
+   StylesCart.css (Cart page only)
+   Based on your existing styles.css + cart section
+========================================= */
+
+/* ===== 1) Design Tokens + Base ===== */
+:root{
+  --bg: #FFF7DC;
+  --text: #1f1f1f;
+  --faded-text: #6b6b6b;
+
+  --accent: #F97316;
+  --accent-red: #F43C13;
+
+  --radius: 18px;
+}
+
+*{ box-sizing: border-box; }
+
+body{
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+.container{
+  width: 1100px;
+  height: auto;
+  margin: 0 auto;
+}
+
+/* ===== 2) Top Navigation Bar (needed because cart.html includes it) ===== */
+.topbar{
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.topbar-inner{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+}
+
+.icon-btn{
+  height: 40px;
+  width: auto;
+  background: transparent;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+.icon-btn:hover{
+  background: rgba(0,0,0,0.06);
+}
+
+.brand{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo{
+  height: 130px;
+  width: auto;
+}
+
+.navlinks{
+  margin-left: auto;
+  display: flex;
+  gap: 36px;
+}
+
+.navlink{
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 20px;
+}
+.navlink:hover{ opacity: 0.8; }
+
+/* Buttons */
+.btn{
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 14px 24px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-signin{
+  background-color: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 20px;
+  margin-left: 32px;
+}
+.btn-signin:hover{ background-color: #e8650f; }
+
+/* ===== 3) Cart Banner (full width orange strip) ===== */
+.cart-banner-wrap{
+  width: 100%;
+  background: var(--accent);
+  padding: 16px 0;
+}
+
+.cart-banner{
+  width: 1100px;
+  margin: 0 auto;
+  padding: 0 10px;
+}
+
+/* Stack Continue Shopping on top-left, cart mini below aligned right */
+.cart-banner-left{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.cart-continue{
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 6px;
+  margin-bottom: 14px;
+}
+
+/* Mini cart block */
+.cart-mini{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-left: 0; /* pushes it to the right */
+}
+
+.cart-mini-icon{
+  width: 58px;
+  height: 58px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.85);
+  display: grid;
+  place-items: center;
+}
+
+.cart-mini-icon img{
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+
+  /* Orange tint only for this banner icon */
+  filter: invert(54%)
+          sepia(83%)
+          saturate(1486%)
+          hue-rotate(356deg)
+          brightness(101%)
+          contrast(102%);
+}
+
+.cart-mini-title{
+  color: #fff;
+  font-weight: 900;
+  font-size: 16px;
+  line-height: 1.1;
+}
+.cart-mini-sub{
+  color: #fff;
+  opacity: 0.95;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+/* ===== 4) Cart Main Layout ===== */
+.cart-layout{
+  width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 26px;
+  padding: 46px 0 60px;
+  align-items: start;
+}
+
+/* Empty state (left) */
+.cart-empty-state{
+  min-height: 420px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.cart-empty-icon{
+  width: 84px;
+  height: 84px;
+  margin: 0 auto 14px;
+  display: block;
+  opacity: 0.55; /* keeps it soft like your screenshot */
+}
+
+.cart-empty-title{
+  margin: 0 0 10px;
+  font-size: 46px;
+  font-weight: 500;
+}
+
+.cart-empty-desc{
+  margin: 0 0 22px;
+  font-size: 18px;
+  color: var(--text);
+  opacity: 0.9;
+}
+
+.cart-browse-btn{
+  border: none;
+  background: var(--accent-red);
+  color: #fff;
+  font-weight: 900;
+  font-size: 18px;
+  padding: 14px 28px;
+  border-radius: 14px;
+  box-shadow: 0 10px 18px rgba(0,0,0,0.12);
+  cursor: default; /* no click behavior requested */
+}
+
+/* ===== 5) Order Summary (right orange card) ===== */
+.cart-summary{
+  background: #FF5900;
+  color: #fff;
+  border-radius: 18px;
+  padding: 24px;
+  width: 360px;
+  box-shadow: 0 10px 18px rgba(0,0,0,0.12);
+}
+
+.cart-summary h2{
+  margin: 0 0 4px;
+  font-size: 24px;
+}
+
+.cart-summary .subhead{
+  font-size: 16px;
+  opacity: 0.95;
+  margin-bottom: 14px;
+}
+
+/* Green add-on box */
+.addon{
+  background: #dff7da;
+  color: #113015;
+  border-radius: 10px;
+  padding: 14px 12px;
+  display: grid;
+  grid-template-columns: 18px 1fr auto;
+  gap: 12px;
+  align-items: start;
+  border: 2px solid rgba(0,0,0,0.05);
+  margin-bottom: 16px;
+}
+
+.addon input{
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: #ff7a00;
+}
+
+.addon .name{
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.addon .desc{
+  font-size: 12px;
+  opacity: 0.9;
+  margin-top: 4px;
+}
+
+.addon .price{
+  font-weight: 900;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* Divider + rows */
+.summary-divider{
+  height: 1px;
+  background: rgba(255,255,255,0.45);
+  margin: 14px 0;
+}
+
+.summary-row{
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+}
+
+.summary-total{
+  font-weight: 900;
+}
+
+/* White button */
+.btn-checkout{
+  margin-top: 16px;
+  width: 100%;
+  background: #fff;
+  color: var(--accent-red);
+  border: none;
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-size: 18px;
+  font-weight: 900;
+  cursor: default;
+}
+
+/* Note text */
+.note{
+  margin-top: 10px;
+  font-size: 11px;
+  opacity: 0.9;
+  text-align: center;
+}
+
+/* ===== 6) Responsive ===== */
+@media (max-width: 1160px){
+  .container{ width: 100%; padding: 0 24px; }
+  .cart-banner{ width: 100%; padding: 0 24px; }
+  .cart-layout{ width: 100%; padding: 46px 24px 60px; }
+}
+
+@media (max-width: 980px){
+  .cart-layout{ grid-template-columns: 1fr; }
+  .cart-summary{ max-width: 520px; margin: 0 auto; }
+  .navlinks{ display: none; }
+}
