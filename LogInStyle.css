@@ -1,18 +1,14 @@
-:root {
+  :root {
       --orange: #ff8a1f;
       --orange-dark: #f37400;
-      --cream: #fff7eb;
       --text-dark: #2c2c2c;
       --muted: #6b6b6b;
-      --card-border: #e6e6e6;
+      --card-border: rgba(0,0,0,0.12);
     }
 
-    * {
-      box-sizing: border-box;
-      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-    }
+    * { box-sizing: border-box; font-family: "Segoe UI", system-ui, -apple-system, sans-serif; }
 
-    /* Background fills entire screen */
+    /* Background fills entire screen (same as your other pages) */
     body {
       margin: 0;
       min-height: 100vh;
@@ -31,7 +27,7 @@
       padding: 24px 24px 40px;
     }
 
-    /* Use your provided Go Back button CSS (unchanged) */
+    /* Go Back button (use your exact code) */
     .back-btn {
       position: absolute;
       left: 100px;
@@ -70,7 +66,7 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.14);
     }
 
-    /* Use your provided logo CSS (unchanged) */
+    /* Logo (same sizing rules you provided) */
     .logo {
       display: flex;
       justify-content: center;
@@ -84,11 +80,11 @@
       display: block;
     }
 
-    /* Centered panel like screenshot */
+    /* Center form panel */
     .panel-wrap {
       display: flex;
       justify-content: center;
-      margin-top: -20px; /* bring form closer to logo */
+      margin-top: -20px; /* keeps logo and panel closer */
       padding-bottom: 40px;
     }
 
@@ -96,14 +92,13 @@
       width: 380px;
       max-width: 92vw;
       background: rgba(255, 255, 255, 0.92);
-      border: 1px solid rgba(0,0,0,0.12);
+      border: 1px solid var(--card-border);
       border-radius: 14px;
       box-shadow: 0 14px 40px rgba(0,0,0,0.16);
-      overflow: hidden; /* keeps rounded corners */
+      overflow: hidden;
       backdrop-filter: blur(3px);
     }
 
-    /* Header inside panel */
     .panel-top {
       padding: 14px 16px 0;
     }
@@ -119,7 +114,7 @@
     }
 
     .panel-body {
-      padding: 10px 18px 16px;
+      padding: 10px 18px 14px;
     }
 
     .icon {
@@ -144,7 +139,7 @@
       color: var(--muted);
     }
 
-    /* Segmented control (Sign Up / Sign In) */
+    /* Sign Up / Sign In toggle */
     .segmented {
       display: flex;
       justify-content: center;
@@ -156,15 +151,21 @@
       border: none;
       padding: 7px 16px;
       border-radius: 999px;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 12px;
       cursor: pointer;
       box-shadow: 0 6px 16px rgba(0,0,0,0.08);
       transition: transform 0.15s ease;
     }
 
-    .segmented button:active {
-      transform: translateY(1px);
+    .segmented button:active { transform: translateY(1px); }
+
+    .segmented .inactive {
+  
+      background: #d7d7d7;
+      color: #2c2c2c;
+
+      opacity: 0.95;
     }
 
     .segmented .active {
@@ -172,44 +173,19 @@
       color: #fff;
     }
 
-    .segmented .inactive {
-      background: #d7d7d7;
-      color: #2c2c2c;
-    }
-
-    /* Scrollable inputs area */
-    .form-scroll {
-      max-height: 300px;           /* enables vertical scrolling for inputs */
-      overflow-y: auto;
-      padding-right: 6px;          /* space for scrollbar */
-      margin-top: 4px;
-    }
-
-    /* Nice scrollbar (optional) */
-    .form-scroll::-webkit-scrollbar {
-      width: 10px;
-    }
-    .form-scroll::-webkit-scrollbar-thumb {
-      background: rgba(0,0,0,0.18);
-      border-radius: 999px;
-      border: 2px solid rgba(255,255,255,0.7);
-    }
-    .form-scroll::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
+    /* Fields */
     label {
       display: block;
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 800;
       color: #444;
-      margin: 10px 0 6px;
+      margin: 12px 0 6px;
     }
 
     input {
       width: 100%;
-      height: 36px;
-      border-radius: 10px;
+      height: 38px;
+      border-radius: 12px;
       border: 1px solid rgba(0,0,0,0.22);
       background: #dcdcdc;
       padding: 0 12px;
@@ -222,6 +198,24 @@
       box-shadow: 0 0 0 3px rgba(243, 116, 0, 0.12);
       background: #e6e6e6;
     }
+
+    /* Main submit */
+    .submit {
+      margin-top: 16px;
+      width: 100%;
+      height: 40px;
+      border: 1px solid rgba(0,0,0,0.25);
+      border-radius: 12px;
+      background: #ff8a1f; /* primary logo orange */
+      color: #ffffff;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.10);
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+
+    .submit:hover { filter: brightness(1.03); transform: translateY(-1px); }
+    .submit:active { transform: translateY(0); }
 
     .panel-footer {
       padding: 14px 18px 18px;
@@ -240,7 +234,7 @@
       gap: 10px;
       color: #666;
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 800;
       opacity: 0.9;
     }
 
@@ -265,10 +259,9 @@
       transition: transform 0.15s ease;
     }
 
-    .google-btn:hover {
-      transform: translateY(-1px);
-    }
+    .google-btn:hover { transform: translateY(-1px); }
 
+    /* simple Google "G" badge */
     .google-badge {
       width: 22px;
       height: 22px;
@@ -277,60 +270,13 @@
       place-items: center;
       font-weight: 900;
       font-size: 14px;
-      /* simple multi-color "G" look */
       background: conic-gradient(#4285F4 0 25%, #34A853 25% 50%, #FBBC05 50% 75%, #EA4335 75% 100%);
       color: white;
     }
 
-    .submit-btn {
-  width: 100%;
-  height: 44px;
-
-  margin-top: 16px;
-
-  border: none;
-  border-radius: 14px;
-
-  background: #ff8a1f; /* primary logo orange */
-  color: #ffffff;
-
-  font-size: 14px;
-  font-weight: 700;
-
-  cursor: pointer;
-
-  box-shadow: 0 10px 24px rgba(255, 138, 31, 0.35);
-  transition: all 0.2s ease;
-}
-
-.submit-btn:hover {
-  background: #f37400; /* slightly darker orange */
-  box-shadow: 0 14px 30px rgba(243, 116, 0, 0.45);
-  transform: translateY(-1px);
-}
-
-.submit-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 6px 16px rgba(243, 116, 0, 0.35);
-}
-
-
-    /* Responsive tweaks */
+    /* Responsive */
     @media (max-width: 900px) {
-      .back-btn {
-        left: 16px;
-        top: 16px;
-      }
-
-      .logo img {
-        height: 180px;
-      }
-
-      .panel-wrap {
-        margin-top: -10px;
-      }
-
-      .form-scroll {
-        max-height: 320px;
-      }
+      .back-btn { left: 16px; top: 16px; }
+      .logo img { height: 180px; }
+      .panel-wrap { margin-top: -10px; }
     }
