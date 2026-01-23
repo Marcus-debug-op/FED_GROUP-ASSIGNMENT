@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HawkerHub – Create Account</title>
-      <link rel="stylesheet" href="CreateAccStyle.css">
+      <link rel="stylesheet" href="CreateAccVendorStyle.css">
 
-
+<script src="CreateAccVendor.js"></script>
 </head>
 
 <body>
@@ -58,7 +58,7 @@
             <input id="confirm" type="password" placeholder="" />
 
             <button class="submit-btn" type="submit">
-  Create
+              <a href="Log In.html">Create</a>
 </button>
 
           </div>
@@ -73,5 +73,8 @@
       </div>
     </div>
   </div>
+  <!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async defer onload="__hawkerhubInitGIS()"></script>
+<script src="googleAuth.js"></script>
 </body>
 </html>
