@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HawkerHub – Create Account</title>
+      <link rel="stylesheet" href="CreateAccPatronStyle.css">
+
+<script src="CreateAccPatron.js"></script>
+</head>
+
+<body>
+  <div class="app">
+    <!-- Go Back Button -->
+    <button class="back-btn" type="button" onclick="history.back()">
+      ← Go Back
+    </button>
+
+    <!-- Logo (same as your other pages) -->
+    <div class="logo">
+      <!-- Put your logo file here (same as before) -->
+      <img src="img/logo.png" alt="HawkerHub Logo" />
+    </div>
+
+    <!-- Center Form Panel -->
+    <div class="panel-wrap">
+      <div class="panel">
+        <div class="panel-top">
+          <div class="mini-back">← Back to Selection</div>
+        </div>
+
+        <div class="panel-body">
+          <div class="icon">🪪</div>
+          <div class="title">Create Account</div>
+          <div class="subtitle">Customer Registration</div>
+
+          <div class="segmented">
+            <button class="active" type="button">Sign Up</button>
+            <button class="inactive" type="button">Sign In</button>
+          </div>
+
+          <!-- Scrollable inputs container -->
+          <div class="form-scroll">
+            <label for="fullname">Full Name</label>
+            <input id="fullname" type="text" placeholder="" />
+
+            <label for="email">Email Address</label>
+            <input id="email" type="email" placeholder="" />
+
+            <label for="phone">Phone Number</label>
+            <input id="phone" type="tel" placeholder="" />
+
+            <label for="password">Password</label>
+            <input id="password" type="password" placeholder="" />
+
+            <!-- Extra fields (so you can see scrolling works) -->
+            <label for="confirm">Confirm Password</label>
+            <input id="confirm" type="password" placeholder="" />
+
+            <button class="submit-btn" type="submit">
+              <a href="Log In.html">Create</a>
+</button>
+
+          </div>
+        </div>
+
+        <div class="panel-footer">
+          <div class="divider">More Methods</div>
+          <button class="google-btn" type="button" aria-label="Continue with Google">
+            <div class="google-badge">G</div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async defer onload="__hawkerhubInitGIS()"></script>
+<script src="googleAuth.js"></script>
+</body>
+</html>
