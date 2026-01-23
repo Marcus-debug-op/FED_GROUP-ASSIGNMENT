@@ -259,6 +259,10 @@ body {
     border-radius: 10px;
     font-weight: bold;
     cursor: pointer;
+
+    text-decoration: none; 
+    
+    display: inline-block;
 }
 
 .ratings-container {
@@ -597,6 +601,9 @@ h2 {
     cursor: pointer;
     transition: color 0.2s;
 }
+.star.active {
+    color: #FFC107 !important; /* Forces the color to Gold */
+}
 
 .star:hover {
     color: #FFC107; /* Gold on hover */
@@ -932,7 +939,20 @@ textarea:focus {
     }
 }
 
+.btn-white {
 
+    background-color: var(--accent) !important;
+    color: white !important;
+    
+
+    border: none !important;
+    
+
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 /* =========================================
    Mobile Responsive (440w x 956h)
 ========================================= */
@@ -1038,4 +1058,21 @@ textarea:focus {
         padding: 14px;
         border-radius: 30px;
     }
+}
+
+/* Make nav items able to hold the dot nicely */
+.navlink{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* The red dot itself (ScriptCart.js toggles display on/off) */
+.cart-dot{
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #ff2b2b;
+  display: none;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.6);
 }

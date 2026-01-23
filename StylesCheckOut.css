@@ -156,6 +156,17 @@ body{
   background: rgba(249,115,22,0.12);
 }
 
+/* ✅ NEW: image icons inside the icon box */
+.icon-img{
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  display: block;
+  filter: brightness(0) saturate(100%)
+          invert(49%) sepia(89%) saturate(2471%)
+          hue-rotate(359deg) brightness(101%) contrast(103%);
+}
+
 .form-grid{
   display: grid;
   gap: 12px;
@@ -200,10 +211,29 @@ input::placeholder{ color: rgba(0,0,0,0.35); }
   background: rgba(0,0,0,0.02);
 }
 
-.pay-badges{
-  font-weight: 800;
-  font-size: 12px;
-  color: rgba(0,0,0,0.55);
+/* ✅ NEW: right-side logos container */
+.pay-logos{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ✅ NEW: base logo size (you can adjust if needed) */
+.pay-logo{
+  height: 24px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* (optional fine-tune per logo) */
+.pay-logo-paynow{ height: 50px; }
+.pay-logo-visa{ height: 40px; }
+.pay-logo-mc{ height: 40px; }
+
+.pay-logos-empty{
+  width: 1px;
+  height: 1px;
 }
 
 /* ===== Right Summary card ===== */
@@ -314,4 +344,22 @@ input::placeholder{ color: rgba(0,0,0,0.35); }
     margin: 0 auto;
   }
   .navlinks{ display: none; }
+}
+
+/* =====================================
+   Highlight selected payment option
+===================================== */
+
+.pay-option{
+  cursor: pointer;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pay-option.is-selected{
+  border: 2px solid #ff2b2b;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(255,43,43,0.15);
+}
+.cta{
+  cursor: pointer;
 }

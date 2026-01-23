@@ -23,12 +23,13 @@
 
                 <div class="rating-section">
                     <p>How many stars?</p>
-                    <div class="star-group">
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
-                        <span class="star">★</span>
+                    <div class="star-group" id="star-container">
+                        <span class="star" data-value="1">★</span>
+                        <span class="star" data-value="2">★</span>
+                        <span class="star" data-value="3">★</span>
+                        <span class="star" data-value="4">★</span>
+                        <span class="star" data-value="5">★</span>
+                        <input type="hidden" id="rating-value" name="rating" value="0">
                     </div>
                 </div>
 
@@ -48,6 +49,9 @@
             </div>
         </div>
     </div>
+    <script src="AhSengSubmitFeedback.js"></script>
+
+    
 
 </body>
 </html>
