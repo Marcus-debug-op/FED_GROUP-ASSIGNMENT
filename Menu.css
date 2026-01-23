@@ -951,13 +951,13 @@ textarea:focus {
 
 .btn-white {
 
+    grid-column: span 2; 
+
     background-color: var(--accent) !important;
     color: white !important;
     
-
     border: none !important;
     
-
     text-decoration: none;
     display: flex;
     align-items: center;
