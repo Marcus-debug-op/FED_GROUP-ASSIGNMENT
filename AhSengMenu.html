@@ -18,9 +18,9 @@
             </div>
 
             <nav class="navlinks">
-                <a href="BrowseStall.html" class="navlink">Browse</a>
+                <a href="browsestalls.html" class="navlink">Browse</a>
                 <a href="#" class="navlink">History</a>
-                <a href="#" class="navlink">Cart</a>
+                <a href="cart.html" class="navlink">Cart</a>
             </nav>
             <a class="btn btn-signin" href="Sign in/sign-in.html">Sign in</a>
         </div>
@@ -63,7 +63,17 @@
                     <p class="desc">Tender poached chicken served with fragrant oily rice and chili sauce.</p>
                     <div class="card-footer">
                         <span class="price">$4.50</span>
-                        <button class="add-to-cart">🛒 Add to Cart</button>
+                        <button
+                            class="add-to-cart"
+                            data-add-to-cart
+                            data-id="ahseng-steamed-chicken-rice"
+                            data-name="Steamed Chicken Rice"
+                            data-price="4.50"
+                            data-stall="Ah Seng Chicken Rice"
+                            type="button"
+                        >
+                            🛒 Add to Cart
+                        </button>
                     </div>
                 </div>
             </div>
@@ -83,7 +93,17 @@
                     <p class="desc">Succulent braised chicken glazed in savory soy sauce gravy.</p>
                     <div class="card-footer">
                         <span class="price">$4.50</span>
-                        <button class="add-to-cart">🛒 Add to Cart</button>
+                        <button
+                            class="add-to-cart"
+                            data-add-to-cart
+                            data-id="ahseng-braised-chicken-rice"
+                            data-name="Braised Chicken Rice"
+                            data-price="4.50"
+                            data-stall="Ah Seng Chicken Rice"
+                            type="button"
+                        >
+                            🛒 Add to Cart
+                        </button>
                     </div>
                 </div>
             </div>
@@ -103,7 +123,17 @@
                     <p class="desc">Crispy fried chicken cutlet topped with a tangy and sweet lemon sauce.</p>
                     <div class="card-footer">
                         <span class="price">$5.50</span>
-                        <button class="add-to-cart">🛒 Add to Cart</button>
+                        <button
+                            class="add-to-cart"
+                            data-add-to-cart
+                            data-id="ahseng-lemon-chicken-rice"
+                            data-name="Lemon Chicken Rice"
+                            data-price="5.50"
+                            data-stall="Ah Seng Chicken Rice"
+                            type="button"
+                        >
+                            🛒 Add to Cart
+                        </button>
                     </div>
                 </div>
             </div>
@@ -111,5 +141,6 @@
         </div>
     </main>
 
+    <script src="ScriptCart.js"></script>
 </body>
 </html>

@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Cart - HawkerHub</title>
+    <title>Your Cart - HawkerHub</title>
     <link rel="stylesheet" href="StylesCart.css" />
   </head>
 
   <body>
-    <!-- Navbar (keep as-is) -->
+    <!-- Navbar -->
     <header class="topbar">
       <div class="container topbar-inner">
         <img src="img/Dashboard button.png" alt="Menu" class="icon-btn" />
@@ -18,91 +18,93 @@
         </div>
 
         <nav class="navlinks">
-          <a href="#" class="navlink">Browse</a>
+          <a href="browsestalls.html" class="navlink">Browse</a>
           <a href="#" class="navlink">History</a>
           <a href="cart.html" class="navlink">Cart</a>
         </nav>
 
-        <a class="btn btn-signin" href="#">Sign in</a>
+        <a class="btn btn-signin" href="Sign in/sign-in.html">Sign in</a>
       </div>
     </header>
 
-    <!-- Cart Page -->
-    <main class="cart-page cart-empty-only">
-      <!-- FULL-WIDTH ORANGE STRIP -->
-<section class="cart-banner-wrap">
-  <div class="cart-banner">
-    <div class="cart-banner-left">
-      <a class="cart-continue">
-        ← Continue Shopping
-      </a>
+    <!-- Orange banner -->
+    <section class="cart-banner-wrap">
+      <div class="cart-banner">
+        <div class="cart-banner-left">
+          <a class="cart-continue" href="browsestalls.html">← Continue Shopping</a>
 
-      <div class="cart-mini">
-        <div class="cart-mini-icon">
-          <img src="img/cart icon.png" alt="Cart" />
-        </div>
-        <div class="cart-mini-text">
-          <div class="cart-mini-title">Your Cart</div>
-          <div class="cart-mini-sub">0 items</div>
+          <div class="cart-mini">
+            <div class="cart-mini-icon" aria-hidden="true">
+              <img src="img/cart icon.png" alt="Cart" />
+            </div>
+
+            <div class="cart-mini-text">
+              <div class="cart-mini-title">Your Cart</div>
+              <div class="cart-mini-sub">0 items</div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-
-      <!-- MAIN GRID -->
-      <section class="cart-layout">
-        <!-- LEFT EMPTY STATE -->
+    <!-- Main layout -->
+    <main class="cart-layout">
+      <!-- LEFT: Items -->
+      <section class="cart-left">
         <section class="cart-empty-state">
-          <!-- small gray cart icon -->
-          <img
-          src="img/cart icon.png"
-          class="cart-empty-icon"
-          alt="Empty cart"
-          />
-
-
+          <img src="img/cart icon.png" class="cart-empty-icon" alt="Empty cart" />
           <h1 class="cart-empty-title">Your cart is empty</h1>
           <p class="cart-empty-desc">Add some delicious items to get started!</p>
-
-          <div class="cart-empty-action">
-            <button class="cart-browse-btn" type="button">Browse stalls →</button>
-          </div>
+          <button class="cart-browse-btn" type="button">Browse stalls →</button>
         </section>
 
-        <!-- RIGHT ORDER SUMMARY -->
-        <aside class="cart-summary">
-          <h2>Order Summary</h2>
-          <div class="subhead">Optional Add-ons</div>
-
-          <label class="addon">
-            <input type="checkbox" />
-            <div>
-              <div class="name">Eco Packaging</div>
-              <div class="desc">Sustainable containers<br />for a better environment</div>
-            </div>
-            <div class="price">+$0.20</div>
-          </label>
-
-          <div class="summary-divider"></div>
-
-          <div class="summary-row">
-            <span>Subtotal</span>
-            <span>$0.00</span>
-          </div>
-
-          <div class="summary-divider"></div>
-
-          <div class="summary-row summary-total">
-            <span>Total</span>
-            <span>$0.00</span>
-          </div>
-
-          <button class="btn-checkout" type="button">Proceed to Checkout</button>
-          <div class="note">Pickup time will be confirmed after checkout</div>
-        </aside>
+        <section class="cart-items-area"></section>
       </section>
+
+      <!-- RIGHT: Summary -->
+      <aside class="cart-summary">
+        <h2>Order Summary</h2>
+        <div class="subhead">Optional Add-ons</div>
+
+        <label class="addon">
+          <input type="checkbox" id="ecoPackaging" />
+          <div class="addon-text">
+            <div class="name">Eco Packaging</div>
+            <div class="desc">
+              Sustainable containers<br />
+              for a better environment
+            </div>
+          </div>
+          <div class="price">+$0.20</div>
+        </label>
+
+        <div class="summary-divider"></div>
+
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span id="subtotalAmount">$0.00</span>
+        </div>
+
+        <div class="summary-row" id="ecoFeeRow" style="display:none;">
+          <span>Eco Packaging</span>
+          <span id="ecoFeeAmount">$0.20</span>
+        </div>
+
+        <div class="summary-divider"></div>
+
+        <div class="summary-row summary-total">
+          <span>Total</span>
+          <span id="totalAmount">$0.00</span>
+        </div>
+
+        <button class="btn-checkout" id="proceedCheckout" type="button">
+          Proceed to Checkout
+        </button>
+
+        <div class="note">Pickup time will be confirmed after checkout</div>
+      </aside>
     </main>
+
+    <script src="ScriptCart.js"></script>
   </body>
 </html>

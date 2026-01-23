@@ -1,9 +1,7 @@
 /* =========================================
-   StylesCart.css (Cart page only)
-   Based on your existing styles.css + cart section
+   StylesCart.css (Cart page)
 ========================================= */
 
-/* ===== 1) Design Tokens + Base ===== */
 :root{
   --bg: #FFF7DC;
   --text: #1f1f1f;
@@ -26,11 +24,10 @@ body{
 
 .container{
   width: 1100px;
-  height: auto;
   margin: 0 auto;
 }
 
-/* ===== 2) Top Navigation Bar (needed because cart.html includes it) ===== */
+/* ===== Navbar ===== */
 .topbar{
   position: sticky;
   top: 0;
@@ -49,8 +46,6 @@ body{
 .icon-btn{
   height: 40px;
   width: auto;
-  background: transparent;
-  font-size: 22px;
   cursor: pointer;
   padding: 8px 10px;
   border-radius: 10px;
@@ -79,12 +74,15 @@ body{
 .navlink{
   text-decoration: none;
   color: var(--text);
-  font-weight: 700;
+  font-weight: bold;
   font-size: 20px;
+  position: relative; /* for dot */
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 .navlink:hover{ opacity: 0.8; }
 
-/* Buttons */
 .btn{
   text-decoration: none;
   border-radius: 999px;
@@ -96,13 +94,13 @@ body{
 .btn-signin{
   background-color: var(--accent);
   color: #fff;
-  font-weight: 700;
+  font-weight: bold;
   font-size: 20px;
   margin-left: 32px;
 }
 .btn-signin:hover{ background-color: #e8650f; }
 
-/* ===== 3) Cart Banner (full width orange strip) ===== */
+/* ===== Orange banner strip ===== */
 .cart-banner-wrap{
   width: 100%;
   background: var(--accent);
@@ -115,7 +113,6 @@ body{
   padding: 0 10px;
 }
 
-/* Stack Continue Shopping on top-left, cart mini below aligned right */
 .cart-banner-left{
   display: flex;
   flex-direction: column;
@@ -125,21 +122,19 @@ body{
 .cart-continue{
   color: #fff;
   text-decoration: none;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 14px;
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding-top: 6px;
   margin-bottom: 14px;
 }
 
-/* Mini cart block */
+/* Cart mini block below continue */
 .cart-mini{
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-left: 0; /* pushes it to the right */
 }
 
 .cart-mini-icon{
@@ -156,13 +151,8 @@ body{
   height: 36px;
   object-fit: contain;
 
-  /* Orange tint only for this banner icon */
-  filter: invert(54%)
-          sepia(83%)
-          saturate(1486%)
-          hue-rotate(356deg)
-          brightness(101%)
-          contrast(102%);
+  /* Orange tint only for this banner cart icon */
+  filter: invert(54%) sepia(83%) saturate(1486%) hue-rotate(356deg) brightness(101%) contrast(102%);
 }
 
 .cart-mini-title{
@@ -171,6 +161,7 @@ body{
   font-size: 16px;
   line-height: 1.1;
 }
+
 .cart-mini-sub{
   color: #fff;
   opacity: 0.95;
@@ -178,7 +169,7 @@ body{
   margin-top: 4px;
 }
 
-/* ===== 4) Cart Main Layout ===== */
+/* ===== Main layout ===== */
 .cart-layout{
   width: 1100px;
   margin: 0 auto;
@@ -189,7 +180,11 @@ body{
   align-items: start;
 }
 
-/* Empty state (left) */
+.cart-left{
+  min-height: 420px;
+}
+
+/* Empty state */
 .cart-empty-state{
   min-height: 420px;
   display: grid;
@@ -199,10 +194,10 @@ body{
 
 .cart-empty-icon{
   width: 84px;
-  height: 84px;
+  height: auto;
   margin: 0 auto 14px;
   display: block;
-  opacity: 0.55; /* keeps it soft like your screenshot */
+  opacity: 0.55;
 }
 
 .cart-empty-title{
@@ -214,7 +209,6 @@ body{
 .cart-empty-desc{
   margin: 0 0 22px;
   font-size: 18px;
-  color: var(--text);
   opacity: 0.9;
 }
 
@@ -227,12 +221,120 @@ body{
   padding: 14px 28px;
   border-radius: 14px;
   box-shadow: 0 10px 18px rgba(0,0,0,0.12);
-  cursor: default; /* no click behavior requested */
+  cursor: pointer;
 }
 
-/* ===== 5) Order Summary (right orange card) ===== */
+/* ===== Cart items ===== */
+.cart-items-area{
+  display: grid;
+  gap: 18px;
+}
+
+.cart-item-card{
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 760px;
+}
+
+.cart-item-left{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cart-item-img{
+  width: 58px;
+  height: 42px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(0,0,0,0.04);
+  display: grid;
+  place-items: center;
+}
+
+.cart-item-img img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cart-item-info{
+  display: grid;
+  gap: 2px;
+}
+
+.cart-item-name{
+  font-weight: 900;
+  font-size: 14px;
+}
+
+.cart-item-stall{
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.6;
+}
+
+.cart-item-price{
+  font-size: 12px;
+  font-weight: 900;
+  opacity: 0.9;
+}
+
+.cart-item-right{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cart-remove{
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  opacity: 0.6;
+  font-size: 14px;
+}
+.cart-remove:hover{ opacity: 1; }
+
+.qty-stepper{
+  display: inline-flex;
+  align-items: center;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+
+.qty-stepper button{
+  width: 28px;
+  height: 26px;
+  border: none;
+  background: transparent;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.qty-stepper .qty{
+  width: 28px;
+  text-align: center;
+  font-weight: 900;
+  font-size: 12px;
+}
+
+.cart-item-total{
+  font-weight: 900;
+  font-size: 13px;
+  width: 58px;
+  text-align: right;
+}
+
+/* ===== Summary ===== */
 .cart-summary{
-  background: #FF5900;
+  background: #ff5900;
   color: #fff;
   border-radius: 18px;
   padding: 24px;
@@ -251,7 +353,6 @@ body{
   margin-bottom: 14px;
 }
 
-/* Green add-on box */
 .addon{
   background: #dff7da;
   color: #113015;
@@ -289,7 +390,6 @@ body{
   white-space: nowrap;
 }
 
-/* Divider + rows */
 .summary-divider{
   height: 1px;
   background: rgba(255,255,255,0.45);
@@ -306,7 +406,6 @@ body{
   font-weight: 900;
 }
 
-/* White button */
 .btn-checkout{
   margin-top: 16px;
   width: 100%;
@@ -317,10 +416,9 @@ body{
   border-radius: 14px;
   font-size: 18px;
   font-weight: 900;
-  cursor: default;
+  cursor: pointer;
 }
 
-/* Note text */
 .note{
   margin-top: 10px;
   font-size: 11px;
@@ -328,11 +426,13 @@ body{
   text-align: center;
 }
 
-/* ===== 6) Responsive ===== */
+/* ===== Responsive ===== */
 @media (max-width: 1160px){
-  .container{ width: 100%; padding: 0 24px; }
-  .cart-banner{ width: 100%; padding: 0 24px; }
-  .cart-layout{ width: 100%; padding: 46px 24px 60px; }
+  .container, .cart-banner, .cart-layout{
+    width: 100%;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
 }
 
 @media (max-width: 980px){
