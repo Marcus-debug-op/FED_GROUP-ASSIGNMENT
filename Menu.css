@@ -259,6 +259,10 @@ body {
     border-radius: 10px;
     font-weight: bold;
     cursor: pointer;
+
+    text-decoration: none; 
+    
+    display: inline-block;
 }
 
 .ratings-container {
@@ -596,6 +600,9 @@ h2 {
     color: #e0e0e0; /* Gray for unselected */
     cursor: pointer;
     transition: color 0.2s;
+}
+.star.active {
+    color: #FFC107 !important; /* Forces the color to Gold */
 }
 
 .star:hover {
