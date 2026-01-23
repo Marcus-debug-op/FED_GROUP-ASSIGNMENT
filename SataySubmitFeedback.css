@@ -1,0 +1,116 @@
+:root {
+    --bg: #FFF7DC;
+    --text: #1f1f1f;
+    --accent-orange: #F97316;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: system-ui, -apple-system, sans-serif;
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+                url('img/hawker_background1.avif');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.page-wrapper {
+    width: 100%;
+    max-width: 480px; /* Smaller width for a neat confirmation card */
+    padding: 20px;
+}
+
+.confirmation-card {
+    background: white;
+    border-radius: 24px;
+    padding: 40px 30px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.icon-container {
+    margin-bottom: 20px;
+}
+
+.checkmark-circle {
+    width: 90px;
+    height: 90px;
+    background: #F97316; /* Theme Orange */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
+}
+
+.checkmark {
+    font-size: 50px;
+    color: white;
+    /* Simple checkmark character styling */
+    line-height: 1;
+    margin-bottom: 5px; 
+}
+
+h2 {
+    color: var(--text);
+    margin: 0 0 10px 0;
+    font-size: 28px;
+    font-weight: 900;
+}
+
+.success-message {
+    color: #666;
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 30px;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.btn-return {
+    background: #F97316;
+    color: white;
+    text-decoration: none;
+    padding: 14px;
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 16px;
+    transition: transform 0.2s, background 0.2s;
+    display: block;
+}
+
+.btn-return:hover {
+    background: #ea580c;
+    transform: scale(1.02);
+}
+
+.btn-home {
+    background: #f3f3f3;
+    color: #444;
+    text-decoration: none;
+    padding: 14px;
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background 0.2s;
+    display: block;
+}
+
+.btn-home:hover {
+    background: #e0e0e0;
+}
