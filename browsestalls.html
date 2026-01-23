@@ -10,33 +10,44 @@
 
     <header class="topbar">
         <div class="container topbar-inner">
-            
             <img src="img/Dashboard button.png" alt="Menu" class="icon-btn" />
-
             <a href="#" class="brand">
                 <img src="img/Logo.png" alt="HawkerHub Logo" class="logo" />
             </a>
-
             <nav class="navlinks">
                 <a href="browse.html" class="navlink active">Browse</a>
                 <a href="history.html" class="navlink">History</a>
                 <a href="cart.html" class="navlink">Cart</a>
             </nav>
-
             <a class="btn btn-signin" href="sign-in.html">Sign in</a>
-
         </div>
     </header>
 
     <section class="search-section">
         <div class="container search-bar-container">
             <input type="text" placeholder="Search by stall name or food..." class="search-input">
+            
             <select class="filter-select">
-                <option>Sort: Highest Rated</option>
+                <option value="all">All Cuisines</option>
+                <option value="chinese">Chinese</option>
+                <option value="malay">Malay</option>
+                <option value="indian">Indian</option>
             </select>
-            <button class="filter-btn">
+
+            <button class="filter-btn" id="filterBtn">
                 <span>▽</span> Filters
             </button>
+
+            <div class="filter-menu" id="filterMenu">
+                <div class="filter-title">Dietary Requirements</div>
+                <label class="filter-option">
+                    <input type="checkbox" id="halalCheck"> Halal Certified
+                </label>
+                <label class="filter-option">
+                    <input type="checkbox" id="vegCheck"> Vegetarian
+                </label>
+            </div>
+
         </div>
     </section>
 
@@ -49,7 +60,7 @@
 
             <div class="stall-grid">
                 
-                <article class="stall-card">
+                <article class="stall-card" data-category="malay" data-halal="true">
                     <img src="img/grilling_action.jpg" alt="Satay King" class="stall-img">
                     <div class="stall-body">
                         <h3>Satay King</h3>
@@ -59,7 +70,7 @@
                     </div>
                 </article>
 
-                <article class="stall-card">
+                <article class="stall-card" data-category="chinese">
                     <img src="img/Ah Seng Chicken Rice.jpg" alt="Ah Seng" class="stall-img">
                     <div class="stall-body">
                         <h3>Ah Seng Chicken Rice</h3>
@@ -69,7 +80,7 @@
                     </div>
                 </article>
 
-                <article class="stall-card">
+                <article class="stall-card" data-category="malay" data-halal="true">
                     <img src="img/Laksa Legend.jpg" alt="Laksa Legend" class="stall-img">
                     <div class="stall-body">
                         <h3>Laksa Legend</h3>
@@ -79,7 +90,7 @@
                     </div>
                 </article>
 
-                <article class="stall-card">
+                <article class="stall-card" data-category="chinese">
                     <img src="img/Wok Master Char Kway Teow.jpg" alt="Wok Master" class="stall-img">
                     <div class="stall-body">
                         <h3>Wok Master Char Kway Teow</h3>
@@ -89,7 +100,7 @@
                     </div>
                 </article>
 
-                <article class="stall-card">
+                <article class="stall-card" data-category="chinese" data-halal="true" data-vegetarian="true">
                     <img src="img/Lao Ban Soya Beancurd.jpg" alt="Lao Ban" class="stall-img">
                     <div class="stall-body">
                         <h3>Lao Ban Soya Beancurd</h3>
@@ -99,7 +110,7 @@
                     </div>
                 </article>
 
-                <article class="stall-card">
+                <article class="stall-card" data-category="malay" data-halal="true">
                     <img src="img/Mee Reebus Master.jpg" alt="Mee Rebus" class="stall-img">
                     <div class="stall-body">
                         <h3>Mee Rebus Master</h3>
@@ -109,7 +120,7 @@
                     </div>
                 </article>
 
-                <article class="stall-card">
+                <article class="stall-card" data-category="indian" data-halal="true" data-vegetarian="true">
                     <img src="img/Spring Leaf Prata.jpg" alt="Spring Leaf" class="stall-img">
                     <div class="stall-body">
                         <h3>Spring Leaf Prata</h3>
@@ -119,7 +130,7 @@
                     </div>
                 </article>
 
-                <article class="stall-card">
+                <article class="stall-card" data-category="malay" data-halal="true">
                     <img src="img/Nasi Lemak Galore.jpg" alt="Nasi Lemak" class="stall-img">
                     <div class="stall-body">
                         <h3>Nasi Lemak Galore</h3>
@@ -136,6 +147,8 @@
     <footer class="footer">
         <p>© 2026 HawkerHub. All rights reserved.</p>
     </footer>
+
+    <script src="browsestalls.js"></script>
 
 </body>
 </html>
