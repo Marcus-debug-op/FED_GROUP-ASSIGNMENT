@@ -171,7 +171,7 @@
     }
 
     .segmented .active {
-      background: var(--orange-dark);
+      background: #F97316;;
       color: #fff;
     }
 
