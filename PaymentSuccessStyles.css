@@ -202,3 +202,9 @@ body{
 @media (max-width: 980px){
   .navlinks{ display: none; }
 }
+
+.queue-number{
+  text-decoration: none;
+  color: inherit;
+  font-weight: 800;
+}
