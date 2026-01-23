@@ -4,7 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Checkout - HawkerHub</title>
-    <link rel="stylesheet" href="StylesCheckout.css" />
+
+    <!-- Use the exact filename you have -->
+    <link rel="stylesheet" href="StylesCheckOut.css" />
   </head>
 
   <body>
@@ -18,9 +20,9 @@
         </div>
 
         <nav class="navlinks">
-          <a href="#" class="navlink">Browse</a>
+          <a href="browsestalls.html" class="navlink">Browse</a>
           <a href="#" class="navlink">History</a>
-          <a href="#" class="navlink">Cart</a>
+          <a href="cart.html" class="navlink">Cart</a>
         </nav>
 
         <a class="btn btn-signin" href="#">Sign in</a>
@@ -30,7 +32,7 @@
     <!-- Full-width orange strip (aligned like Cart page) -->
     <section class="page-banner-wrap">
       <div class="page-banner">
-        <a class="back-link" href="#">← Back to Cart</a>
+        <a class="back-link" href="cart.html">← Back to Cart</a>
         <h1 class="page-title">Checkout</h1>
       </div>
     </section>
@@ -42,7 +44,9 @@
         <!-- Contact Info -->
         <section class="card">
           <div class="card-title">
-            <span class="card-icon">👤</span>
+            <span class="card-icon">
+              <img src="img/user.png" alt="Contact" class="icon-img" />
+            </span>
             <span>Contact Information</span>
           </div>
 
@@ -62,7 +66,9 @@
         <!-- Pickup Details -->
         <section class="card">
           <div class="card-title">
-            <span class="card-icon">🕒</span>
+            <span class="card-icon">
+              <img src="img/clock.png" alt="Pickup" class="icon-img" />
+            </span>
             <span>Pickup Details</span>
           </div>
 
@@ -85,7 +91,9 @@
         <!-- Payment Method -->
         <section class="card">
           <div class="card-title">
-            <span class="card-icon">💳</span>
+            <span class="card-icon">
+              <img src="img/credit-card.png" alt="Payment" class="icon-img" />
+            </span>
             <span>Payment Method</span>
           </div>
 
@@ -93,18 +101,27 @@
             <label class="pay-option">
               <input type="radio" name="pay" checked />
               <span>Credit Card/Debit Card</span>
-              <span class="pay-badges">●● VISA</span>
+
+              <span class="pay-logos">
+                <img src="img/mastercard.webp" alt="Mastercard" class="pay-logo pay-logo-mc" />
+                <img src="img/visa.png" alt="Visa" class="pay-logo pay-logo-visa" />
+              </span>
             </label>
 
             <label class="pay-option">
               <input type="radio" name="pay" />
               <span>PayNow</span>
-              <span class="pay-badges">PAYNOW</span>
+
+              <span class="pay-logos">
+                <img src="img/paynow.webp" alt="PayNow" class="pay-logo pay-logo-paynow" />
+              </span>
             </label>
 
             <label class="pay-option">
               <input type="radio" name="pay" />
               <span>Cash on Pickup</span>
+
+              <span class="pay-logos pay-logos-empty"></span>
             </label>
           </div>
         </section>
