@@ -68,9 +68,25 @@ body {
     color: var(--text);
     font-weight: 700;
     font-size: 20px;
+
+    /* needed so dot sits beside text nicely */
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .navlink:hover { opacity: 0.8; }
+
+/* ✅ Red dot beside Cart */
+.cart-dot{
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: #ff2b2b;
+    display: none;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.6);
+}
 
 .btn-signin {
     text-decoration: none;
@@ -96,7 +112,6 @@ body {
     display: flex;
     align-items: center;
     color: white;
-    /* Updated background image for Ah Seng */
     background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('img/Ah Seng Chicken Rice.jpg');
 }
 

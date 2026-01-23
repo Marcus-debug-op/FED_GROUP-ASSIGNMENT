@@ -76,6 +76,10 @@ body{
   color: var(--text);
   font-weight: bold;
   font-size: 20px;
+  position: relative; /* for dot */
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 .navlink:hover{ opacity: 0.8; }
 
@@ -220,7 +224,7 @@ body{
   cursor: pointer;
 }
 
-/* ===== Cart items (matches your screenshot style) ===== */
+/* ===== Cart items ===== */
 .cart-items-area{
   display: grid;
   gap: 18px;
@@ -328,7 +332,7 @@ body{
   text-align: right;
 }
 
-/* ===== Summary card ===== */
+/* ===== Summary ===== */
 .cart-summary{
   background: #ff5900;
   color: #fff;

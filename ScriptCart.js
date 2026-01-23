@@ -1,10 +1,30 @@
+/* ============================
+   ScriptCart.js
+   - Cart storage + add-to-cart listener
+   - Toast notification everywhere
+   - ✅ Red dot ONLY on AhSengMenu.html
+============================ */
+
 const CART_KEY = "hawkerhub_cart";
 const ECO_KEY = "hawkerhub_eco_packaging";
 const ECO_FEE = 0.20;
 
-// ✅ CHANGE THIS to your real browse stalls file name
 const BROWSE_PAGE = "browsestalls.html";
+const CART_PAGE = "cart.html";
 
+// ✅ Dot should appear ONLY on this page
+const DOT_ALLOWED_PAGES = new Set(["AhSengMenu.html"]);
+
+function currentFileName() {
+  const p = window.location.pathname;
+  return p.substring(p.lastIndexOf("/") + 1) || "";
+}
+
+function isDotAllowedHere() {
+  return DOT_ALLOWED_PAGES.has(currentFileName());
+}
+
+/* ---------- Storage ---------- */
 function readCart() {
   try {
     const raw = localStorage.getItem(CART_KEY);
@@ -19,6 +39,7 @@ function saveCart(cart) {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
 }
 
+/* ---------- Helpers ---------- */
 function formatMoney(n) {
   const num = Number(n) || 0;
   return `$${num.toFixed(2)}`;
@@ -41,6 +62,7 @@ function updateBannerCount(count) {
   if (miniSub) miniSub.textContent = `${count} items`;
 }
 
+/* ---------- Eco packaging state ---------- */
 function readEco() {
   return localStorage.getItem(ECO_KEY) === "true";
 }
@@ -49,6 +71,7 @@ function saveEco(isOn) {
   localStorage.setItem(ECO_KEY, String(!!isOn));
 }
 
+/* ---------- Totals UI (cart page only elements) ---------- */
 function updateSummary(cart) {
   const subtotal = cartSubtotal(cart);
   const ecoOn = readEco();
@@ -66,9 +89,110 @@ function updateSummary(cart) {
   if (ecoAmt) ecoAmt.textContent = formatMoney(ECO_FEE);
 }
 
+/* ---------- Red dot beside Cart tab (ONLY on AhSengMenu.html) ---------- */
+function ensureCartDot() {
+  if (!isDotAllowedHere()) return;
+
+  const navCart =
+    document.querySelector('a.navlink[href="cart.html"]') ||
+    Array.from(document.querySelectorAll("a.navlink")).find(
+      (a) => a.textContent.trim().toLowerCase() === "cart"
+    );
+
+  if (!navCart) return;
+
+  navCart.setAttribute("href", CART_PAGE);
+
+  if (!navCart.querySelector(".cart-dot")) {
+    const dot = document.createElement("span");
+    dot.className = "cart-dot";
+    dot.setAttribute("aria-hidden", "true");
+    navCart.appendChild(dot);
+  }
+}
+
+function updateCartDot() {
+  if (!isDotAllowedHere()) return;
+
+  ensureCartDot();
+
+  const cart = readCart();
+  const count = cartCount(cart);
+
+  const navCart =
+    document.querySelector('a.navlink[href="cart.html"]') ||
+    Array.from(document.querySelectorAll("a.navlink")).find(
+      (a) => a.textContent.trim().toLowerCase() === "cart"
+    );
+  if (!navCart) return;
+
+  const dot = navCart.querySelector(".cart-dot");
+  if (!dot) return;
+
+  dot.style.display = count > 0 ? "inline-block" : "none";
+}
+
+/* ---------- Toast notification ---------- */
+function ensureToastHost() {
+  if (document.getElementById("toastHost")) return;
+
+  const host = document.createElement("div");
+  host.id = "toastHost";
+  host.style.position = "fixed";
+  host.style.left = "50%";
+  host.style.top = "18px";
+  host.style.transform = "translateX(-50%)";
+  host.style.zIndex = "9999";
+  host.style.display = "grid";
+  host.style.gap = "10px";
+  host.style.pointerEvents = "none";
+  document.body.appendChild(host);
+}
+
+function showToast(message) {
+  ensureToastHost();
+
+  const toast = document.createElement("div");
+  toast.className = "toast";
+  toast.textContent = message;
+
+  toast.style.background = "rgba(0,0,0,0.85)";
+  toast.style.color = "#fff";
+  toast.style.padding = "12px 16px";
+  toast.style.borderRadius = "999px";
+  toast.style.fontWeight = "900";
+  toast.style.fontSize = "14px";
+  toast.style.boxShadow = "0 10px 18px rgba(0,0,0,0.18)";
+  toast.style.pointerEvents = "none";
+  toast.style.opacity = "0";
+  toast.style.transform = "translateY(-6px)";
+  toast.style.transition = "opacity 180ms ease, transform 180ms ease";
+
+  const host = document.getElementById("toastHost");
+  host.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.style.opacity = "1";
+    toast.style.transform = "translateY(0)";
+  });
+
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    toast.style.transform = "translateY(-6px)";
+    setTimeout(() => toast.remove(), 220);
+  }, 1200);
+}
+
+/* ---------- Render cart items (cart page only) ---------- */
 function escapeHtml(str) {
   return String(str).replace(/[&<>"']/g, (m) => {
-    const map = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" };
+    const map = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;",
+    };
     return map[m];
   });
 }
@@ -77,7 +201,6 @@ const IMAGE_MAP = {
   "Steamed Chicken Rice": "img/Ah Seng Chicken Rice.jpg",
   "Braised Chicken Rice": "img/red-pork-rice-famous-thai-food-recipe.jpg",
   "Lemon Chicken Rice": "img/spicy-salad-with-fried-chicken.jpg",
-  "Crispy Prata": "img/spicy-salad-with-fried-chicken.jpg"
 };
 
 function getItemImage(item) {
@@ -135,6 +258,7 @@ function renderCart(cart) {
     .join("");
 }
 
+/* ---------- Mutations ---------- */
 function setQty(id, newQty) {
   const cart = readCart();
   const item = cart.find((x) => x.id === id);
@@ -153,6 +277,7 @@ function removeItem(id) {
   return cart;
 }
 
+/* ---------- Navigation ---------- */
 function bindNavigation() {
   const browseBtn = document.querySelector(".cart-browse-btn");
   if (browseBtn) {
@@ -177,6 +302,7 @@ function bindNavigation() {
   }
 }
 
+/* ---------- Eco checkbox ---------- */
 function bindEcoCheckbox() {
   const ecoCheckbox = document.getElementById("ecoPackaging");
   if (!ecoCheckbox) return;
@@ -189,6 +315,7 @@ function bindEcoCheckbox() {
   });
 }
 
+/* ---------- Add-to-cart listener (menu pages) ---------- */
 function bindAddToCartButtons() {
   document.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-add-to-cart]");
@@ -202,7 +329,7 @@ function bindAddToCartButtons() {
       price: Number(btn.dataset.price) || 0,
       qty: Number(btn.dataset.qty) || 1,
       stall: btn.dataset.stall || "",
-      img: btn.dataset.img || ""
+      img: btn.dataset.img || "",
     };
 
     const existing = cart.find((x) => x.id === newItem.id);
@@ -211,6 +338,13 @@ function bindAddToCartButtons() {
 
     saveCart(cart);
 
+    // ✅ toast everywhere
+    showToast(`${newItem.name} added to cart`);
+
+    // ✅ dot only on AhSengMenu.html
+    updateCartDot();
+
+    // If on cart page, refresh UI
     if (document.querySelector(".cart-items-area")) {
       updateBannerCount(cartCount(cart));
       renderCart(cart);
@@ -219,6 +353,7 @@ function bindAddToCartButtons() {
   });
 }
 
+/* ---------- Cart item actions ---------- */
 function bindCartItemActions() {
   document.addEventListener("click", (e) => {
     const card = e.target.closest(".cart-item-card");
@@ -233,6 +368,7 @@ function bindCartItemActions() {
       updateBannerCount(cartCount(updated));
       renderCart(updated);
       updateSummary(updated);
+      updateCartDot();
       return;
     }
 
@@ -242,6 +378,7 @@ function bindCartItemActions() {
       updateBannerCount(cartCount(updated));
       renderCart(updated);
       updateSummary(updated);
+      updateCartDot();
       return;
     }
 
@@ -251,17 +388,23 @@ function bindCartItemActions() {
       updateBannerCount(cartCount(updated));
       renderCart(updated);
       updateSummary(updated);
+      updateCartDot();
       return;
     }
   });
 }
 
+/* ---------- Init ---------- */
 document.addEventListener("DOMContentLoaded", () => {
   bindNavigation();
   bindEcoCheckbox();
   bindAddToCartButtons();
   bindCartItemActions();
 
+  // Dot only on AhSengMenu.html
+  updateCartDot();
+
+  // Cart page UI (only runs if elements exist)
   const cart = readCart();
   updateBannerCount(cartCount(cart));
   renderCart(cart);
