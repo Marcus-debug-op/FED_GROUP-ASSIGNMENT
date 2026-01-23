@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Redirect to your success page
         // UPDATED LINK HERE
-        window.location.href = "beancurdFeedback.html";
+        window.location.href = "beancurdSubmitFeedback.html";
     });
 
     // --- 5. CLOSE BUTTON ---
