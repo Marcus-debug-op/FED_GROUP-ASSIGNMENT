@@ -66,15 +66,27 @@
 
         <div class="panel-footer">
           <div class="divider">More Methods</div>
-          <button class="google-btn" type="button" aria-label="Continue with Google">
-            <div class="google-badge">G</div>
-          </button>
+          <div id="googleBtn"></div>
+
+
+          
         </div>
       </div>
     </div>
   </div>
   <!-- Google Identity Services -->
-<script src="https://accounts.google.com/gsi/client" async defer onload="__hawkerhubInitGIS()"></script>
-<script src="googleAuth.js"></script>
+
+<!-- Your Google sign-in logic -->
+<script src="GoogleAuth.js"></script>
+
+<!-- Google Identity Services -->
+<script
+  src="https://accounts.google.com/gsi/client"
+  async
+  defer
+  onload="__hawkerhubInitGIS()">
+</script>
+
+
 </body>
 </html>

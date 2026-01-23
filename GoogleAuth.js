@@ -1,58 +1,44 @@
 // googleAuth.js
-// Google Identity Services sign-in (JWT credential).
-// NOTE: For real security, verify the returned JWT on a server.
 
-(() => {
-  // ✅ Replace this with your real Google OAuth Client ID (Web client)
-  const GOOGLE_CLIENT_ID = "PASTE_YOUR_CLIENT_ID_HERE.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = "428815132009-a3m1idhb8795kf55ntn6tjt01ira35s7.apps.googleusercontent.com";
 
-  // Where to go after successful Google sign-in:
-  // - On Create Account page, you might want to go to Log In or main/home
-  // - On Log In page, you might want to go to main/home
-  const DEFAULT_SUCCESS_REDIRECT = "Log In.html";
+function handleGoogleLogin(response) {
+  // Google returns a JWT here
+  const jwt = response.credential;
+  console.log("Google login success", jwt);
 
-  function onGoogleCredentialResponse(response) {
-    // response.credential is a JWT (ID token)
-    const jwt = response.credential;
-    if (!jwt) return;
+  // store token (demo)
+  localStorage.setItem("hawkerhub_google_jwt", jwt);
 
-    // Store token (demo). In production, send jwt to backend to verify.
-    localStorage.setItem("hawkerhub_google_jwt", jwt);
+  // redirect after login
+  window.location.href = "Log In.html";
+}
 
-    // Optional: decode payload for display/debug (NOT verification)
-    try {
-      const payload = JSON.parse(atob(jwt.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
-      localStorage.setItem("hawkerhub_google_profile", JSON.stringify({
-        name: payload.name,
-        email: payload.email,
-        picture: payload.picture
-      }));
-    } catch (_) {}
-
-    // Redirect after login
-    window.location.href = DEFAULT_SUCCESS_REDIRECT;
+// This function MUST be global (window.)
+window.__hawkerhubInitGIS = function () {
+  if (!window.google || !google.accounts || !google.accounts.id) {
+    console.error("Google Identity Services not loaded");
+    return;
   }
 
-  function initGIS() {
-    if (!window.google || !google.accounts || !google.accounts.id) return;
+  // Initialize Google Sign-In
+  google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: handleGoogleLogin,
+  });
 
-    google.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback: onGoogleCredentialResponse,
-      // UX mode popup is common for button sign-in:
-      ux_mode: "popup"
-    });
-
-    // Hook your existing custom button
-    const customBtn = document.querySelector(".google-btn"); // exists on both pages :contentReference[oaicite:5]{index=5}
-    if (customBtn) {
-      customBtn.addEventListener("click", () => {
-        // Show One Tap prompt (or browser credential manager if available)
-        google.accounts.id.prompt();
-      });
-    }
+  // Render the official Google button
+  const container = document.getElementById("googleBtn");
+  if (!container) {
+    console.error("googleBtn container not found");
+    return;
   }
 
-  // Wait until GIS script loads
-  window.__hawkerhubInitGIS = initGIS;
-})();
+  google.accounts.id.renderButton(container, {
+    theme: "outline",
+    size: "large",
+    text: "continue_with",
+    shape: "pill",
+    width: 260,
+  });
+};
