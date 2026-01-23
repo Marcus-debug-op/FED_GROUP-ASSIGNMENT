@@ -1,0 +1,276 @@
+/* General Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+:root {
+    /* Brand Colors */
+    --brand-orange: #f58220;
+    --btn-red: #f25520;
+    
+    /* Variables from your styles.css */
+    --bg: #FFF7DC;
+    --text: #1f1f1f;
+    --faded-text: #6b6b6b;
+    --accent: #F97316;
+}
+
+body {
+    background-color: var(--brand-orange);
+}
+
+/* =========================================
+   NAV BAR (Integrated from styles.css)
+========================================= */
+.topbar{
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg); /* Cream background */
+  border-bottom: 1px solid rgba(0,0,0,.06);
+  padding: 0 20px;
+}
+
+.topbar-inner{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.icon-btn{
+  height: 40px;
+  width: auto;
+  background: transparent;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 10px;
+  color: var(--brand-orange); /* Colored orange to see it against white */
+}
+.icon-btn:hover{
+  background: rgba(0,0,0,.06);
+}
+
+.brand{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo{
+  height: 130px; /* Adjusted size */
+  width: auto;
+}
+
+.navlinks{
+  margin-left: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 36px;
+}
+
+.navlink{
+  text-decoration: none;
+  color: var(--text);
+  font-weight: bold;
+  font-size: 18px;
+}
+.navlink:hover{
+  opacity: 0.8;
+}
+
+/* Notification & User Pill */
+.notification-dot {
+    position: absolute;
+    top: -5px; right: -8px;
+    width: 8px; height: 8px;
+    background: red; border-radius: 50%;
+}
+
+.user-pill {
+    background: var(--brand-orange);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.orange-dot {
+    position: absolute;
+    top: 0; right: 0;
+    width: 10px; height: 10px;
+    background: red; border-radius: 50%;
+    border: 2px solid white;
+}
+
+/* =========================================
+   PROFILE HEADER & LAYOUT
+========================================= */
+
+.profile-header {
+    background-color: var(--brand-orange);
+    color: white;
+    padding: 40px 10% 90px;
+}
+
+.header-content h1 { margin-bottom: 10px; font-size: 2.2rem; }
+.header-content p { font-size: 1.1rem; opacity: 0.9; }
+
+.header-tabs {
+    display: flex;
+    justify-content: flex-end;
+    gap: 40px;
+    margin-top: 20px;
+}
+
+.tab { font-size: 1.1rem; padding-bottom: 5px; cursor: pointer; opacity: 0.8; }
+.tab.active { opacity: 1; font-weight: bold; border-bottom: 3px solid white; }
+
+/* Main White Curve */
+.main-body {
+    background: #fff;
+    border-top-left-radius: 80px;
+    border-top-right-radius: 80px;
+    margin-top: -50px;
+    padding: 60px 10%;
+    min-height: 100vh;
+}
+
+.content-wrapper { display: flex; gap: 50px; }
+
+/* =========================================
+   SIDEBAR
+========================================= */
+.left-sidebar {
+    width: 300px;
+    margin-top: -100px;
+    flex-shrink: 0;
+}
+
+.profile-card {
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.avatar-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.avatar-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #fff; 
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.info-item { margin-bottom: 25px; }
+.info-item label { display: block; color: #666; font-size: 0.9rem; margin-bottom: 5px; }
+.info-item p { font-weight: 600; font-size: 1.05rem; display: flex; align-items: center; gap: 10px; }
+
+.logout-btn {
+    width: 100%;
+    background: var(--btn-red);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 10px;
+}
+
+/* =========================================
+   DISCOUNT SECTION
+========================================= */
+.discount-section { flex-grow: 1; }
+
+.section-title {
+    font-size: 1.5rem;
+    border-bottom: 2px solid #333;
+    padding-bottom: 5px;
+    margin-bottom: 30px;
+    display: inline-block;
+}
+
+.rotated-icon { transform: rotate(135deg); color: var(--btn-red); margin-right: 10px; }
+
+.voucher-card {
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+}
+
+.tag-badge {
+    background: #fff3e0;
+    color: #e65100;
+    border: 1px solid #ffcc80;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.vc-details h3 { font-size: 1.1rem; margin-bottom: 5px; }
+.vc-details .offer { color: red; font-weight: bold; font-size: 0.95rem; }
+
+.vc-actions { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 8px;}
+
+.status-active {
+    background: #e8f5e9;
+    color: #2e7d32;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    border: 1px solid #c8e6c9;
+}
+
+.redeem-btn {
+    background: var(--btn-red);
+    color: white;
+    border: none;
+    padding: 8px 25px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.validity { font-size: 0.8rem; color: #555; }
+.validity strong { text-decoration: underline; }
+
+/* Mobile Responsive */
+@media (max-width: 850px) {
+    .content-wrapper { flex-direction: column; }
+    .left-sidebar { width: 100%; margin-top: -80px; }
+    .header-tabs { justify-content: center; }
+    .navlinks { display: none; } /* Hide menu links on mobile */
+}
