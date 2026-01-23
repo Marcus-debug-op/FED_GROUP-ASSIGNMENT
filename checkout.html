@@ -4,13 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Checkout - HawkerHub</title>
-
-    <!-- Use the exact filename you have -->
     <link rel="stylesheet" href="StylesCheckOut.css" />
   </head>
 
   <body>
-    <!-- Navbar (same structure as Cart/Home Guest) -->
+    <!-- Navbar -->
     <header class="topbar">
       <div class="container topbar-inner">
         <img src="img/Dashboard button.png" alt="Menu" class="icon-btn" />
@@ -29,7 +27,7 @@
       </div>
     </header>
 
-    <!-- Full-width orange strip (aligned like Cart page) -->
+    <!-- Orange banner -->
     <section class="page-banner-wrap">
       <div class="page-banner">
         <a class="back-link" href="cart.html">← Back to Cart</a>
@@ -37,17 +35,18 @@
       </div>
     </section>
 
-    <!-- Main layout (1100px centered like Cart) -->
+    <!-- Main -->
     <main class="checkout-layout">
-      <!-- LEFT COLUMN -->
+      <!-- LEFT -->
       <section class="checkout-left">
-        <!-- Contact Info -->
+
+        <!-- Contact -->
         <section class="card">
           <div class="card-title">
             <span class="card-icon">
-              <img src="img/user.png" alt="Contact" class="icon-img" />
+              <img src="img/user.png" class="icon-img" />
             </span>
-            <span>Contact Information</span>
+            Contact Information
           </div>
 
           <div class="form-grid">
@@ -63,13 +62,13 @@
           </div>
         </section>
 
-        <!-- Pickup Details -->
+        <!-- Pickup -->
         <section class="card">
           <div class="card-title">
             <span class="card-icon">
-              <img src="img/clock.png" alt="Pickup" class="icon-img" />
+              <img src="img/clock.png" class="icon-img" />
             </span>
-            <span>Pickup Details</span>
+            Pickup Details
           </div>
 
           <div class="form-grid">
@@ -77,82 +76,54 @@
               <span class="label">Collection Method</span>
               <select>
                 <option>Pickup</option>
-                <option>Delivery (if available)</option>
               </select>
             </label>
 
             <label class="field">
               <span class="label">Special instructions (Optional)</span>
-              <input type="text" placeholder="E.g., less spicy, no onions, etc" />
+              <input type="text" placeholder="E.g. less spicy" />
             </label>
           </div>
         </section>
 
-        <!-- Payment Method -->
+        <!-- Payment -->
         <section class="card">
           <div class="card-title">
             <span class="card-icon">
-              <img src="img/credit-card.png" alt="Payment" class="icon-img" />
+              <img src="img/credit-card.png" class="icon-img" />
             </span>
-            <span>Payment Method</span>
+            Payment Method
           </div>
 
           <div class="payment-list">
-            <label class="pay-option">
+            <label class="pay-option is-selected">
               <input type="radio" name="pay" checked />
-              <span>Credit Card/Debit Card</span>
-
+              Credit / Debit Card
               <span class="pay-logos">
-                <img src="img/mastercard.webp" alt="Mastercard" class="pay-logo pay-logo-mc" />
-                <img src="img/visa.png" alt="Visa" class="pay-logo pay-logo-visa" />
+                <img src="img/mastercard.webp" class="pay-logo pay-logo-mc" />
+                <img src="img/visa.png" class="pay-logo pay-logo-visa" />
               </span>
             </label>
 
             <label class="pay-option">
               <input type="radio" name="pay" />
-              <span>PayNow</span>
-
+              PayNow
               <span class="pay-logos">
-                <img src="img/paynow.webp" alt="PayNow" class="pay-logo pay-logo-paynow" />
+                <img src="img/paynow.webp" class="pay-logo pay-logo-paynow" />
               </span>
             </label>
 
             <label class="pay-option">
               <input type="radio" name="pay" />
-              <span>Cash on Pickup</span>
-
-              <span class="pay-logos pay-logos-empty"></span>
+              Cash on Pickup
             </label>
           </div>
         </section>
       </section>
 
-      <!-- RIGHT COLUMN: Summary -->
+      <!-- RIGHT -->
       <aside class="summary">
         <h2>Order Summary</h2>
-
-        <div class="summary-items">
-          <div class="item">
-            <div class="name">Steamed Chicken Rice x2</div>
-            <div class="price">$3.50</div>
-          </div>
-          <div class="item">
-            <div class="name">Ah Seng Chicken Rice</div>
-            <div class="price">$5.50</div>
-          </div>
-          <div class="item">
-            <div class="name">Crispy Pata x1</div>
-            <div class="price">$2.00</div>
-          </div>
-          <div class="note-small">Spring Leaf Pasta</div>
-        </div>
-
-        <div class="discount">
-          <input type="text" placeholder="Enter Discount..." />
-          <button type="button">Apply</button>
-        </div>
-
-        <div class="divider"></div>
 
         <div class="row">
           <span>Subtotal</span>
@@ -166,9 +137,17 @@
           <span>$9.00</span>
         </div>
 
-        <button class="cta" type="button">Proceed to Checkout</button>
-        <div class="footnote">Pickup time will be confirmed after checkout</div>
+        <button class="cta" type="button">
+          Proceed to Checkout
+        </button>
+
+        <div class="footnote">
+          Pickup time will be confirmed after checkout
+        </div>
       </aside>
     </main>
+
+    <!-- ✅ Checkout logic -->
+    <script src="checkout.js"></script>
   </body>
 </html>

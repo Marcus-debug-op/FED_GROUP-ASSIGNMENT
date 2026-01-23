@@ -345,3 +345,21 @@ input::placeholder{ color: rgba(0,0,0,0.35); }
   }
   .navlinks{ display: none; }
 }
+
+/* =====================================
+   Highlight selected payment option
+===================================== */
+
+.pay-option{
+  cursor: pointer;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pay-option.is-selected{
+  border: 2px solid #ff2b2b;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(255,43,43,0.15);
+}
+.cta{
+  cursor: pointer;
+}
