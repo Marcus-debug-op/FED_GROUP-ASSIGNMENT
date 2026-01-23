@@ -1,116 +1,103 @@
-:root {
-    --bg: #FFF7DC;
-    --text: #1f1f1f;
-    --accent-orange: #F97316;
-}
-
 body {
     margin: 0;
     min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-family: system-ui, -apple-system, sans-serif;
     background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
                 url('img/hawker_background1.avif');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .page-wrapper {
     width: 100%;
-    max-width: 480px; /* Smaller width for a neat confirmation card */
     padding: 20px;
+    display: flex;
+    justify-content: center;
 }
 
+/* The White Card */
 .confirmation-card {
     background: white;
-    border-radius: 24px;
-    padding: 40px 30px;
+    width: 100%;
+    max-width: 500px;
+    padding: 40px;
+    border-radius: 20px;
     text-align: center;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    animation: popIn 0.5s ease;
 }
 
-@keyframes popIn {
-    0% { transform: scale(0.8); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-}
-
+/* Green Checkmark Circle */
 .icon-container {
     margin-bottom: 20px;
 }
 
 .checkmark-circle {
-    width: 90px;
-    height: 90px;
-    background: #F97316; /* Theme Orange */
+    width: 80px;
+    height: 80px;
+    background: #4CAF50; /* Green */
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto;
-    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
 }
 
 .checkmark {
-    font-size: 50px;
+    font-size: 40px;
     color: white;
-    /* Simple checkmark character styling */
-    line-height: 1;
-    margin-bottom: 5px; 
+    font-weight: bold;
 }
 
+/* Text */
 h2 {
-    color: var(--text);
+    color: #333;
     margin: 0 0 10px 0;
     font-size: 28px;
-    font-weight: 900;
 }
 
 .success-message {
     color: #666;
-    font-size: 16px;
-    line-height: 1.5;
     margin-bottom: 30px;
+    line-height: 1.5;
 }
 
+/* Buttons */
 .action-buttons {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 15px;
+}
+
+.btn-return, .btn-home {
+    display: block;
+    text-decoration: none;
+    padding: 12px;
+    border-radius: 25px;
+    font-weight: bold;
+    transition: transform 0.2s;
 }
 
 .btn-return {
-    background: #F97316;
+    background: #F97316; /* Orange */
     color: white;
-    text-decoration: none;
-    padding: 14px;
-    border-radius: 30px;
-    font-weight: bold;
-    font-size: 16px;
-    transition: transform 0.2s, background 0.2s;
-    display: block;
-}
-
-.btn-return:hover {
-    background: #ea580c;
-    transform: scale(1.02);
 }
 
 .btn-home {
-    background: #f3f3f3;
-    color: #444;
-    text-decoration: none;
-    padding: 14px;
-    border-radius: 30px;
-    font-weight: bold;
-    font-size: 16px;
-    transition: background 0.2s;
-    display: block;
+    background: #f3f4f6;
+    color: #555;
 }
 
-.btn-home:hover {
-    background: #e0e0e0;
+.btn-return:hover, .btn-home:hover {
+    transform: scale(1.03);
+}
+
+/* Animation for the card appearing */
+@keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
 }

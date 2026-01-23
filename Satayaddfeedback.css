@@ -81,7 +81,7 @@ h2 {
     margin: 15px 0 25px 0;
 }
 
-/* Star Rating Styling */
+/* Star Rating Styling - UPDATED */
 .rating-section {
     margin-bottom: 30px;
 }
@@ -98,13 +98,19 @@ h2 {
 
 .star {
     font-size: 40px;
-    color: #e0e0e0; /* Gray for unselected */
+    color: #e0e0e0; /* Gray default */
     cursor: pointer;
-    transition: color 0.2s;
+    transition: transform 0.2s, color 0.2s; /* Add animation */
 }
 
+/* This class is added by JS to light up the stars */
+.star.active {
+    color: #FFC107; 
+}
+
+/* Optional: Slight pop when you hover over a specific star */
 .star:hover {
-    color: #FFC107; /* Gold on hover */
+    transform: scale(1.1);
 }
 
 /* Comments and Media Row */
@@ -176,8 +182,8 @@ textarea:focus {
     transform: scale(1.05);
 }
 
+/* Mobile Responsive */
 @media (max-width: 440px) {
-    /* Adjust page wrapper for mobile focus */
     .page-wrapper {
         max-width: 440px;
         min-height: 956px;
@@ -185,19 +191,16 @@ textarea:focus {
         margin: 0 auto;
     }
 
-    /* Make the form container fill the screen width */
     .form-container {
         width: 100%;
         border-radius: 12px;
         margin-bottom: 20px;
     }
 
-    /* Scale down the header image */
     .form-header-img {
         height: 180px;
     }
 
-    /* Adjust padding for mobile layout */
     .form-body {
         padding: 20px;
     }
@@ -206,30 +209,28 @@ textarea:focus {
         font-size: 20px;
     }
 
-    /* Stack Rating Section */
     .rating-section {
         margin-bottom: 20px;
     }
 
     .star-group {
         gap: 8px;
-        justify-content: space-between; /* Spreads stars across the width */
+        justify-content: space-between; 
     }
 
     .star {
-        font-size: 36px; /* Slightly smaller for mobile */
+        font-size: 36px;
     }
 
-    /* Adjust Comments & Media Button */
     .comment-label-row {
-        flex-direction: column; /* Stacks label and button */
+        flex-direction: column; 
         align-items: flex-start;
         gap: 10px;
         margin-bottom: 15px;
     }
 
     .btn-import-media {
-        width: 100%; /* Makes button easier to tap on mobile */
+        width: 100%; 
         justify-content: center;
         padding: 10px;
     }
@@ -239,9 +240,8 @@ textarea:focus {
         font-size: 14px;
     }
 
-    /* Final Submit Button */
     .btn-submit {
-        width: 100%; /* Full width for easier mobile interaction */
+        width: 100%;
         padding: 14px;
         border-radius: 30px;
     }
