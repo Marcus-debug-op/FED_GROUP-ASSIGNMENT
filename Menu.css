@@ -932,7 +932,20 @@ textarea:focus {
     }
 }
 
+.btn-white {
 
+    background-color: var(--accent) !important;
+    color: white !important;
+    
+
+    border: none !important;
+    
+
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 /* =========================================
    Mobile Responsive (440w x 956h)
 ========================================= */
@@ -1039,3 +1052,5 @@ textarea:focus {
         border-radius: 30px;
     }
 }
+
+
