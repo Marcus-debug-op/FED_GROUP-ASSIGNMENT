@@ -1,0 +1,204 @@
+/* =========================================
+   StylesSuccess.css
+   Matches Cart alignment + style
+========================================= */
+
+:root{
+  --bg: #FFF7DC;
+  --text: #1f1f1f;
+  --accent: #F97316;
+  --accent-red: #F43C13;
+  --radius: 18px;
+}
+
+*{ box-sizing: border-box; }
+
+body{
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.container{
+  width: 1100px;
+  margin: 0 auto;
+}
+
+/* ===== Navbar ===== */
+.topbar{
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.topbar-inner{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+}
+
+.icon-btn{
+  height: 40px;
+  width: auto;
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+.icon-btn:hover{ background: rgba(0,0,0,0.06); }
+
+.brand{ display: flex; align-items: center; }
+.logo{ height: 130px; width: auto; }
+
+.navlinks{
+  margin-left: auto;
+  display: flex;
+  gap: 36px;
+}
+.navlink{
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 20px;
+}
+.navlink:hover{ opacity: 0.8; }
+
+.btn{
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 14px 24px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-signin{
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 20px;
+  margin-left: 32px;
+}
+
+/* ===== Orange strip under navbar ===== */
+.banner-wrap{
+  width: 100%;
+  background: var(--accent);
+  padding: 16px 0;
+}
+
+.banner{
+  width: 1100px;
+  margin: 0 auto;
+  padding: 0 10px;
+}
+
+.banner-left{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.continue{
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+/* Mini cart block below continue (left-aligned) */
+.mini{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.mini-icon{
+  width: 58px;
+  height: 58px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.85);
+  display: grid;
+  place-items: center;
+}
+
+.mini-icon img{
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+
+  /* Make ONLY this banner cart icon orange */
+  filter: invert(54%) sepia(83%) saturate(1486%) hue-rotate(356deg) brightness(101%) contrast(102%);
+}
+
+.mini-title{
+  color: #fff;
+  font-weight: 900;
+  font-size: 16px;
+  line-height: 1.1;
+}
+
+.mini-sub{
+  color: #fff;
+  opacity: 0.95;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+/* ===== Success content ===== */
+.success-wrap{
+  width: 1100px;
+  margin: 0 auto;
+  padding: 70px 0 90px;
+  display: grid;
+  place-items: center;
+}
+
+.success{
+  text-align: center;
+}
+
+.success-icon{
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+}
+
+.success-text .line{
+  font-size: 20px;
+  margin: 6px 0;
+}
+
+.success-text .bold{
+  font-weight: 900;
+}
+
+.underline{
+  text-decoration: underline;
+  font-weight: 900;
+}
+
+.time{
+  color: #ff0000;
+  font-weight: 900;
+  text-decoration: underline;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1160px){
+  .container, .banner, .success-wrap{
+    width: 100%;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+@media (max-width: 980px){
+  .navlinks{ display: none; }
+}
