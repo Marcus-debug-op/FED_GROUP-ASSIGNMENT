@@ -18,11 +18,10 @@ body {
     color: var(--text);
 }
 
-/* --- DESKTOP STYLES (Exact Match to Checkout) --- */
+/* --- DESKTOP STYLES --- */
 .container {
     width: 1100px;
     margin: 0 auto;
-    /* No padding on desktop */
 }
 
 .topbar {
@@ -38,10 +37,8 @@ body {
     align-items: center;
     gap: 14px;
     padding: 12px 0;
-    /* Removed flex-wrap here so desktop stays in one line */
 }
 
-/* Image Button Styles */
 .icon-btn {
     height: 40px;
     width: auto;
@@ -60,7 +57,6 @@ body {
     gap: 10px;
 }
 
-/* Logo is BIG on Desktop */
 .logo {
     height: 130px;
     width: auto;
@@ -139,7 +135,7 @@ body {
 
 /* Stall Grid Styles */
 .stall-section {
-    padding: 40px 0;
+    padding: 50px 0; /* Increased padding slightly */
     background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
                 url('img/hawker_background1.avif');
     background-size: cover;
@@ -148,7 +144,7 @@ body {
 }
 
 .section-header {
-    margin-bottom: 30px;
+    margin-bottom: 35px;
     color: white;
 }
 
@@ -162,10 +158,12 @@ body {
     font-weight: bold;
 }
 
+/* UPDATED GRID SPACING */
 .stall-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    column-gap: 24px;  /* Wider horizontal gap */
+    row-gap: 32px;     /* Wider vertical gap for cleaner rows */
 }
 
 .stall-card {
@@ -228,6 +226,7 @@ body {
     font-size: 13px;
     display: block; 
     width: 100%;
+    margin-top: auto; /* Pushes button to bottom of card */
 }
 
 .footer {
@@ -238,45 +237,40 @@ body {
     color: var(--faded);
 }
 
-/* --- MOBILE ONLY STYLES (Applies to screens smaller than 800px) --- */
+/* --- MOBILE STYLES --- */
 @media (max-width: 800px) {
-    /* 1. Shrink container and add padding */
     .container {
         width: 100%;
         padding-left: 20px;
         padding-right: 20px;
     }
 
-    /* 2. Allow navbar to wrap items to next line */
     .topbar-inner {
         flex-wrap: wrap; 
         justify-content: space-between;
     }
 
-    /* 3. Shrink logo for mobile */
     .logo {
         height: 60px;
     }
 
-    /* 4. Show links on mobile, but centered on a new row */
     .navlinks {
         width: 100%;
         justify-content: center;
         gap: 20px;
         margin: 10px 0;
-        order: 3; /* Forces it to the bottom of the flex container */
+        order: 3;
     }
 
-    /* 5. Adjust sign in button */
     .btn-signin {
         margin-left: 0;
         font-size: 16px;
         padding: 8px 16px;
     }
 
-    /* 6. Grid Adjustments */
     .stall-grid { 
         grid-template-columns: 1fr; 
+        row-gap: 20px;
     }
     
     .search-bar-container { 
