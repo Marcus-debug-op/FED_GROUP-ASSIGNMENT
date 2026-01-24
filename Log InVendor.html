@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HawkerHub – Log In</title>
+      <link rel="stylesheet" href="LogInStyle.css">
+
+<script src="LogInVendor.js" defer></script>
+</head>
+
+<body>
+   <div class="app">
+    <button class="back-btn" type="button" onclick="history.back()">← Go Back</button>
+
+    <div class="logo">
+      <!-- same logo as before -->
+      <img src="img/logo.png" alt="HawkerHub Logo" />
+    </div>
+
+    <div class="panel-wrap">
+      <div class="panel">
+        <div class="panel-top">
+          <div class="mini-back">← Back to Selection</div>
+        </div>
+
+        <div class="panel-body">
+          <div class="icon">🧾</div>
+          <div class="title">Log In</div>
+          <div class="subtitle">Vendor Log In</div>
+
+          <div class="segmented">
+            <button class="inactive" type="button">Sign Up</button>
+            <button class="active" type="button">Sign In</button>
+          </div>
+
+          <!-- Just email + password -->
+          <label for="email">Email Address</label>
+          <input id="email" type="email" />
+
+          <label for="password">Password</label>
+          <input id="password" type="password" />
+
+          <button class="submit" type="button">Sign In</button>
+        </div>
+
+        <div class="panel-footer">
+          <div class="divider">More Methods</div>
+          <button class="google-btn" type="button" aria-label="Continue with Google">
+            <div class="google-badge">G</div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Google Identity Services -->
+<script
+  src="https://accounts.google.com/gsi/client"
+  async
+  defer
+  onload="__hawkerhubInitGIS()">
+</script>
+
+</body>
+</html>

@@ -1,44 +1,65 @@
-// googleAuth.js
+// GoogleAuth.js
+(() => {
+  const GOOGLE_CLIENT_ID = "428815132009-a3m1idhb8795kf55ntn6tjt01ira35s7.apps.googleusercontent.com";
 
-const GOOGLE_CLIENT_ID = "428815132009-a3m1idhb8795kf55ntn6tjt01ira35s7.apps.googleusercontent.com";
+  const SUCCESS_REDIRECT = "Home Guest.html";
 
-function handleGoogleLogin(response) {
-  // Google returns a JWT here
-  const jwt = response.credential;
-  console.log("Google login success", jwt);
+  function onGoogleCredentialResponse(response) {
+    const jwt = response?.credential;
+    if (!jwt) return;
 
-  // store token (demo)
-  localStorage.setItem("hawkerhub_google_jwt", jwt);
+    // Store token + basic profile (demo only)
+    localStorage.setItem("hawkerhub_google_jwt", jwt);
 
-  // redirect after login
-  window.location.href = "Log In.html";
-}
+    try {
+      const payload = JSON.parse(
+        atob(jwt.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))
+      );
+      localStorage.setItem("hawkerhub_google_profile", JSON.stringify({
+        name: payload.name,
+        email: payload.email,
+        picture: payload.picture
+      }));
 
-// This function MUST be global (window.)
-window.__hawkerhubInitGIS = function () {
-  if (!window.google || !google.accounts || !google.accounts.id) {
-    console.error("Google Identity Services not loaded");
-    return;
+      // Optional: store as current user session
+      localStorage.setItem("hawkerHubCurrentUser", JSON.stringify({
+        fullname: payload.name,
+        email: payload.email,
+        role: "google"
+      }));
+    } catch (_) {}
+
+    window.location.href = SUCCESS_REDIRECT;
   }
 
-  // Initialize Google Sign-In
-  google.accounts.id.initialize({
-    client_id: GOOGLE_CLIENT_ID,
-    callback: handleGoogleLogin,
-  });
+  function initGIS() {
+    if (!window.google?.accounts?.id) return;
 
-  // Render the official Google button
-  const container = document.getElementById("googleBtn");
-  if (!container) {
-    console.error("googleBtn container not found");
-    return;
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: onGoogleCredentialResponse,
+      ux_mode: "popup"
+    });
+
+    // 1) If page has <div id="googleBtn"></div>, render official button
+    const googleBtnDiv = document.getElementById("googleBtn");
+    if (googleBtnDiv) {
+      google.accounts.id.renderButton(googleBtnDiv, {
+        theme: "outline",
+        size: "large",
+        shape: "pill",
+        text: "continue_with"
+      });
+    }
+
+    // 2) If page has your custom .google-btn, hook it to prompt
+    const customBtn = document.querySelector(".google-btn");
+    if (customBtn) {
+      customBtn.addEventListener("click", () => {
+        google.accounts.id.prompt();
+      });
+    }
   }
 
-  google.accounts.id.renderButton(container, {
-    theme: "outline",
-    size: "large",
-    text: "continue_with",
-    shape: "pill",
-    width: 260,
-  });
-};
+  window.__hawkerhubInitGIS = initGIS;
+})();
