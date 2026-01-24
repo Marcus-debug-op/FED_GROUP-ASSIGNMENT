@@ -1,5 +1,5 @@
 // ===============================
-// History page logic (render + clear)
+// History page logic (render + clear + open details page)
 // ===============================
 
 const HISTORY_KEY = "hawkerhub_order_history";
@@ -23,11 +23,7 @@ function formatMoney(n) {
 function formatDate(isoString) {
   const d = new Date(isoString);
   if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleDateString(undefined, {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
+  return d.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
 }
 
 function escapeHtml(str) {
@@ -94,12 +90,8 @@ function renderHistory() {
             </div>
 
             <div style="font-weight:800;">${stall}</div>
-            <div style="opacity:0.75; font-size:12px; margin-top:4px;">
-              ${date}
-            </div>
-            <div style="margin-top:8px; font-weight:800;">
-              Total: ${total}
-            </div>
+            <div style="opacity:0.75; font-size:12px; margin-top:4px;">${date}</div>
+            <div style="margin-top:8px; font-weight:800;">Total: ${total}</div>
           </div>
 
           <button
@@ -137,7 +129,7 @@ function bindClearHistory() {
   });
 }
 
-// ---------- View details ----------
+// ---------- View details (open another page) ----------
 function bindViewDetails() {
   const listEl = document.getElementById("historyList");
   if (!listEl) return;
@@ -147,16 +139,7 @@ function bindViewDetails() {
     if (!btn) return;
 
     const orderId = btn.dataset.view;
-    const orders = readHistory();
-    const found = orders.find((o) => o.id === orderId);
-    if (!found) return;
-
-    alert(
-      `Order #${found.orderNo}\n` +
-        `Total: ${formatMoney(found.total)}\n\n` +
-        `Items:\n` +
-        found.items.map((i) => `- ${i.name} x${i.qty}`).join("\n")
-    );
+    window.location.href = `historydetail.html?id=${encodeURIComponent(orderId)}`;
   });
 }
 
