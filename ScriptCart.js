@@ -13,7 +13,7 @@ const BROWSE_PAGE = "browsestalls.html";
 const CART_PAGE = "cart.html";
 
 // ✅ Dot should appear ONLY on this page
-const DOT_ALLOWED_PAGES = new Set(["AhSengMenu.html","Sataymenu.html","beancurdmenu.html","LaksaMenu.html","WokMasterMenu.html","MeeRebusMenu.html","SpringLeafMenu.html","NasiLemakMenu"]);
+const DOT_ALLOWED_PAGES = new Set(["AhSengMenu.html","Sataymenu.html","beancurdmenu.html","LaksaMenu.html","WokMasterMenu.html","MeeRebusMenu.html","SpringLeafMenu.html","NasiLemakMenu.html"]);
 
 function currentFileName() {
   const p = window.location.pathname;
