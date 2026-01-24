@@ -43,10 +43,30 @@
 
     <main class="checkout-layout" style="display:block;">
       <section class="card" style="max-width: 900px; margin: 20px auto;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h2 style="margin:0;">Order History</h2>
+
+        <button
+            id="clearHistoryBtn"
+            style="
+            background:#ffe6e6;
+            color:#c40000;
+            border:1px solid #ffb3b3;
+            padding:8px 12px;
+            border-radius:10px;
+            font-weight:800;
+            cursor:pointer;
+            "
+            type="button"
+        >
+            Clear History
+        </button>
+        </div>
+
         <div id="historyList" style="display:grid; gap:14px;"></div>
 
         <div id="historyEmpty" style="display:none; padding:18px; text-align:center;">
-          No orders yet.
+        No orders yet.
         </div>
       </section>
     </main>
