@@ -45,11 +45,13 @@
     const googleBtnDiv = document.getElementById("googleBtn");
     if (googleBtnDiv) {
       google.accounts.id.renderButton(googleBtnDiv, {
-        theme: "outline",
-        size: "large",
-        shape: "pill",
-        text: "continue_with"
-      });
+  theme: "outline",
+  size: "large",
+  shape: "pill",
+  text: "continue_with",
+  width: 320
+});
+
     }
 
     // 2) If page has your custom .google-btn, hook it to prompt

@@ -1,8 +1,10 @@
-// SignInVendor.js
+// SignInPatron.js
+// Patron login using localStorage -> redirects to Home Guest.html
+
 document.addEventListener("DOMContentLoaded", () => {
   const emailEl = document.getElementById("email");
   const passEl = document.getElementById("password");
-  const signInBtn = document.querySelector(".submit"); // vendor login uses .submit :contentReference[oaicite:9]{index=9}
+  const signInBtn = document.querySelector(".submit");
 
   if (!emailEl || !passEl || !signInBtn) return;
 
@@ -16,23 +18,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const users = JSON.parse(localStorage.getItem("hawkerHubUsers")) || [];
-    const matched = users.find(u =>
-      (u.email || "").toLowerCase() === email &&
-      u.password === password &&
-      u.role === "vendor"
+
+    // Patron-only match
+    const matched = users.find(
+      (u) =>
+        (u.email || "").toLowerCase() === email &&
+        u.password === password &&
+        (u.role === "patron" || u.role === "customer")
     );
 
     if (!matched) {
-      alert("Invalid vendor credentials.");
+      alert("Invalid patron credentials.");
       return;
     }
 
-    // optional: store current session user
-    localStorage.setItem("hawkerHubCurrentUser", JSON.stringify({
-      fullname: matched.fullname,
-      email: matched.email,
-      role: matched.role
-    }));
+    // Save current session user
+    localStorage.setItem(
+      "hawkerHubCurrentUser",
+      JSON.stringify({
+        fullname: matched.fullname,
+        email: matched.email,
+        role: matched.role,
+      })
+    );
 
     window.location.href = "Home Guest.html";
   });

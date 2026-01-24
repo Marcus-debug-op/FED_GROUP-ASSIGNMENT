@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HawkerHub – Log In</title>
-      <link rel="stylesheet" href="LogInStyle.css">
+      <link rel="stylesheet" href="SignInStyle.css">
 
-<script src="LogInVendor.js" defer></script>
+<script src="SignInVendor.js" defer></script>
 </head>
 
 <body>
@@ -26,13 +26,14 @@
 
         <div class="panel-body">
           <div class="icon">🧾</div>
-          <div class="title">Log In</div>
-          <div class="subtitle">Vendor Log In</div>
+          <div class="title">Sign In</div>
+          <div class="subtitle">Vendor Sign In</div>
 
-          <div class="segmented">
-            <button class="inactive" type="button">Sign Up</button>
-            <button class="active" type="button">Sign In</button>
-          </div>
+          <div class="segmented" data-role="vendor">
+  <button class="inactive" id="tabSignUp" type="button">Sign Up</button>
+  <button class="active" id="tabSignIn" type="button">Sign In</button>
+</div>
+
 
           <!-- Just email + password -->
           <label for="email">Email Address</label>
@@ -44,17 +45,18 @@
           <button class="submit" type="button">Sign In</button>
         </div>
 
-        <div class="panel-footer">
+       <div class="panel-footer">
           <div class="divider">More Methods</div>
-          <button class="google-btn" type="button" aria-label="Continue with Google">
-            <div class="google-badge">G</div>
-          </button>
-        </div>
-      </div>
+          <div id="googleBtn"></div>
     </div>
   </div>
 
-  <!-- Google Identity Services -->
+ <!-- Google Identity Services -->
+
+<!-- Your Google sign-in logic -->
+<script src="GoogleAuth.js"></script>
+
+<!-- Google Identity Services -->
 <script
   src="https://accounts.google.com/gsi/client"
   async
@@ -62,5 +64,6 @@
   onload="__hawkerhubInitGIS()">
 </script>
 
+<script src="AuthenticationTabs.js" defer></script>
 </body>
 </html>

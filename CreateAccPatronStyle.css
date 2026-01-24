@@ -226,6 +226,11 @@
       background: #e6e6e6;
     }
 
+    #googleBtn{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
     .panel-footer {
       padding: 14px 18px 18px;
       border-top: 1px solid rgba(0,0,0,0.08);

@@ -6,7 +6,7 @@
   <title>HawkerHub – Create Account</title>
       <link rel="stylesheet" href="CreateAccPatronStyle.css">
 
-<script src="CreateAccPatron.js"></script>
+<script src="CreateAccPatron.js" defer></script>
 </head>
 
 <body>
@@ -32,12 +32,13 @@
         <div class="panel-body">
           <div class="icon">🪪</div>
           <div class="title">Create Account</div>
-          <div class="subtitle">Customer Registration</div>
+          <div class="subtitle">Patron Registration</div>
 
-          <div class="segmented">
-            <button class="active" type="button">Sign Up</button>
-            <button class="inactive" type="button">Sign In</button>
-          </div>
+          <div class="segmented" data-role="patron">
+  <button class="active" id="tabSignUp" type="button">Sign Up</button>
+  <button class="inactive" id="tabSignIn" type="button">Sign In</button>
+</div>
+
 
           <!-- Scrollable inputs container -->
           <div class="form-scroll">
@@ -88,6 +89,6 @@
   onload="__hawkerhubInitGIS()">
 </script>
 
-
+<script src="AuthenticationTabs.js" defer></script>
 </body>
 </html>
