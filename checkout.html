@@ -39,7 +39,6 @@
     <main class="checkout-layout">
       <!-- LEFT -->
       <section class="checkout-left">
-
         <!-- Contact -->
         <section class="card">
           <div class="card-title">
@@ -130,6 +129,37 @@
           <span id="checkoutSubtotal">$0.00</span>
         </div>
 
+        <!-- Eco row (only shows when eco is ON) -->
+        <div class="row" id="checkoutEcoRow" style="display:none;">
+          <span>Eco Packaging</span>
+          <span id="checkoutEcoFee">+$0.00</span>
+        </div>
+
+        <!-- Discount row (only shows when discount > 0) -->
+        <div class="row" id="discountRow" style="display:none;">
+          <span>Discount</span>
+          <span id="discountAmount">-$0.00</span>
+        </div>
+
+        <!-- Promo input -->
+        <div style="display:flex; gap:10px; margin:12px 0;">
+          <input
+            id="promoCodeInput"
+            type="text"
+            placeholder="Enter promo code"
+            style="flex:1; padding:10px 12px; border-radius:10px; border:1px solid #ddd;"
+          />
+          <button
+            id="applyPromoBtn"
+            type="button"
+            style="padding:10px 12px; border-radius:10px; border:0; background:#ff6a00; color:#fff; font-weight:800; cursor:pointer;"
+          >
+            Apply
+          </button>
+        </div>
+
+        <div id="promoMsg" style="font-size:12px; margin-bottom:8px;"></div>
+
         <div class="divider"></div>
 
         <div class="row total">
@@ -137,13 +167,9 @@
           <span id="checkoutTotal">$0.00</span>
         </div>
 
-        <button class="cta" type="button">
-          Submit
-        </button>
+        <button class="cta" type="button">Submit</button>
 
-        <div class="footnote">
-          Pickup time will be confirmed after checkout
-        </div>
+        <div class="footnote">Pickup time will be confirmed after checkout</div>
       </aside>
     </main>
 

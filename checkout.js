@@ -1,18 +1,24 @@
-// ===============================
-// Checkout interactions + totals + save order history
-// ===============================
-
 document.addEventListener("DOMContentLoaded", () => {
   const paymentOptions = document.querySelectorAll(".pay-option");
   const proceedBtn = document.querySelector(".cta");
 
-  // ===== Storage keys (same as your cart system) =====
+  // ===== Storage keys =====
   const CART_KEY = "hawkerhub_cart";
   const ECO_KEY = "hawkerhub_eco_packaging";
   const HISTORY_KEY = "hawkerhub_order_history";
+  const COUPON_KEY = "hawkerhub_coupon";
+
   const ECO_FEE = 0.20;
 
-  // ===== Helpers =====
+  // ===== Promo rules based on your screenshot =====
+  const PROMOS = {
+    FIRSTORDER: { type: "percent", value: 0.35, firstOrderOnly: true },
+    HAWKER20: { type: "flat", value: 5, minSubtotal: 10 },
+    FREESHIP: { type: "freeship" }, // no delivery fee in your checkout now, so it just shows as applied
+    WEEKDAY80: { type: "percent", value: 0.15, weekdayOnly: true },
+  };
+
+  // ---------- Helpers ----------
   function readCart() {
     try {
       const raw = localStorage.getItem(CART_KEY);
@@ -23,21 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function ecoOn() {
+  function readEco() {
     return localStorage.getItem(ECO_KEY) === "true";
-  }
-
-  function formatMoney(n) {
-    const num = Number(n) || 0;
-    return `$${num.toFixed(2)}`;
-  }
-
-  function cartSubtotal(cart) {
-    return cart.reduce((sum, item) => {
-      const qty = Number(item.qty) || 0;
-      const price = Number(item.price) || 0;
-      return sum + qty * price;
-    }, 0);
   }
 
   function readHistory() {
@@ -50,8 +43,42 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function saveHistory(historyArr) {
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(historyArr));
+  function saveHistory(arr) {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(arr));
+  }
+
+  function formatMoney(n) {
+    const num = Number(n) || 0;
+    return `$${num.toFixed(2)}`;
+  }
+
+  function cartSubtotal(cart) {
+    return cart.reduce((sum, x) => {
+      const qty = Number(x.qty) || 0;
+      const price = Number(x.price) || 0;
+      return sum + qty * price;
+    }, 0);
+  }
+
+  function normalizeCode(code) {
+    return String(code || "").trim().toUpperCase();
+  }
+
+  function isWeekday() {
+    const day = new Date().getDay(); // 0 Sun ... 6 Sat
+    return day >= 1 && day <= 5;
+  }
+
+  function getAppliedCode() {
+    return normalizeCode(localStorage.getItem(COUPON_KEY) || "");
+  }
+
+  function setAppliedCode(code) {
+    localStorage.setItem(COUPON_KEY, normalizeCode(code));
+  }
+
+  function clearAppliedCode() {
+    localStorage.removeItem(COUPON_KEY);
   }
 
   function buildStallSummary(items) {
@@ -61,28 +88,118 @@ document.addEventListener("DOMContentLoaded", () => {
     return "Multiple stalls";
   }
 
-  // ===== Update checkout summary amounts (right side) =====
+  // ---------- Promo calculation ----------
+  function computeDiscount(subtotal, code) {
+    if (!code) return { ok: true, discount: 0, message: "" };
+
+    const promo = PROMOS[code];
+    if (!promo) return { ok: false, discount: 0, message: "Invalid promo code." };
+
+    if (code === "FIRSTORDER") {
+      const history = readHistory();
+
+      // If there is already at least 1 past paid order, reject
+      if (history && history.length >= 1) {
+        return {
+          ok: false,
+          discount: 0,
+          message: "FIRSTORDER can only be used if you have no previous orders.",
+        };
+      }
+    }
+
+
+    if (promo.weekdayOnly && !isWeekday()) {
+      return { ok: false, discount: 0, message: "WEEKDAY80 is only valid on weekdays (Mon–Fri)." };
+    }
+
+    if (promo.minSubtotal != null && !(subtotal > promo.minSubtotal)) {
+      return { ok: false, discount: 0, message: "HAWKER20 requires subtotal above $10." };
+    }
+
+    if (promo.type === "freeship") {
+      return { ok: true, discount: 0, message: "FREESHIP applied." };
+    }
+
+    if (promo.type === "percent") {
+      return { ok: true, discount: subtotal * promo.value, message: `${code} applied.` };
+    }
+
+    if (promo.type === "flat") {
+      return { ok: true, discount: Math.min(promo.value, subtotal), message: `${code} applied.` };
+    }
+
+    return { ok: false, discount: 0, message: "Promo rule error." };
+  }
+
+  // ---------- Update UI totals ----------
   function updateCheckoutSummary() {
     const cart = readCart();
     const subtotal = cartSubtotal(cart);
-    const total = subtotal + (ecoOn() ? ECO_FEE : 0);
+    const ecoFee = readEco() ? ECO_FEE : 0;
 
+    const code = getAppliedCode();
+    const promoResult = computeDiscount(subtotal, code);
+    const discount = promoResult.ok ? promoResult.discount : 0;
+
+    const total = Math.max(0, subtotal + ecoFee - discount);
+
+    // Subtotal/Total
     const subEl = document.getElementById("checkoutSubtotal");
     const totalEl = document.getElementById("checkoutTotal");
-
-    // These IDs must exist in checkout.html
     if (subEl) subEl.textContent = formatMoney(subtotal);
     if (totalEl) totalEl.textContent = formatMoney(total);
 
-    return { cart, subtotal, total };
+    // Eco row
+    const ecoRow = document.getElementById("checkoutEcoRow");
+    const ecoAmt = document.getElementById("checkoutEcoFee");
+    if (ecoRow) ecoRow.style.display = ecoFee > 0 ? "flex" : "none";
+    if (ecoAmt) ecoAmt.textContent = `+${formatMoney(ecoFee)}`;
+
+    // Discount row
+    const discountRow = document.getElementById("discountRow");
+    const discountAmt = document.getElementById("discountAmount");
+    if (discountRow) discountRow.style.display = discount > 0 ? "flex" : "none";
+    if (discountAmt) discountAmt.textContent = `-${formatMoney(discount)}`;
+
+    // Promo message
+    const promoMsg = document.getElementById("promoMsg");
+    if (promoMsg) {
+      promoMsg.textContent = code ? promoResult.message : "";
+      promoMsg.style.color = promoResult.ok ? "green" : "crimson";
+    }
+
+    return { cart, subtotal, ecoFee, discount, total, promoCode: code };
   }
 
-  // Run once when page loads
+  // ---------- Promo input handlers ----------
+  const promoInput = document.getElementById("promoCodeInput");
+  const applyPromoBtn = document.getElementById("applyPromoBtn");
+
+  if (promoInput) promoInput.value = getAppliedCode();
+
+  if (applyPromoBtn && promoInput) {
+    applyPromoBtn.addEventListener("click", () => {
+      const code = normalizeCode(promoInput.value);
+
+      if (!code) {
+        clearAppliedCode();
+        updateCheckoutSummary();
+        return;
+      }
+
+      setAppliedCode(code);
+      updateCheckoutSummary();
+    });
+  }
+
+  // Initial render
   updateCheckoutSummary();
 
-  // ===== Payment method highlight (your original code) =====
+  // ---------- Payment option highlight ----------
   paymentOptions.forEach((option) => {
     const radio = option.querySelector("input[type='radio']");
+    if (!radio) return;
 
     radio.addEventListener("change", () => {
       paymentOptions.forEach((o) => o.classList.remove("is-selected"));
@@ -96,11 +213,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // ===== Submit: save order into history + clear cart + redirect =====
+  // ---------- Submit: save order + clear cart ----------
   proceedBtn.addEventListener("click", () => {
-    const { cart, subtotal, total } = updateCheckoutSummary();
+    const info = updateCheckoutSummary();
 
-    if (!cart.length) {
+    if (!info.cart.length) {
       alert("Your cart is empty.");
       return;
     }
@@ -112,21 +229,23 @@ document.addEventListener("DOMContentLoaded", () => {
       orderNo: String(history.length + 1).padStart(3, "0"),
       status: "Paid",
       createdAt: new Date().toISOString(),
-      stallSummary: buildStallSummary(cart),
-      items: cart,
-      subtotal,
-      ecoFee: ecoOn() ? ECO_FEE : 0,
-      total,
+      stallSummary: buildStallSummary(info.cart),
+      items: info.cart,
+      subtotal: info.subtotal,
+      ecoFee: info.ecoFee,
+      discount: info.discount,
+      promoCode: info.promoCode || "",
+      total: info.total,
     };
 
     history.push(order);
     saveHistory(history);
 
-    // Clear cart after successful "payment"
+    // Clear after payment
     localStorage.removeItem(CART_KEY);
     localStorage.removeItem(ECO_KEY);
+    localStorage.removeItem(COUPON_KEY);
 
-    // Go to success page
     window.location.href = "PaymentSuccesss.html";
   });
 });

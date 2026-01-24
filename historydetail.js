@@ -18,7 +18,11 @@ function formatMoney(n) {
 function formatDate(isoString) {
   const d = new Date(isoString);
   if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+  return d.toLocaleDateString(undefined, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 }
 
 function escapeHtml(str) {
@@ -60,10 +64,33 @@ function renderOrderDetails(order) {
 
   const stall = escapeHtml(order.stallSummary || "Multiple stalls");
   const date = escapeHtml(formatDate(order.createdAt));
-  const subtotal = formatMoney(order.subtotal);
-  const ecoFee = Number(order.ecoFee) || 0;
-  const total = formatMoney(order.total);
   const status = escapeHtml(order.status || "Paid");
+
+  // Values saved from checkout
+  const subtotal = Number(order.subtotal) || 0;
+  const ecoFee = Number(order.ecoFee) || 0;
+  const discount = Number(order.discount) || 0;
+  const promoCode = escapeHtml(order.promoCode || "");
+  const total = Number(order.total) || Math.max(0, subtotal + ecoFee - discount);
+
+  // Optional rows
+  const promoRow = promoCode
+    ? `
+      <div style="display:flex; justify-content:space-between; margin-top:8px;">
+        <span>Promo Code</span>
+        <span style="font-weight:900;">${promoCode}</span>
+      </div>
+    `
+    : "";
+
+  const discountRow = discount > 0
+    ? `
+      <div style="display:flex; justify-content:space-between; margin-top:8px;">
+        <span>Discount</span>
+        <span style="font-weight:900; color:crimson;">-${escapeHtml(formatMoney(discount))}</span>
+      </div>
+    `
+    : "";
 
   bodyEl.innerHTML = `
     <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
@@ -90,7 +117,7 @@ function renderOrderDetails(order) {
     <div style="margin-top:16px; border-top:1px solid #ddd; padding-top:12px;">
       <div style="display:flex; justify-content:space-between; margin-top:8px;">
         <span>Subtotal</span>
-        <span style="font-weight:900;">${escapeHtml(subtotal)}</span>
+        <span style="font-weight:900;">${escapeHtml(formatMoney(subtotal))}</span>
       </div>
 
       <div style="display:flex; justify-content:space-between; margin-top:8px;">
@@ -98,9 +125,12 @@ function renderOrderDetails(order) {
         <span style="font-weight:900;">${ecoFee > 0 ? "+" + escapeHtml(formatMoney(ecoFee)) : "$0.00"}</span>
       </div>
 
-      <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:18px;">
+      ${promoRow}
+      ${discountRow}
+
+      <div style="display:flex; justify-content:space-between; margin-top:12px; font-size:18px;">
         <span style="font-weight:900;">Total</span>
-        <span style="font-weight:900;">${escapeHtml(total)}</span>
+        <span style="font-weight:900;">${escapeHtml(formatMoney(total))}</span>
       </div>
     </div>
   `;
