@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wok Master - Add Feedback</title>
+    <link rel="stylesheet" href="Menu.css">
+</head>
+<body class="add-feedback-page">
+
+    <div class="page-wrapper">
+        <a href="WokMasterFeedback.html" class="btn-go-back">← Go Back</a>
+        
+        <div class="form-container">
+            <div class="form-header-img">
+                <img src="img/Wok Master Char Kway Teow.jpg" alt="Wok Master Char Kway Teow">
+                <button class="close-btn">×</button>
+            </div>
+
+            <div class="form-body">
+                <h2>Feedback Form</h2>
+                <hr class="header-line">
+
+                <div class="rating-section">
+                    <p>How many stars?</p>
+                    <div class="star-group" id="star-container">
+                        <span class="star" data-value="1">★</span>
+                        <span class="star" data-value="2">★</span>
+                        <span class="star" data-value="3">★</span>
+                        <span class="star" data-value="4">★</span>
+                        <span class="star" data-value="5">★</span>
+                        <input type="hidden" id="rating-value" name="rating" value="0">
+                    </div>
+                </div>
+
+                <div class="comments-section">
+                    <div class="comment-label-row">
+                        <label for="comments">Additional Comments</label>
+                        <button class="btn-import-media">
+                            <span class="media-icon">🖼️</span> Import Media
+                        </button>
+                    </div>
+                    <textarea id="comments" placeholder="Write your experience here..."></textarea>
+                </div>
+
+                <div class="submit-row">
+                    <button class="btn-submit">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="WokMasterSubmitFeedback.js"></script>
+
+</body>
+</html>

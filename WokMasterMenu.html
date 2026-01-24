@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wok Master - Menu</title>
+    <link rel="stylesheet" href="Menu.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="menu-page">
+
+   <header class="topbar">
+    <div class="container topbar-inner">
+      <img src="img/Dashboard button.png" alt="Dashboard" class="icon-btn" id="menu-btn" />
+
+      <div class="brand">
+        <img src="img/Logo.png" alt="HawkerHub Logo" class="logo" />
+      </div>
+
+      <nav class="navlinks">
+        <a href="browse.html" class="navlink">Browse</a>
+        <a href="history.html" class="navlink">History</a>
+        <a href="cart.html" class="navlink">Cart</a>
+      </nav>
+
+      <a class="btn btn-signin" href="Sign in/sign-in.html">Sign in</a>
+    </div>
+  </header>
+
+  <div id="overlay" class="overlay hidden"></div>
+
+  <div id="dashboard" class="dashboard hidden">
+    <div class="dashboard-header">
+      <div class="dashboard-brand">
+        <img src="img/Logo.png" alt="HawkerHub" class="logo" />
+        <span>HawkerHub</span>
+      </div>
+      <button id="close-btn" type="button">✕</button>
+    </div>
+
+    <a href="browse.html">Browse</a>
+    <a href="history.html">History</a>
+    <a href="cart.html">  Cart</a>
+
+
+    <div class="dashboard-footer">
+      <p>Hungry? Let's get started!</p>
+      <a href="Sign in/sign-in.html">Sign in</a>
+    </div>
+
+  </div>
+
+    <header class="sub-header">
+        <div class="container sub-header-left">
+            <a href="WokMasterDetails.html" class="back-link">← Back to Stalls</a>
+        </div>
+    </header>
+
+    <section class="hero-banner-chicken-rice" style="background-image: url('img/Wok Master Char Kway Teow.jpg'); background-position: center; background-size: cover;">
+        <div class="container">
+            <div class="hero-text-box">
+                <h1>Wok Master Char Kway Teow</h1>
+                <div class="hero-badges">
+                    <span class="badge">📍 Bedok Interchange</span>
+                    <span class="badge">★ 4.7 (421 reviews)</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main class="container menu-section">
+        <h2 class="section-title">Menu</h2>
+        <div class="menu-grid">
+            
+            <div class="menu-card">
+                <div class="image-container">
+                    <img src="img/White Kway Teow.jpg" alt="White Kway Teow">
+                </div>
+                <div class="card-body">
+                    <div class="card-header">
+                        <h3>White Kway Teow</h3>
+                        <div class="likes-container">
+                            <span class="heart-icon">♡</span>
+                            <span class="likes-count">920 likes</span>
+                        </div>
+                    </div>
+                    <p class="desc">A savory non-sweet version fried with egg and garlic for a pure, smoky taste.</p>
+                    <div class="card-footer">
+                        <span class="price">$4.50</span>
+                        <button
+                            class="add-to-cart"
+                            data-add-to-cart
+                            data-id="wokmaster-white"
+                            data-name="White Kway Teow"
+                            data-price="4.50"
+                            data-stall="Wok Master"
+                            type="button"
+                        >
+                            🛒 Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card">
+                <div class="image-container">
+                    <img src="img/Egg Kway Teow.jpg" alt="Egg Kway Teow">
+                </div>
+                <div class="card-body">
+                    <div class="card-header">
+                        <h3>Egg Kway Teow</h3>
+                        <div class="likes-container">
+                            <span class="heart-icon">♡</span>
+                            <span class="likes-count">1.1k likes</span>
+                        </div>
+                    </div>
+                    <p class="desc">The classic dark sauce favorite with extra fluffy eggs and crunchy bean sprouts.</p>
+                    <div class="card-footer">
+                        <span class="price">$5.50</span>
+                        <button
+                            class="add-to-cart"
+                            data-add-to-cart
+                            data-id="wokmaster-egg"
+                            data-name="Egg Kway Teow"
+                            data-price="5.50"
+                            data-stall="Wok Master"
+                            type="button"
+                        >
+                            🛒 Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card">
+                <div class="image-container">
+                    <img src="img/Prawn Kway Teow.jpg" alt="Signature Prawn Kway Teow">
+                </div>
+                <div class="card-body">
+                    <div class="card-header">
+                        <h3>Signature Prawn Kway Teow</h3>
+                        <div class="likes-container">
+                            <span class="heart-icon">♡</span>
+                            <span class="likes-count">1.4k likes</span>
+                        </div>
+                    </div>
+                    <p class="desc">Our premium plate loaded with fresh, juicy prawns and stir-fried with intense wok hei.</p>
+                    <div class="card-footer">
+                        <span class="price">$6.50</span>
+                        <button
+                            class="add-to-cart"
+                            data-add-to-cart
+                            data-id="wokmaster-prawn"
+                            data-name="Signature Prawn Kway Teow"
+                            data-price="6.50"
+                            data-stall="Wok Master"
+                            type="button"
+                        >
+                            🛒 Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="ScriptCart.js"></script>
+</body>
+</html>
