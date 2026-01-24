@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nasi Lemak Galore - Menu</title>
+    <link rel="stylesheet" href="Menu.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="menu-page">
+
+   <header class="topbar">
+    <div class="container topbar-inner">
+      <img src="img/Dashboard button.png" alt="Dashboard" class="icon-btn" id="menu-btn" />
+
+      <div class="brand">
+        <img src="img/Logo.png" alt="HawkerHub Logo" class="logo" />
+      </div>
+
+      <nav class="navlinks">
+        <a href="browse.html" class="navlink">Browse</a>
+        <a href="history.html" class="navlink">History</a>
+        <a href="cart.html" class="navlink">Cart</a>
+      </nav>
+
+      <a class="btn btn-signin" href="Sign in/sign-in.html">Sign in</a>
+    </div>
+  </header>
+
+  <div id="overlay" class="overlay hidden"></div>
+
+  <div id="dashboard" class="dashboard hidden">
+    <div class="dashboard-header">
+      <div class="dashboard-brand">
+        <img src="img/Logo.png" alt="HawkerHub" class="logo" />
+        <span>HawkerHub</span>
+      </div>
+      <button id="close-btn" type="button">✕</button>
+    </div>
+
+    <a href="browse.html">Browse</a>
+    <a href="history.html">History</a>
+    <a href="cart.html">  Cart</a>
+
+    <div class="dashboard-footer">
+      <p>Hungry? Let's get started!</p>
+      <a href="Sign in/sign-in.html">Sign in</a>
+    </div>
+  </div>
+
+    <header class="sub-header">
+        <div class="container sub-header-left">
+            <a href="NasiLemakDetails.html" class="back-link">← Back to Stalls</a>
+        </div>
+    </header>
+
+    <section class="hero-banner-chicken-rice" style="background-image: url('img/Nasi Lemak Galore.jpg'); background-position: center; background-size: cover;">
+        <div class="container">
+            <div class="hero-text-box">
+                <h1>Nasi Lemak Galore</h1>
+                <div class="hero-badges">
+                    <span class="badge">📍 Adam Road Food Centre</span>
+                    <span class="badge">★ 4.5 (320 reviews)</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main class="container menu-section">
+        <h2 class="section-title">Menu</h2>
+        <div class="menu-grid">
+            
+            <div class="menu-card">
+                <div class="image-container">
+                    <img src="img/Standard Nasi Lemak.jpg" alt="Standard Nasi Lemak Set">
+                </div>
+                <div class="card-body">
+                    <div class="card-header">
+                        <h3>Standard Set</h3>
+                        <div class="likes-container">
+                            <span class="heart-icon">♡</span>
+                            <span class="likes-count">750 likes</span>
+                        </div>
+                    </div>
+                    <p class="desc">The classic breakfast. Coconut rice served with fried egg, ikan bilis, peanuts, and cucumber.</p>
+                    <div class="card-footer">
+                        <span class="price">$4.00</span>
+                        <button
+                            class="add-to-cart"
+                            data-add-to-cart
+                            data-id="nasilemak-standard"
+                            data-name="Standard Nasi Lemak Set"
+                            data-price="4.00"
+                            data-stall="Nasi Lemak Galore"
+                            type="button"
+                        >
+                            🛒 Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card">
+                <div class="image-container">
+                    <img src="img/Nasi Lemak With Chicken.jpg" alt="Chicken Wing Set">
+                </div>
+                <div class="card-body">
+                    <div class="card-header">
+                        <h3>Chicken Wing Set</h3>
+                        <div class="likes-container">
+                            <span class="heart-icon">♡</span>
+                            <span class="likes-count">1.3k likes</span>
+                        </div>
+                    </div>
+                    <p class="desc">Our bestseller. Includes a crispy, golden-brown fried chicken wing and extra sambal.</p>
+                    <div class="card-footer">
+                        <span class="price">$5.50</span>
+                        <button
+                            class="add-to-cart"
+                            data-add-to-cart
+                            data-id="nasilemak-chicken"
+                            data-name="Chicken Wing Set"
+                            data-price="5.50"
+                            data-stall="Nasi Lemak Galore"
+                            type="button"
+                        >
+                            🛒 Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card">
+                <div class="image-container">
+                    <img src="img/Small Nasi Lemak.jpg" alt="Basic Nasi Lemak">
+                </div>
+                <div class="card-body">
+                    <div class="card-header">
+                        <h3>Basic Nasi Lemak</h3>
+                        <div class="likes-container">
+                            <span class="heart-icon">♡</span>
+                            <span class="likes-count">420 likes</span>
+                        </div>
+                    </div>
+                    <p class="desc">A lighter portion perfect for a quick snack. Wrapped in traditional banana leaf.</p>
+                    <div class="card-footer">
+                        <span class="price">$3.00</span>
+                        <button
+                            class="add-to-cart"
+                            data-add-to-cart
+                            data-id="nasilemak-small"
+                            data-name="Basic Nasi Lemak"
+                            data-price="3.00"
+                            data-stall="Nasi Lemak Galore"
+                            type="button"
+                        >
+                            🛒 Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="ScriptCart.js"></script>
+</body>
+</html>
