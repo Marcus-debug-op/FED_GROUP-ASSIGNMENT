@@ -1,10 +1,3 @@
-/* ============================
-   ScriptCart.js
-   - Cart storage + add-to-cart listener
-   - Toast notification everywhere
-   - ✅ Red dot ONLY on AhSengMenu.html
-============================ */
-
 const CART_KEY = "hawkerhub_cart";
 const ECO_KEY = "hawkerhub_eco_packaging";
 const ECO_FEE = 0.20;
@@ -297,6 +290,13 @@ function bindNavigation() {
   const proceed = document.getElementById("proceedCheckout");
   if (proceed) {
     proceed.addEventListener("click", () => {
+      // ✅ ADDED VALIDATION (only change)
+      const cart = readCart();
+      if (!cart.length) {
+        showToast("Your cart has no menu items");
+        return;
+      }
+
       window.location.href = "checkout.html";
     });
   }
