@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // 7. Success & Redirect
       alert("Vendor Account Created Successfully!");
-      window.location.href = "Log In.html";
+      window.location.href = "Sign InVendor.html";
     });
   }
 });
