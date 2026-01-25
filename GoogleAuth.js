@@ -21,12 +21,18 @@
         picture: payload.picture
       }));
 
-      // Optional: store as current user session
+      // Figure out intended role (set by your pages)
+      const intendedRole =
+        document.body?.dataset?.authRole ||
+        localStorage.getItem("hawkerhub_role") ||   // you already set this in SignUpVendor/Patron.js
+        "patron";                                  // safe default
+
       localStorage.setItem("hawkerHubCurrentUser", JSON.stringify({
         fullname: payload.name,
         email: payload.email,
-        role: "google"
+        role: intendedRole
       }));
+
     } catch (_) {}
 
     window.location.href = SUCCESS_REDIRECT;

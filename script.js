@@ -27,56 +27,6 @@ overlay.addEventListener("click", closeMenu);
 
 
 
-
-// ===============================
-// Auth UI: update Sign In button
-// ===============================
-const signinBtn = document.getElementById("signinBtn");
-
-if (signinBtn) {
-  const currentUser = JSON.parse(
-    localStorage.getItem("hawkerHubCurrentUser")
-  );
-
-  if (currentUser && currentUser.fullname) {
-    // Change button text to user's name
-    signinBtn.textContent = currentUser.fullname;
-
-    // Optional: prevent going to sign up page
-    signinBtn.href = "#";
-
-    // Optional: dropdown / sign out later
-    signinBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      alert(`Signed in as ${currentUser.fullname}`);
-    });
-  }
-}
-
-
-
-// ===============================
-// Update Sign In button if logged in
-// ===============================
-document.addEventListener("DOMContentLoaded", () => {
-  const signinBtn = document.getElementById("signinBtn");
-  if (!signinBtn) return;
-
-  const currentUser = JSON.parse(
-    localStorage.getItem("hawkerHubCurrentUser")
-  );
-
-  if (currentUser && currentUser.fullname) {
-    // Show username instead of "Sign in"
-    signinBtn.textContent = currentUser.fullname;
-
-    // Prevent redirect to sign up page
-    signinBtn.href = "#";
-
-  }
-});
-
-
 // ===============================
 // Dashboard Sign In / Sign Out
 // ===============================
@@ -137,4 +87,49 @@ document.addEventListener("DOMContentLoaded", () => {
       link.style.display = "none";
     }
   });
+});
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  let user = null;
+  try { user = JSON.parse(localStorage.getItem("hawkerHubCurrentUser")); } catch {}
+
+  const role = user?.role || null;
+
+  // ✅ Dashboard-only filtering
+  document.querySelectorAll("#dashboard a[data-role]").forEach((a) => {
+    const allowed = a.getAttribute("data-role"); // all / patron / vendor
+
+    if (!role) {
+      // Guest: show only 'all'
+      a.style.display = (allowed === "all") ? "" : "none";
+    } else {
+      // Logged in: show 'all' + their role
+      a.style.display = (allowed === "all" || allowed === role) ? "" : "none";
+    }
+  });
+});
+
+
+// ===============================
+// Top-right Sign In / Profile button
+// ===============================
+document.addEventListener("DOMContentLoaded", () => {
+  const signinBtn = document.getElementById("signinBtn");
+  if (!signinBtn) return;
+
+  let user = null;
+  try {
+    user = JSON.parse(localStorage.getItem("hawkerHubCurrentUser"));
+  } catch {}
+
+  if (user && user.fullname) {
+    // Logged in → show username & link to profile
+    signinBtn.textContent = user.fullname;
+    signinBtn.href = "Profile(Patron & Vendor).html";
+  } else {
+    // Guest → normal sign in
+    signinBtn.textContent = "Sign in";
+    signinBtn.href = "sign up.html";
+  }
 });

@@ -4,50 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HawkerHub Profile</title>
-    <link rel="stylesheet" href="vendorProfile.css">
+    
+    <link rel="stylesheet" href="Profile.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<!-- Top Nav -->
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <img src="img/Dashboard button.png" alt="Dashboard" class="icon-btn" id="menu-btn" />
 
-    <div class="topbar">
-        <div class="container topbar-inner">
-            <div class="brand">
-                <i class="fa-solid fa-bars icon-btn"></i>
-                
-                <img src="/img/Logo.png" alt="HawkerHub Logo" class="logo">
-            </div>
+      <div class="brand">
+        <a href="Home Guest.html">
+          <img src="img/Logo.png" alt="HawkerHub Logo" class="logo" />
+        </a>
+      </div>
 
-            <div class="navlinks">
-                <a href="#" class="navlink">Browse</a>
-                <a href="#" class="navlink">History</a>
-                <a href="#" class="navlink" style="position: relative;">
-                    Orders <span class="notification-dot"></span>
-                </a>
-                <a href="#" class="navlink">Inspection</a>
-                
-                <div class="user-pill">
-                    <i class="fa-regular fa-user"></i> XCLYMG <span class="orange-dot"></span>
-                </div>
-            </div>
-        </div>
+
+      <nav class="navlinks">
+        <!-- Shared -->
+        <a href="browsestalls.html" class="navlink" data-role="all">Browse</a>
+        <a href="history.html" class="navlink" data-role="all">History</a>
+
+        <!--Guest & Patron-->
+        <a href="cart.html" class="navlink" data-role="all">Cart</a>
+       
+        
+
+        <!-- Vendor only -->
+        <a href="orders.html" class="navlink" data-role="vendor">Orders</a>
+        <a href="inspection.html" class="navlink" data-role="vendor">Inspection</a>
+      </nav>
+
+
+      <a class="btn btn-signin" href="sign up.html" id="signinBtn">Sign in</a> <!-- id is from script.js-->
+
     </div>
+  </header>
+
+  <!-- Overlay -->
+  <div id="overlay" class="overlay hidden"></div>
+
+  <!-- Dashboard -->
+  <div id="dashboard" class="dashboard hidden">
+    <div class="dashboard-header">
+      <div class="dashboard-brand">
+        <img src="img/Logo.png" alt="HawkerHub" class="logo" />
+        <span>HawkerHub</span>
+      </div>
+      <button id="close-btn" type="button">✕</button>
+    </div>
+
+
+    
+    <a href="browsestalls.html" data-role="all">Browse</a>
+        <a href="history.html" data-role="all">History</a>
+
+        
+        <a href="cart.html" data-role="all">Cart</a>
+       
+        
+
+        <!-- Vendor only -->
+        <a href="orders.html" data-role="vendor">Orders</a>
+        <a href="inspection.html" data-role="vendor">Inspection</a>
+
+    
+
+
+    <div class="dashboard-footer">
+      <p>Hungry? Let's get started!</p>
+      <button id="dashboardAuthBtn" class="dashboard-auth-btn">
+        Sign in
+      </button>
+    </div>
+
+
+  </div>
 
     <header class="profile-header">
         <div class="header-content">
             <h1>My Profile</h1>
             <p>Manage your account and view your discount code</p>
         </div>
-        
-        <section class="banner">
-    <div class="container">
-      <div class="banner-tabs">
-        <a href="vendorProfile.html" class="active">Profile</a>
-        <span>|</span>
-        <a href="#">Complaints</a>
-        <span>|</span>
-        <a href="Vender Account.html">Stall</a>
-      </div>
+
+        <div class="banner-tabs">
+            <a href="Profile(Patron & Vendor).html" class="active">Profile</a>
+            <span>|</span>
+            <a href="#">Complaints</a>
+            <span>|</span>
+            <a href="Vender Account.html">Stall</a>
+        </div>
     </header>
+
 
     <main class="main-body">
         <div class="content-wrapper">
@@ -61,17 +111,20 @@
 
                     <div class="info-item">
                         <label>Name</label>
-                        <p><i class="fa-regular fa-user"></i> XCLYMG</p>
+                        <p><i class="fa-regular fa-user"></i> <span id="profileName">-</span></p>
+
                     </div>
 
                     <div class="info-item">
                         <label>Email</label>
-                        <p><i class="fa-regular fa-envelope"></i> DtoyLikesRoblox@gmail.com</p>
+                        <p><i class="fa-regular fa-envelope"></i> <span id="profileEmail">-</span></p>
                     </div>
 
                     <button class="logout-btn">Logout</button>
                 </div>
             </aside>
+
+            
 
             <section class="discount-section">
                 <h2 class="section-title">
@@ -143,7 +196,34 @@
                 </div>
             </section>
 
+            <section data-role="patron" style="display:none;">
+                <h2 class="section-title">Patron Tools</h2>
+
+                <div class="voucher-card">
+                    <div class="vc-details">
+                    <h3>My Orders</h3>
+                    <p class="offer">View your order history</p>
+                    </div>
+                    <div class="vc-actions">
+                    <a class="redeem-btn" href="history.html" style="text-decoration:none; display:inline-block;">Open</a>
+                    </div>
+                </div>
+
+                <div class="voucher-card">
+                    <div class="vc-details">
+                    <h3>My Cart</h3>
+                    <p class="offer">Continue your checkout</p>
+                    </div>
+                    <div class="vc-actions">
+                    <a class="redeem-btn" href="cart.html" style="text-decoration:none; display:inline-block;">Open</a>
+                    </div>
+                </div>
+                </section>
+
+
         </div>
     </main>
+    <script src="script.js"></script>
+    <script src="Profile.js"></script>
 </body>
 </html>

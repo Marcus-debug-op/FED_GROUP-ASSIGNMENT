@@ -284,6 +284,9 @@ body {
 .validity { font-size: 0.8rem; color: #555; }
 .validity strong { text-decoration: underline; }
 
+
+
+
 /* Mobile Responsive */
 @media (max-width: 850px) {
     .content-wrapper { flex-direction: column; }
