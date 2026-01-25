@@ -18,10 +18,20 @@
       </div>
 
       <nav class="navlinks">
-        <a href="browse.html" class="navlink">Browse</a>
-        <a href="history.html" class="navlink">History</a>
-        <a href="cart.html" class="navlink">Cart</a>
+        <!-- Shared -->
+        <a href="browse.html" class="navlink" data-role="all">Browse</a>
+        <a href="history.html" class="navlink" data-role="all">History</a>
+
+        <!--Guest & Patron-->
+        <a href="cart.html" class="navlink" data-role="all">Cart</a>
+       
+        
+
+        <!-- Vendor only -->
+        <a href="orders.html" class="navlink" data-role="vendor">Orders</a>
+        <a href="inspection.html" class="navlink" data-role="vendor">Inspection</a>
       </nav>
+
 
       <a class="btn btn-signin" href="sign up.html" id="signinBtn">Sign in</a> <!-- id is from script.js-->
 
@@ -62,7 +72,7 @@
 
     <div class="container hero-content">
       <p class="hero-small">Discover & Order from Hawker Centres</p>
-      <h1 class="hero-title">Explore hawker stalls, discover popular dishes, and order ease</h1>
+      <h1 class="hero-title">Explore hawker stalls, discover popular dishes, and order with ease</h1>
       <a class="btn btn-cta" href="browse.html">Browse stalls →</a>
     </div>
   </section>

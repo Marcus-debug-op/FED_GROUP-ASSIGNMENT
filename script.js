@@ -104,3 +104,37 @@ if (dashboardAuthBtn) {
     };
   }
 }
+
+
+// ===============================
+// Role-based Navigation
+// ===============================
+document.addEventListener("DOMContentLoaded", () => {
+  const currentUser = JSON.parse(
+    localStorage.getItem("hawkerHubCurrentUser")
+  );
+
+  const navLinks = document.querySelectorAll(".navlink[data-role]");
+
+  navLinks.forEach(link => {
+    const allowedRole = link.dataset.role;
+
+    // If not logged in → hide role-specific links
+    if (!currentUser) {
+      if (allowedRole !== "all") {
+        link.style.display = "none";
+      }
+      return;
+    }
+
+    // Logged in
+    if (
+      allowedRole === "all" ||
+      allowedRole === currentUser.role
+    ) {
+      link.style.display = "inline-flex";
+    } else {
+      link.style.display = "none";
+    }
+  });
+});

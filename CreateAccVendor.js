@@ -43,6 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("hawkerHubUsers", JSON.stringify(existingUsers));
 
     alert("Vendor Account Created Successfully!");
-    window.location.href = "Log InVendor.html";
+    window.location.href = "Sign InVendor.html";
   });
 });
