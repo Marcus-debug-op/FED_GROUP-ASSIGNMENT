@@ -4,247 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HawkerHub – Rental Status</title>
+      <link rel="stylesheet" href="VendorAccountRentalStatus.css">
 
-  <style>
-    :root {
-      --orange: #ff8a1f;
-      --orange-dark: #f37400;
-      --cream: #fff7eb;
-      --text: #111;
-      --border: rgba(0,0,0,.12);
-      --gray-bg: #f5f5f5;
-    }
-
-    * { box-sizing: border-box; font-family: "Segoe UI", system-ui, -apple-system, sans-serif; }
-
-    body {
-      margin: 0;
-      background: url("img/bg.png") no-repeat center top;
-      background-size: cover;
-      background-attachment: fixed;
-      color: var(--text);
-      min-height: 100vh;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 40px;
-    }
-
-    /* FIXED TOP NAV */
-    .top-nav {
-      height: 150px;
-      background: var(--cream);
-      display: flex;
-      align-items: center;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
-
-    .nav-inner {
-      display: flex;
-      align-items: center;
-      width: 100%;
-    }
-
-    .brand img { height: 150px; margin-left: 20px; }
-
-    .brand img { height: 150px; margin-left: 20px; }
-
-    .nav-right { margin-left: auto; display: flex; align-items: center; gap: 40px; }
-    .nav-links { display: flex; align-items: center; gap: 40px; font-weight: 800; font-size: 20px; }
-    .nav-links a { color: var(--text); text-decoration: none; position: relative; }
-    
-    .dot {
-      position: absolute;
-      right: -8px; top: -4px;
-      width: 10px; height: 10px;
-      background: #e4002b;
-      border-radius: 50%;
-    }
-
-    .user-pill {
-     background: var(--orange-dark);
-      color: white;
-      padding: 10px 18px;
-      border-radius: 14px;
-      font-weight: 800;
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    /* BANNER */
-    .banner {
-      margin-top: 92px;
-      height: 300px;
-      background: var(--orange-dark);
-      padding: 90px 0 60px 0;
-      color: white;
-    }
-
-    .banner-tabs {
-      display: flex;
-      justify-content: flex-end;
-      gap: 20px;
-      font-weight: 700;
-      font-size: 18px;
-      margin-bottom: 20px;
-    }
-
-    .banner-tabs span { cursor: pointer; padding-bottom: 5px; }
-    .banner-tabs .active { border-bottom: 3px solid white; }
-
-    .banner h1 { margin: 0; font-size: 40px; font-weight: 900; }
-    .banner p { margin: 5px 0 0; opacity: 0.9; font-size: 18px; }
-
-    /* RENTAL CONTENT */
-    .main-content {
-      padding: 40px 0 150px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .toolbar { display: flex; justify-content: space-between; align-items: center; margin: 30px 0; }
-
-   /* DROPDOWN MENU - CENTERED & LINKED */
-    .dropdown-container { position: relative; display: inline-block; }
-
-    .dropdown-trigger {
-      background: white;
-      padding: 14px 24px;
-      border-radius: 12px;
-      font-weight: 900;
-      font-size: 20px;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      cursor: pointer;
-    }
-
-    .dropdown-menu {
-      position: absolute;
-      top: 110%;
-      left: 50%;
-      background: white;
-      min-width: 200px;
-      border-radius: 12px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-      list-style: none;
-      padding: 10px 0;
-      margin: 0;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateX(-50%) translateY(10px);
-      transition: all 0.3s ease;
-      z-index: 50;
-      text-align: center;
-    }
-
-    .dropdown-container:hover .dropdown-menu {
-      opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0);
-    }
-    .dropdown-menu li a { display: block; padding: 12px 20px; color: var(--text); text-decoration: none; font-weight: 600; font-size: 18px; }
-    .dropdown-menu li a:hover { background: var(--cream); color: var(--orange-dark); }
-    /* STALL CARD */
-    .rental-card {
-      background: white;
-      width: 100%;
-      max-width: 900px;
-      border-radius: 20px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.15);
-      padding: 40px;
-    }
-
-    .card-header-rental {
-      border-bottom: 1px solid #eee;
-      padding-bottom: 20px;
-      margin-bottom: 30px;
-    }
-
-    .card-header-rental h2 { margin: 0; font-size: 32px; font-weight: 900; }
-    .card-header-rental p { margin: 5px 0 0; color: #666; font-size: 20px; }
-
-    .info-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 30px;
-    }
-
-    .info-item {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .icon-box {
-      width: 50px;
-      height: 50px;
-      background: var(--cream);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-    }
-
-    .info-text label { display: block; font-size: 12px; color: #888; font-weight: 700; text-transform: uppercase; }
-    .info-text span { font-size: 18px; font-weight: 800; }
-
-    .section-title {
-      margin-top: 40px;
-      margin-bottom: 20px;
-      font-size: 18px;
-      font-weight: 800;
-      color: #444;
-      border-top: 1px solid #eee;
-      padding-top: 25px;
-    }
-
-    .payment-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-
-    .remarks-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-top: 40px;
-    }
-
-    .btn-orange {
-      background: var(--orange);
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 10px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .btn-disabled {
-      background: #ccc;
-      color: #666;
-      cursor: not-allowed;
-    }
-
-    .date-footer {
-      text-align: center;
-      margin-top: 40px;
-      font-weight: 700;
-      color: #666;
-    }
-  </style>
 </head>
 <body>
 
@@ -280,16 +41,19 @@
 
   <main class="container main-content">
     <div class="toolbar">
-      <div class="dropdown-container">
-        <div class="dropdown-trigger">
-          Rental Status <span>⌵</span>
-        </div>
-        <ul class="dropdown-menu">
-          <li><a href="Vender Account.html">Menu</a></li>
-          <li><a href="Vender AccountRentalStatus.html">Rental Status</a></li>
-        </ul>
-      </div>
+  <div class="dropdown-container">
+    <div class="dropdown-trigger">
+      Rental Status <span>⌵</span>
     </div>
+    <ul class="dropdown-menu">
+      <li><a href="Vender Account.html">Menu</a></li>
+      <li><a href="Vender AccountRentalStatus.html">Rental Status</a></li>
+    </ul>
+  </div>
+
+  <button class="plus-btn" style="visibility:hidden;">+</button>
+</div>
+
 
     <div class="rental-card">
       <div class="card-header-rental">
