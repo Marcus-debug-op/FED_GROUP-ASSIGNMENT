@@ -13,7 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const ECO_FEE = 0.20;
 
-  // ===== Promo rules =====
   const PROMOS = {
     FIRSTORDER: { type: "percent", value: 0.35, firstOrderOnly: true },
     HAWKER20: { type: "flat", value: 5, minSubtotal: 10 },
@@ -131,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================
-  // Checkout form validation
+  // Checkout validation
   // =========================
   const fullNameInput = document.getElementById("fullName");
   const phoneInput = document.getElementById("phoneNumber");
@@ -181,15 +180,9 @@ document.addEventListener("DOMContentLoaded", () => {
       markInvalid(phoneInput);
     }
 
-    if (!method) {
-      errors.push("Please select a collection method.");
-      markInvalid(collectionMethod);
-    }
-
     let addr = "";
     let postal = "";
 
-    // ✅ delivery validation
     if (method === "Delivery") {
       addr = String(deliveryAddress?.value || "").trim();
       postal = String(postalCode?.value || "").trim();
@@ -224,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================
-  // Card modal helpers
+  // Card modal
   // =========================
   const overlay = document.getElementById("cardModalOverlay");
   const cardName = document.getElementById("cardName");
@@ -233,7 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const cardCvv = document.getElementById("cardCvv");
   const cardAddBtn = document.getElementById("cardAddBtn");
   const cardCancelBtn = document.getElementById("cardCancelBtn");
-  const cardMsg = document.getElementById("cardModalError"); // reuse for error + success
+  const cardMsg = document.getElementById("cardModalError");
 
   let lastPayValue = "card";
 
@@ -268,7 +261,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!cardMsg) return;
     cardMsg.style.display = "none";
     cardMsg.textContent = "";
-    cardMsg.style.color = ""; // reset
+    cardMsg.style.color = "";
   }
 
   function showCardError(msg) {
@@ -282,12 +275,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!cardMsg) return;
     cardMsg.style.display = "block";
     cardMsg.textContent = msg;
-    cardMsg.style.color = "#008330"; // green
+    cardMsg.style.color = "#22c55e";
   }
 
   function openCardModal() {
     if (!overlay) return;
-
     clearCardMsg();
 
     const saved = readCardDetails();
@@ -305,10 +297,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     overlay.style.display = "flex";
     overlay.setAttribute("aria-hidden", "false");
-
-    setTimeout(() => {
-      if (cardName) cardName.focus();
-    }, 0);
+    setTimeout(() => cardName && cardName.focus(), 0);
   }
 
   function closeCardModal() {
@@ -353,12 +342,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return last4 ? `**** **** **** ${last4}` : "";
   }
 
-  if (overlay) {
-    overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) handleCardCancel();
-    });
-  }
-
   function handleCardCancel() {
     const saved = readCardDetails();
     closeCardModal();
@@ -368,6 +351,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  if (overlay) {
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) handleCardCancel();
+    });
+  }
   if (cardCancelBtn) cardCancelBtn.addEventListener("click", handleCardCancel);
 
   if (cardAddBtn) {
@@ -384,23 +372,64 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!isValidExpiry(expiry)) return showCardError("Please enter a valid expiry date (MM/YY).");
       if (!isValidCvv(cvv)) return showCardError("Please enter a valid security code (3–4 digits).");
 
-      // Save minimal (demo-safe) details
-      const details = {
+      saveCardDetails({
         name,
         numberMasked: maskCardNumber(number),
         expiry,
         savedAt: new Date().toISOString(),
-      };
+      });
 
-      saveCardDetails(details);
-
-      // ✅ show success, then close
       showCardSuccess("Successful!");
       setSelectedPayValue("card");
 
+      setTimeout(() => closeCardModal(), 700);
+    });
+  }
+
+  // =========================
+  // PayNow QR modal + Success (NEW)
+  // =========================
+  const paynowOverlay = document.getElementById("paynowModalOverlay");
+  const paynowCloseBtn = document.getElementById("paynowCloseBtn");
+  const paynowQrWrap = document.getElementById("paynowQrWrap");
+  const paynowQrNote = document.getElementById("paynowQrNote");
+  const paynowSuccessMsg = document.getElementById("paynowSuccessMsg");
+
+  function openPayNowModal() {
+    if (!paynowOverlay) return;
+
+    // reset view every time it opens
+    if (paynowSuccessMsg) paynowSuccessMsg.style.display = "none";
+    if (paynowQrWrap) paynowQrWrap.style.display = "flex";
+    if (paynowQrNote) paynowQrNote.style.display = "block";
+
+    paynowOverlay.style.display = "flex";
+    paynowOverlay.setAttribute("aria-hidden", "false");
+  }
+
+  function closePayNowModal() {
+    if (!paynowOverlay) return;
+    paynowOverlay.style.display = "none";
+    paynowOverlay.setAttribute("aria-hidden", "true");
+  }
+
+  if (paynowOverlay) {
+    paynowOverlay.addEventListener("click", (e) => {
+      if (e.target === paynowOverlay) closePayNowModal();
+    });
+  }
+
+  if (paynowCloseBtn) {
+    paynowCloseBtn.addEventListener("click", () => {
+      // show success
+      if (paynowSuccessMsg) paynowSuccessMsg.style.display = "block";
+      if (paynowQrWrap) paynowQrWrap.style.display = "none";
+      if (paynowQrNote) paynowQrNote.style.display = "none";
+
+      // close after short delay
       setTimeout(() => {
-        closeCardModal();
-      }, 700);
+        closePayNowModal();
+      }, 800);
     });
   }
 
@@ -433,7 +462,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return { ok: false, discount: 0, message: "Promo rule error." };
   }
 
-  // ---------- Update UI totals ----------
   function updateCheckoutSummary() {
     const cart = readCart();
     const subtotal = cartSubtotal(cart);
@@ -469,7 +497,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return { cart, subtotal, ecoFee, discount, total, promoCode: code };
   }
 
-  // ---------- Promo input handlers ----------
   const promoInput = document.getElementById("promoCodeInput");
   const applyPromoBtn = document.getElementById("applyPromoBtn");
 
@@ -478,22 +505,19 @@ document.addEventListener("DOMContentLoaded", () => {
   if (applyPromoBtn && promoInput) {
     applyPromoBtn.addEventListener("click", () => {
       const code = normalizeCode(promoInput.value);
-
       if (!code) {
         clearAppliedCode();
         updateCheckoutSummary();
         return;
       }
-
       setAppliedCode(code);
       updateCheckoutSummary();
     });
   }
 
-  // Initial render
   updateCheckoutSummary();
 
-  // ---------- Payment option highlight + open modal on card select ----------
+  // ---------- Payment highlight + open modal ----------
   paymentOptions.forEach((option) => {
     const radio = option.querySelector("input[type='radio']");
     if (!radio) return;
@@ -506,6 +530,7 @@ document.addEventListener("DOMContentLoaded", () => {
       option.classList.add("is-selected");
 
       if (radio.value === "card") openCardModal();
+      if (radio.value === "paynow") openPayNowModal();
     });
 
     option.addEventListener("click", () => {
@@ -517,10 +542,11 @@ document.addEventListener("DOMContentLoaded", () => {
       option.classList.add("is-selected");
 
       if (radio.value === "card") openCardModal();
+      if (radio.value === "paynow") openPayNowModal();
     });
   });
 
-  // ---------- Submit: save order + clear cart ----------
+  // ---------- Submit ----------
   proceedBtn.addEventListener("click", () => {
     const info = updateCheckoutSummary();
 

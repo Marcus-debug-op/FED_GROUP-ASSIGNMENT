@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Checkout - HawkerHub</title>
 
-    <!-- Main checkout styles -->
     <link rel="stylesheet" href="StylesCheckOut.css" />
-
-    <!-- Card modal styles (separated) -->
     <link rel="stylesheet" href="CardModal.css" />
   </head>
 
@@ -94,11 +91,7 @@
             </label>
 
             <!-- Delivery-only fields -->
-            <label
-              class="field"
-              id="deliveryAddressField"
-              style="display: none;"
-            >
+            <label class="field" id="deliveryAddressField" style="display: none;">
               <span class="label">Delivery Address *</span>
               <input
                 type="text"
@@ -107,17 +100,9 @@
               />
             </label>
 
-            <label
-              class="field"
-              id="postalCodeField"
-              style="display: none;"
-            >
+            <label class="field" id id="postalCodeField" style="display: none;">
               <span class="label">Postal Code *</span>
-              <input
-                type="text"
-                id="postalCode"
-                placeholder="e.g. 123456"
-              />
+              <input type="text" id="postalCode" placeholder="e.g. 123456" />
             </label>
           </div>
         </section>
@@ -166,20 +151,12 @@
           <span id="checkoutSubtotal">$0.00</span>
         </div>
 
-        <div
-          class="row"
-          id="checkoutEcoRow"
-          style="display: none;"
-        >
+        <div class="row" id="checkoutEcoRow" style="display: none;">
           <span>Eco Packaging</span>
           <span id="checkoutEcoFee">+$0.00</span>
         </div>
 
-        <div
-          class="row"
-          id="discountRow"
-          style="display: none;"
-        >
+        <div class="row" id="discountRow" style="display: none;">
           <span>Discount</span>
           <span id="discountAmount">-$0.00</span>
         </div>
@@ -204,15 +181,13 @@
 
         <button class="cta" type="button">Submit</button>
 
-        <div class="footnote">
-          Pickup time will be confirmed after checkout
-        </div>
+        <div class="footnote">Pickup time will be confirmed after checkout</div>
       </aside>
     </main>
 
-    <!-- Credit / Debit Card Modal -->
-    <div class="modal-overlay" id="cardModalOverlay">
-      <div class="modal">
+    <!-- Card Details Modal -->
+    <div class="modal-overlay" id="cardModalOverlay" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true">
         <h3>Card Details</h3>
 
         <div class="grid">
@@ -244,21 +219,39 @@
         <div id="cardModalError" class="error"></div>
 
         <div class="actions">
-          <button id="cardCancelBtn" class="btn" type="button">
-            Cancel
-          </button>
-          <button id="cardAddBtn" class="btn btn-primary" type="button">
-            Add
-          </button>
+          <button id="cardCancelBtn" class="btn" type="button">Cancel</button>
+          <button id="cardAddBtn" class="btn btn-primary" type="button">Add</button>
         </div>
 
-        <div class="hint">
-          Your card is saved locally (demo only).
+        <div class="hint">Your card is saved locally (demo only).</div>
+      </div>
+    </div>
+
+    <!-- ✅ PayNow QR Modal -->
+    <div class="modal-overlay" id="paynowModalOverlay" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true">
+        <h3>PayNow</h3>
+
+        <div class="qr-wrap" id="paynowQrWrap">
+          <img src="img/qr code.png" alt="PayNow QR Code" />
+        </div>
+
+        <div id="paynowSuccessMsg" class="paynow-success" style="display: none;">
+          Successful!
+        </div>
+
+        <div class="qr-note" id="paynowQrNote">
+          Scan the QR code using your banking app.
+        </div>
+
+        <div class="actions">
+          <button id="paynowCloseBtn" class="btn btn-primary" type="button">
+            Done
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- Checkout logic -->
     <script src="checkout.js"></script>
   </body>
 </html>
