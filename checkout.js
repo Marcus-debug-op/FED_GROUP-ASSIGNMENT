@@ -8,16 +8,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const HISTORY_KEY = "hawkerhub_order_history";
   const COUPON_KEY = "hawkerhub_coupon";
 
-  // ✅ NEW: card storage
+  // card storage
   const CARD_DETAILS_KEY = "hawkerhub_card_details";
 
   const ECO_FEE = 0.20;
 
-  // ===== Promo rules based on your screenshot =====
+  // ===== Promo rules =====
   const PROMOS = {
     FIRSTORDER: { type: "percent", value: 0.35, firstOrderOnly: true },
     HAWKER20: { type: "flat", value: 5, minSubtotal: 10 },
-    FREESHIP: { type: "freeship" }, // no delivery fee in your checkout now, so it just shows as applied
+    FREESHIP: { type: "freeship" },
     WEEKDAY80: { type: "percent", value: 0.15, weekdayOnly: true },
   };
 
@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function isWeekday() {
-    const day = new Date().getDay(); // 0 Sun ... 6 Sat
+    const day = new Date().getDay();
     return day >= 1 && day <= 5;
   }
 
@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================
-  // ✅ NEW: Delivery show/hide
+  // Delivery show/hide
   // =========================
   const collectionMethod = document.getElementById("collectionMethod");
   const deliveryAddressField = document.getElementById("deliveryAddressField");
@@ -110,6 +110,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!show) {
       if (deliveryAddress) deliveryAddress.value = "";
       if (postalCode) postalCode.value = "";
+      // clear red borders when switching back
+      clearInvalid(deliveryAddress);
+      clearInvalid(postalCode);
     }
   }
 
@@ -119,7 +122,120 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================
-  // ✅ NEW: Card modal helpers
+  // ✅ RESTORED: Checkout form validation
+  // =========================
+  const fullNameInput = document.getElementById("fullName");
+  const phoneInput = document.getElementById("phoneNumber");
+
+  function digitsOnly(s) {
+    return String(s || "").replace(/\D/g, "");
+  }
+
+  function normalizePhone(raw) {
+    const digits = digitsOnly(raw);
+    // +65XXXXXXXX -> keep last 8
+    if (digits.startsWith("65") && digits.length === 10) return digits.slice(2);
+    return digits;
+  }
+
+  function isValidSGPhone(raw) {
+    const p = normalizePhone(raw);
+    // SG numbers are 8 digits, often start 6/8/9
+    return /^[689]\d{7}$/.test(p);
+  }
+
+  function normalizePostal(raw) {
+    return digitsOnly(raw);
+  }
+
+  function isValidSGPostal(raw) {
+    return /^\d{6}$/.test(normalizePostal(raw));
+  }
+
+  function markInvalid(el) {
+    if (!el) return;
+    el.style.borderColor = "crimson";
+  }
+
+  function clearInvalid(el) {
+    if (!el) return;
+    el.style.borderColor = "";
+  }
+
+  function validateCheckoutForm() {
+    // reset
+    [fullNameInput, phoneInput, collectionMethod, deliveryAddress, postalCode].forEach(clearInvalid);
+
+    const name = String(fullNameInput?.value || "").trim();
+    const phoneRaw = String(phoneInput?.value || "").trim();
+    const method = String(collectionMethod?.value || "Pickup").trim();
+
+    const errors = [];
+
+    if (!name) {
+      errors.push("Please enter your full name.");
+      markInvalid(fullNameInput);
+    }
+
+    if (!phoneRaw) {
+      errors.push("Please enter your phone number.");
+      markInvalid(phoneInput);
+    } else if (!isValidSGPhone(phoneRaw)) {
+      errors.push("Please enter a valid Singapore phone number (e.g. 91234567 or +65 9123 4567).");
+      markInvalid(phoneInput);
+    }
+
+    // method always has value in your HTML (Pickup/Delivery), but we keep this safe anyway
+    if (!method) {
+      errors.push("Please select a collection method.");
+      markInvalid(collectionMethod);
+    }
+
+    let addr = "";
+    let postal = "";
+
+    if (method === "Delivery") {
+      addr = String(deliveryAddress?.value || "").trim();
+      postal = String(postalCode?.value || "").trim();
+
+      if (!addr) {
+        errors.push("Please enter your delivery address.");
+        markInvalid(deliveryAddress);
+      }
+
+      if (!postal) {
+        errors.push("Please enter your postal code.");
+        markInvalid(postalCode);
+      } else if (!isValidSGPostal(postal)) {
+        errors.push("Please enter a valid 6-digit postal code (e.g. 123456).");
+        markInvalid(postalCode);
+      }
+    }
+
+    if (errors.length) {
+      alert(errors.join("\n"));
+      return { ok: false };
+    }
+
+    return {
+      ok: true,
+      fullName: name,
+      phone: normalizePhone(phoneRaw),
+      method,
+      deliveryAddress: method === "Delivery" ? addr : "",
+      postalCode: method === "Delivery" ? normalizePostal(postal) : "",
+    };
+  }
+
+  // optional: clear red border while typing
+  if (fullNameInput) fullNameInput.addEventListener("input", () => clearInvalid(fullNameInput));
+  if (phoneInput) phoneInput.addEventListener("input", () => clearInvalid(phoneInput));
+  if (deliveryAddress) deliveryAddress.addEventListener("input", () => clearInvalid(deliveryAddress));
+  if (postalCode) postalCode.addEventListener("input", () => clearInvalid(postalCode));
+  if (collectionMethod) collectionMethod.addEventListener("change", () => clearInvalid(collectionMethod));
+
+  // =========================
+  // Card modal helpers
   // =========================
   const overlay = document.getElementById("cardModalOverlay");
   const cardName = document.getElementById("cardName");
@@ -130,7 +246,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const cardCancelBtn = document.getElementById("cardCancelBtn");
   const cardErr = document.getElementById("cardModalError");
 
-  let lastPayValue = "card"; // used to restore selection on cancel
+  let lastPayValue = "card";
 
   function getSelectedPayValue() {
     const checked = document.querySelector('input[name="pay"]:checked');
@@ -141,7 +257,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const radio = document.querySelector(`input[name="pay"][value="${val}"]`);
     if (radio) radio.checked = true;
 
-    // update highlight class
     paymentOptions.forEach((o) => o.classList.remove("is-selected"));
     const label = radio ? radio.closest(".pay-option") : null;
     if (label) label.classList.add("is-selected");
@@ -177,11 +292,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     clearCardError();
 
-    // Prefill if card was saved before
     const saved = readCardDetails();
     if (saved) {
       if (cardName) cardName.value = saved.name || "";
-      if (cardNumber) cardNumber.value = saved.numberMasked ? "" : ""; // don't reveal number
+      if (cardNumber) cardNumber.value = "";
       if (cardExpiry) cardExpiry.value = saved.expiry || "";
       if (cardCvv) cardCvv.value = "";
     } else {
@@ -206,10 +320,6 @@ document.addEventListener("DOMContentLoaded", () => {
     clearCardError();
   }
 
-  function digitsOnly(s) {
-    return String(s || "").replace(/\D/g, "");
-  }
-
   function isValidCardNumber(num) {
     const d = digitsOnly(num);
     return d.length >= 13 && d.length <= 19;
@@ -224,7 +334,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const yy = Number(m[2]);
     if (mm < 1 || mm > 12) return false;
 
-    // simple "not expired" check (assume 20YY)
     const now = new Date();
     const curYY = now.getFullYear() % 100;
     const curMM = now.getMonth() + 1;
@@ -246,11 +355,9 @@ document.addEventListener("DOMContentLoaded", () => {
     return last4 ? `**** **** **** ${last4}` : "";
   }
 
-  // Close modal when clicking outside the box
   if (overlay) {
     overlay.addEventListener("click", (e) => {
       if (e.target === overlay) {
-        // behave like cancel
         handleCardCancel();
       }
     });
@@ -260,7 +367,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const saved = readCardDetails();
     closeCardModal();
 
-    // If no saved card, revert to previous selection
     if (!saved && lastPayValue && lastPayValue !== "card") {
       setSelectedPayValue(lastPayValue);
     }
@@ -282,7 +388,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!isValidExpiry(expiry)) return showCardError("Please enter a valid expiry date (MM/YY).");
       if (!isValidCvv(cvv)) return showCardError("Please enter a valid security code (3–4 digits).");
 
-      // Save minimal (demo-safe) details
       const details = {
         name,
         numberMasked: maskCardNumber(number),
@@ -292,8 +397,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       saveCardDetails(details);
       closeCardModal();
-
-      // Ensure card is selected
       setSelectedPayValue("card");
     });
   }
@@ -399,26 +502,22 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initial render
   updateCheckoutSummary();
 
-  // ---------- Payment option highlight + ✅ open modal on card select ----------
+  // ---------- Payment option highlight + open modal on card select ----------
   paymentOptions.forEach((option) => {
     const radio = option.querySelector("input[type='radio']");
     if (!radio) return;
 
     radio.addEventListener("change", () => {
-      // remember last non-card option
       const current = getSelectedPayValue();
       if (current && current !== "card") lastPayValue = current;
 
       paymentOptions.forEach((o) => o.classList.remove("is-selected"));
       option.classList.add("is-selected");
 
-      if (radio.value === "card") {
-        openCardModal();
-      }
+      if (radio.value === "card") openCardModal();
     });
 
     option.addEventListener("click", () => {
-      // remember last non-card option (before switching)
       const current = getSelectedPayValue();
       if (current && current !== "card") lastPayValue = current;
 
@@ -426,9 +525,7 @@ document.addEventListener("DOMContentLoaded", () => {
       paymentOptions.forEach((o) => o.classList.remove("is-selected"));
       option.classList.add("is-selected");
 
-      if (radio.value === "card") {
-        openCardModal();
-      }
+      if (radio.value === "card") openCardModal();
     });
   });
 
@@ -440,6 +537,10 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Your cart is empty.");
       return;
     }
+
+    // ✅ Validate contact + delivery info BEFORE payment checks
+    const form = validateCheckoutForm();
+    if (!form.ok) return;
 
     // ✅ If card selected but no card saved, force modal
     const pay = getSelectedPayValue();
@@ -467,17 +568,21 @@ document.addEventListener("DOMContentLoaded", () => {
       promoCode: info.promoCode || "",
       total: info.total,
 
-      // ✅ Optional: store payment type + masked card (demo)
+      // ✅ store payment type + masked card (demo)
       payment: {
         method: pay,
         card: pay === "card" ? readCardDetails() : null,
       },
 
-      // ✅ Optional: store collection method + delivery details
+      // ✅ store contact + collection info
+      contact: {
+        fullName: form.fullName,
+        phone: form.phone,
+      },
       collection: {
-        method: String(collectionMethod?.value || "Pickup"),
-        deliveryAddress: String(deliveryAddress?.value || "").trim(),
-        postalCode: String(postalCode?.value || "").trim(),
+        method: form.method,
+        deliveryAddress: form.deliveryAddress,
+        postalCode: form.postalCode,
       },
     };
 
