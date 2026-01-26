@@ -1,85 +1,110 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // --- 1. GET VARIABLES FROM HTML ---
-    // This is where the magic happens. We read the data from the body tag.
-    const bodyData = document.body.dataset;
-    const stallName = bodyData.stall;      // Reads "Wok Master"
-    const returnPage = bodyData.return;    // Reads "WokMasterDetails.html"
 
-    // --- 2. SETUP ELEMENTS ---
-    const stars = document.querySelectorAll('.star');
-    const starContainer = document.getElementById('star-container');
-    const ratingInput = document.getElementById('rating-value');
-    const submitBtn = document.querySelector('.btn-submit');
-    const closeBtn = document.querySelector('.close-btn') || document.querySelector('.close-modal-btn');
-    
-    let currentRating = 0;
+    // --- 1. READ URL DATA ---
+    const params = new URLSearchParams(window.location.search);
+    const urlStall = params.get('stall'); 
+    const urlReturn = params.get('return');
 
-    // --- 3. STAR LOGIC (Only runs if stars exist on page) ---
-    if (stars.length > 0) {
-        function highlightStars(value) {
-            stars.forEach(star => {
-                const starValue = parseInt(star.getAttribute('data-value'));
-                if (starValue <= value) {
-                    star.classList.add('active');
-                } else {
-                    star.classList.remove('active');
-                }
-            });
-        }
-
-        stars.forEach(star => {
-            star.addEventListener('mouseover', function() {
-                highlightStars(this.getAttribute('data-value'));
-            });
-
-            star.addEventListener('click', function() {
-                currentRating = this.getAttribute('data-value');
-                if(ratingInput) ratingInput.value = currentRating; 
-                highlightStars(currentRating);
-            });
-        });
-
-        if (starContainer) {
-            starContainer.addEventListener('mouseleave', function() {
-                highlightStars(currentRating);
-            });
-        }
+    if (urlStall) {
+        const header = document.querySelector('.sub-header h1');
+        if (header) header.textContent = "Review: " + urlStall;
     }
 
-    // --- 4. SUBMIT BUTTON ---
+    // --- 2. SETUP ELEMENTS ---
+    const submitBtn = document.querySelector('.btn-submit');
+    const ratingInput = document.getElementById('rating-value');
+    const textArea = document.querySelector('textarea');
+    const imagePreview = document.getElementById('image-preview'); 
+    const stars = document.querySelectorAll('.star');
+    const isReviewPage = stars.length > 0; 
+
     if (submitBtn) {
         submitBtn.addEventListener('click', function(e) {
             e.preventDefault(); 
 
-            // Check if it's a Feedback page (has stars) or Complaint page (text only)
-            const isFeedback = document.querySelector('.star') !== null;
-            const textArea = document.querySelector('textarea');
-
-            // Validation
-            if (isFeedback && (currentRating === 0 || currentRating === "0")) {
-                alert("Please select a star rating!");
+            // --- 3. VALIDATION ---
+            if (isReviewPage) {
+                const currentRating = ratingInput ? ratingInput.value : 0;
+                if (currentRating === "0" || currentRating === 0) {
+                    alert("Please select a star rating first!");
+                    return; 
+                }
+            } else if (textArea && textArea.value.trim() === "") {
+                alert("Please fill in the text field.");
                 return;
             }
-            if (!isFeedback && textArea && textArea.value.trim() === "") {
-                alert("Please describe your complaint.");
-                return;
+
+            // --- 4. PREPARE SAVE DATA ---
+            const finalStallName = urlStall || "General Feedback";
+            const finalReturnPage = urlReturn || "browsestalls.html";
+
+            if (isReviewPage) {
+                // Get User Info
+                let userName = "Guest Patron";
+                const storedUser = localStorage.getItem('hawkerHubCurrentUser');
+                if (storedUser) {
+                    try {
+                        const parsedUser = JSON.parse(storedUser);
+                        if (parsedUser.fullname) userName = parsedUser.fullname;
+                    } catch (err) {}
+                }
+
+                const today = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
+                let imageData = "";
+                if (imagePreview && imagePreview.style.display === 'block') {
+                    imageData = imagePreview.src;
+                }
+
+                const newReview = {
+                    stall: finalStallName,
+                    user: userName,
+                    date: today,
+                    rating: ratingInput.value,
+                    text: textArea ? textArea.value : "",
+                    image: imageData
+                };
+
+                // --- 5. ROBUST SAVING (The Fix) ---
+                try {
+                    let reviews = JSON.parse(localStorage.getItem('hawkerReviews'));
+                    
+                    
+                    if (!Array.isArray(reviews)) {
+                        console.log("Data corrupted or empty. Resetting review list.");
+                        reviews = [];
+                    }
+
+                    reviews.unshift(newReview); 
+                    localStorage.setItem('hawkerReviews', JSON.stringify(reviews));
+                    
+                } catch (err) {
+                    console.error("Save error:", err);
+                    localStorage.setItem('hawkerReviews', "[]");
+                }
             }
 
-            // Decide type based on page content
-            const type = isFeedback ? 'feedback' : 'complaint';
-
-            // Redirect using the variables we found in Step 1
-            // Ensure you have created the universal Success.html from the previous step!
-            window.location.href = `Success.html?type=${type}&stall=${encodeURIComponent(stallName)}&return=${returnPage}`;
+            // --- 6. REDIRECT ---
+            const type = isReviewPage ? 'feedback' : 'complaint';
+            const successUrl = `Success.html?type=${type}&stall=${encodeURIComponent(finalStallName)}&return=${encodeURIComponent(finalReturnPage)}`;
+            
+            console.log("Saved and Redirecting to:", successUrl);
+            window.location.href = successUrl;
         });
     }
 
-    // --- 5. CLOSE BUTTON ---
-    if (closeBtn) {
-        closeBtn.addEventListener('click', function() {
-            // Go back to the specific return page found in Step 1
-            window.location.href = returnPage; 
+    // --- 7. STAR CLICK LOGIC ---
+    if (isReviewPage) {
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                const val = this.getAttribute('data-value');
+                if(ratingInput) ratingInput.value = val;
+                
+                stars.forEach(s => {
+                    s.classList.remove('active');
+                    if(s.getAttribute('data-value') <= val) s.classList.add('active');
+                });
+            });
         });
     }
 });

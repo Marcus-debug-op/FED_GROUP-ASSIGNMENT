@@ -1108,3 +1108,18 @@ textarea:focus {
     color: white;
     margin: 0;
 }
+
+
+.review-image-container {
+    margin-top: 10px;
+    margin-left: 58px;
+}
+
+.review-img {
+    max-width: 100%;
+    height: auto;
+    max-height: 200px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    object-fit: cover;
+}

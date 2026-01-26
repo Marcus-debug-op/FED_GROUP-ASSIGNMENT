@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lao Ban Soya Beancurd - Feedback</title>
     <link rel="stylesheet" href="Menu.css">
-</head>
+    <link rel="stylesheet" href="Review.css"> </head>
 <body class="feedback-page">
 
     <div class="feedback-wrapper">
@@ -24,7 +24,7 @@
                         <h2>Customer Reviews</h2>
                         <p class="stall-name">Lao Ban Soya Beancurd</p>
                     </div>
-                    <a href="feedback.html" class="btn-add-feedback">+ Add Feedback</a>
+                    <a href="feedback.html?stall=Lao Ban Soya Beancurd&return=beancurdFeedback.html" class="btn-add-feedback">+ Add Feedback</a>
                 </div>
 
                 <hr class="header-line">
@@ -102,9 +102,19 @@
                         <p class="post-text">Very consistent quality. The queue can be a bit long during lunch hour, but it moves fast. Wish they had more toppings available though!</p>
                     </div>
                 </div>
+
+                <div class="clear-reviews-container">
+                    <button id="btn-clear-reviews" class="btn-clear-all">
+                        ⚠️ Clear All Reviews
+                    </button>
+                </div>
+
             </div>
         </div>
     </div>
+
+    <script src="DisplayReviews.js"></script>
+    <script src="Review.js"></script>
 
 </body>
 </html>

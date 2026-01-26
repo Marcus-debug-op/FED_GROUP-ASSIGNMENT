@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ah Seng Chicken Rice - Feedback</title>
     <link rel="stylesheet" href="Menu.css">
+    <link rel="stylesheet" href="Review.css"> 
 </head>
 <body class="feedback-page">
 
@@ -24,44 +25,16 @@
                         <h2>Customer Reviews</h2>
                         <p class="stall-name">Ah Seng Chicken Rice</p>
                     </div>
-                    <a href="feedback.html" class="btn-add-feedback">+ Add Feedback</a>
+                    <a href="feedback.html?stall=Ah Seng Chicken Rice&return=AhSengFeedback.html" class="btn-add-feedback">+ Add Feedback</a>
                 </div>
 
                 <hr class="header-line">
 
                 <div class="ratings-container">
-                    <div class="overall-rating">
+                     <div class="overall-rating">
                         <span class="rating-number">4.7</span>
                         <div class="stars-gold">★★★★★</div>
                         <p class="review-total">302 Reviews</p>
-                    </div>
-                    
-                    <div class="rating-bars-group">
-                        <div class="bar-row">
-                            <span class="star-label">5★</span>
-                            <div class="progress-bg"><div class="progress-fill" style="width: 80%;"></div></div>
-                            <span class="count-label">210</span>
-                        </div>
-                        <div class="bar-row">
-                            <span class="star-label">4★</span>
-                            <div class="progress-bg"><div class="progress-fill" style="width: 35%;"></div></div>
-                            <span class="count-label">70</span>
-                        </div>
-                        <div class="bar-row">
-                            <span class="star-label">3★</span>
-                            <div class="progress-bg"><div class="progress-fill" style="width: 10%;"></div></div>
-                            <span class="count-label">15</span>
-                        </div>
-                        <div class="bar-row">
-                            <span class="star-label">2★</span>
-                            <div class="progress-bg"><div class="progress-fill" style="width: 5%;"></div></div>
-                            <span class="count-label">5</span>
-                        </div>
-                        <div class="bar-row">
-                            <span class="star-label">1★</span>
-                            <div class="progress-bg"><div class="progress-fill" style="width: 2%;"></div></div>
-                            <span class="count-label">2</span>
-                        </div>
                     </div>
                 </div>
 
@@ -69,42 +42,25 @@
                     <div class="review-post">
                         <div class="user-meta">
                             <div class="user-avatar">👤</div>
-                            <div class="user-title">
-                                <strong>Sarah Lim</strong>
-                                <div class="stars-gold-small">★★★★★</div>
-                            </div>
+                            <div class="user-title"><strong>Sarah Lim</strong><div class="stars-gold-small">★★★★★</div></div>
                             <span class="post-date">15 Jan 2025</span>
                         </div>
-                        <p class="post-text">The chicken is incredibly tender and smooth! The rice is fragrant and not too oily. Definitely my go-to spot for Hainanese chicken rice.</p>
+                        <p class="post-text">The chicken is incredibly tender and smooth!</p>
+                    </div>
                     </div>
 
-                    <div class="review-post">
-                        <div class="user-meta">
-                            <div class="user-avatar">👤</div>
-                            <div class="user-title">
-                                <strong>David Tan</strong>
-                                <div class="stars-gold-small">★★★★★</div>
-                            </div>
-                            <span class="post-date">10 Jan 2025</span>
-                        </div>
-                        <p class="post-text">Superb chili sauce! It has the right amount of kick that complements the poached chicken perfectly. The soup is also very flavorful.</p>
-                    </div>
-
-                    <div class="review-post">
-                        <div class="user-meta">
-                            <div class="user-avatar">👤</div>
-                            <div class="user-title">
-                                <strong>Michelle Lee</strong>
-                                <div class="stars-gold-small">★★★★☆</div>
-                            </div>
-                            <span class="post-date">05 Jan 2025</span>
-                        </div>
-                        <p class="post-text">Very consistent quality. The queue can be a bit long during lunch hour, but it moves fast. Wish they gave a bit more cucumber slices though!</p>
-                    </div>
+                <div class="clear-reviews-container">
+                    <button id="btn-clear-reviews" class="btn-clear-all">
+                        ⚠️ Clear All Reviews
+                    </button>
                 </div>
-            </div>
+                </div>
         </div>
     </div>
+
+    <script src="DisplayReviews.js"></script>
+
+    <script src="Review.js"></script>
 
 </body>
 </html>

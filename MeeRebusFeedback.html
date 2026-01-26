@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mee Rebus Master - Feedback</title>
     <link rel="stylesheet" href="Menu.css">
-</head>
+    <link rel="stylesheet" href="Review.css"> </head>
 <body class="feedback-page">
 
     <div class="feedback-wrapper">
@@ -24,7 +24,7 @@
                         <h2>Customer Reviews</h2>
                         <p class="stall-name">Mee Rebus Master</p>
                     </div>
-                    <a href="feedback.html" class="btn-add-feedback">+ Add Feedback</a>
+                    <a href="feedback.html?stall=Mee Rebus Master&return=MeeRebusFeedback.html" class="btn-add-feedback">+ Add Feedback</a>
                 </div>
 
                 <hr class="header-line">
@@ -102,9 +102,19 @@
                         <p class="post-text">Great comfort food. The noodles are cooked just right. The chili packs a punch, so be careful if you can't take spice!</p>
                     </div>
                 </div>
+
+                <div class="clear-reviews-container">
+                    <button id="btn-clear-reviews" class="btn-clear-all">
+                        ⚠️ Clear All Reviews
+                    </button>
+                </div>
+
             </div>
         </div>
     </div>
+
+    <script src="DisplayReviews.js"></script>
+    <script src="Review.js"></script>
 
 </body>
 </html>
