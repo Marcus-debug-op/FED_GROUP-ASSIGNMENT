@@ -1,18 +1,15 @@
+/* 1. Background Image Setup */
 body {
-  /* Make sure 'Signin-bg.png' is in the same folder as this CSS file */
-  background-image: url('img/Signin-bg.png'); 
+  background-image: url('img/Signin-bg.png'); /* Ensure path matches your folder */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 100vw;
+  overflow: hidden; 
 }
-
-/* --- REUSED STYLES --- */
 
 .app {
   width: 100%;
@@ -20,71 +17,102 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  
+  /* Content Alignment */
+  justify-content: flex-start; 
+  padding-top: 80px; 
+  
   position: relative;
+  box-sizing: border-box; 
 }
 
+/* 2. Floating Back Button - UPDATED POSITION & STYLE */
 .back-btn {
   position: absolute;
-  top: 20px;
-  left: 20px;
-  background: none;
-  border: none;
-  font-size: 14px;
-  font-weight: 500;
-  color: #333; /* Dark text for visibility on light parts of BG */
+  /* Moved slightly further from the edge to match the photo */
+  top: 40px;
+  left: 40px;
+  
+  background: #fff;
+  border: 1px solid #e0e0e0; /* Slightly softer border */
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
   cursor: pointer;
-  padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.9); /* White background for readability */
-  border-radius: 20px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  
+  /* Increased padding for a better "pill" shape */
+  padding: 10px 20px;
+  border-radius: 30px;
+  
+  /* Stronger shadow to make it "float" like the reference */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: all 0.2s ease;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Space between arrow and text */
 }
 
+.back-btn:hover {
+  background: #f9f9f9;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+/* 3. Logo */
 .logo {
-  margin-top: 40px;
-  margin-bottom: 20px;
+  margin-bottom: 20px; 
+  text-align: center;
+  z-index: 2;
+  flex-shrink: 0; 
 }
 
 .logo img {
-  height: 60px;
+  height: 150px; 
+  display: block;
 }
 
+/* 4. The White Card Panel */
 .panel-wrap {
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
   padding: 0 20px;
   box-sizing: border-box;
-  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  margin-bottom: 40px;
+  align-items: center;
+  flex: 0 1 auto; 
 }
 
 .panel {
-  background: #fff;
-  border-radius: 24px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  width: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  max-height: 75vh;
+  max-height: 80vh; 
 }
 
 .panel-top {
   padding: 15px 20px 0;
+  text-align: center;
+}
+
+.step-indicator {
+  font-size: 11px;
+  color: #FF5722;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .panel-body {
-  padding: 10px 30px 30px;
+  padding: 10px 30px 20px;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-}
-
-.icon {
-  font-size: 32px;
-  text-align: center;
-  margin-bottom: 10px;
+  overflow: hidden; 
 }
 
 .title {
@@ -92,125 +120,61 @@ body {
   font-weight: 700;
   text-align: center;
   color: #1a1a1a;
+  margin-bottom: 5px;
 }
 
 .subtitle {
   font-size: 13px;
-  color: #666;
+  color: #888;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
+/* Form Scrolling Area */
 .form-scroll {
   overflow-y: auto;
   padding-right: 5px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  scrollbar-width: thin;
-  scrollbar-color: #ccc #f1f1f1;
+  gap: 12px; 
 }
 
+/* Scrollbar Styling */
 .form-scroll::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 .form-scroll::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 3px;
+  background: #f9f9f9;
 }
 .form-scroll::-webkit-scrollbar-thumb {
-  background: #ccc;
+  background: #ddd;
   border-radius: 3px;
 }
 
+/* Input Styles */
 label {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: #444;
   margin-bottom: -8px;
   display: block;
+  margin-left: 2px;
 }
 
-input {
+input, select, textarea {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 12px;
+  padding: 10px; 
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
   font-size: 14px;
   outline: none;
-  background: #fafafa;
-  box-sizing: border-box;
-  transition: all 0.2s;
-}
-
-input:focus {
-  border-color: #FF5722;
-  background: #fff;
-  box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.1);
-}
-
-.submit-btn {
-  background-color: #FF5722;
-  color: white;
-  border: none;
-  padding: 14px;
-  border-radius: 12px;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  margin-top: 10px;
-  transition: background 0.2s;
-  width: 100%;
-}
-
-.submit-btn:hover {
-  background-color: #E64A19;
-}
-
-.panel-footer {
-  padding: 15px;
-  text-align: center;
-  border-top: 1px solid #f0f0f0;
-  background: #fafafa;
-}
-
-/* --- NEW STYLES FOR THIS PAGE --- */
-
-.step-indicator {
-  font-size: 12px;
-  color: #FF5722;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.form-row {
-  display: flex;
-  gap: 15px;
-}
-
-.form-group.half {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-/* Style select and textarea to match inputs */
-select, textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  font-size: 14px;
-  outline: none;
-  background: #fafafa;
+  background: #f7f7f7;
   box-sizing: border-box;
   font-family: inherit;
   transition: all 0.2s;
 }
 
-select:focus, textarea:focus {
+input:focus, select:focus, textarea:focus {
   border-color: #FF5722;
   background: #fff;
   box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.1);
@@ -220,57 +184,104 @@ textarea {
   resize: none;
 }
 
-/* File Upload Styling */
+/* Form Row (Unit No + Cuisine) */
+.form-row {
+  display: flex;
+  gap: 15px;
+}
+
+.form-group.half {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* File Upload Button Styling */
 .file-upload-container {
   display: flex;
   align-items: center;
   gap: 10px;
+  background: #f7f7f7;
+  padding: 5px;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
 }
 
-/* Hide the ugly default file input */
 input[type="file"] {
   display: none;
 }
 
-/* Style the label to look like a button */
 .file-upload-btn {
   display: inline-block;
-  padding: 10px 16px;
-  background: #fafafa;
+  padding: 8px 14px;
+  background: #fff;
   border: 1px solid #ddd;
-  border-radius: 12px;
-  font-size: 13px;
+  border-radius: 8px;
+  font-size: 12px;
   font-weight: 600;
   color: #333;
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
   margin-bottom: 0 !important;
 }
 
 .file-upload-btn:hover {
   background: #f0f0f0;
-  border-color: #ccc;
 }
 
 #fileName {
-  font-size: 13px;
+  font-size: 12px;
   color: #888;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 180px;
+  max-width: 150px;
 }
 
 #imagePreview {
   width: 100%;
-  height: 150px;
+  height: 120px;
   object-fit: cover;
-  border-radius: 12px;
+  border-radius: 10px;
   border: 1px solid #eee;
 }
 
+/* Submit Button */
+.submit-btn {
+  background-color: #FF5722;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 5px;
+  transition: transform 0.1s, background 0.2s;
+  width: 100%;
+  box-shadow: 0 4px 10px rgba(255, 87, 34, 0.2);
+}
+
+.submit-btn:hover {
+  background-color: #E64A19;
+  transform: translateY(-1px);
+}
+
+.submit-btn:active {
+  transform: translateY(1px);
+}
+
+/* Footer */
+.panel-footer {
+  padding: 10px;
+  text-align: center;
+  border-top: 1px solid #f0f0f0;
+  background: #fafafa;
+}
+
 .footer-message {
-  font-size: 12px;
+  font-size: 11px;
   color: #888;
-  font-weight: 500;
 }
