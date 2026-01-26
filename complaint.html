@@ -3,31 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mee Rebus Master - Add Complaint</title>
+    <title>Add Complaint</title>
     <link rel="stylesheet" href="Menu.css">
 </head>
-<body class="complaint-page" 
-      data-stall="Mee Rebus Master" 
-      data-return="MeeRebusDetails.html">
+<body class="complaint-page" data-stall="General Stall" data-return="browsestalls.html">
 
     <div class="page-wrapper">
-        <a href="MeeRebusDetails.html" class="btn-go-back">← Go Back</a>
+        <a href="javascript:history.back()" class="btn-go-back">← Go Back</a>
         
         <div class="form-container">
             <div class="form-header-img">
-                <img src="img/Mee Reebus Master.jpg" alt="Mee Rebus Master">
-                <div class="badge-popular">Local Favorite</div>
+                
+                <div class="sub-header" id="default-header">
+                     <h1>Complaint Form</h1>
+                </div>
+
+                <img id="image-preview" src="" alt="Uploaded Evidence">
+                
                 <button class="close-modal-btn">×</button>
             </div>
 
             <div class="form-body">
-                <h2>Complaint Form</h2>
-                <hr class="header-line">
+                
+                <input type="file" id="real-file-input" accept="image/*">
 
                 <div class="input-group">
                     <div class="label-row">
-                        <label>State your complaint here</label>
-                        <button class="btn-import-media">
+                        <label>State your complaint</label>
+                        
+                        <button class="btn-import-media" id="import-btn">
                             <span class="icon">🖼️</span> Import Media
                         </button>
                     </div>
@@ -46,6 +50,7 @@
         </div>
     </div>
 
+    <script src="ImagePreview.js"></script>
     <script src="GlobalSubmit.js"></script>
 
 </body>
