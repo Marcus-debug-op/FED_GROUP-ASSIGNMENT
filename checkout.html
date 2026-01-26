@@ -4,7 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Checkout - HawkerHub</title>
+
+    <!-- Main checkout styles -->
     <link rel="stylesheet" href="StylesCheckOut.css" />
+
+    <!-- Card modal styles (separated) -->
+    <link rel="stylesheet" href="CardModal.css" />
   </head>
 
   <body>
@@ -39,7 +44,7 @@
     <main class="checkout-layout">
       <!-- LEFT -->
       <section class="checkout-left">
-        <!-- Contact -->
+        <!-- Contact Information -->
         <section class="card">
           <div class="card-title">
             <span class="card-icon">
@@ -51,12 +56,12 @@
           <div class="form-grid">
             <label class="field">
               <span class="label">Full Name *</span>
-              <input type="text" placeholder="Enter your name" />
+              <input id="fullName" type="text" placeholder="Enter your name" />
             </label>
 
             <label class="field">
               <span class="label">Phone Number *</span>
-              <input type="text" placeholder="+65 XXXX XXXX" />
+              <input id="phoneNumber" type="text" placeholder="+65 XXXX XXXX" />
             </label>
           </div>
         </section>
@@ -74,7 +79,6 @@
             <label class="field">
               <span class="label">Collection Method</span>
               <select id="collectionMethod">
-                <option value="">Select</option>
                 <option value="Pickup">Pickup</option>
                 <option value="Delivery">Delivery</option>
               </select>
@@ -82,23 +86,43 @@
 
             <label class="field">
               <span class="label">Special instructions (Optional)</span>
-              <input type="text" placeholder="E.g. less spicy" />
+              <input
+                id="specialInstructions"
+                type="text"
+                placeholder="E.g. less spicy"
+              />
             </label>
 
             <!-- Delivery-only fields -->
-            <label class="field" id="deliveryAddressField" style="display:none;">
+            <label
+              class="field"
+              id="deliveryAddressField"
+              style="display: none;"
+            >
               <span class="label">Delivery Address *</span>
-              <input type="text" id="deliveryAddress" placeholder="Enter delivery address" />
+              <input
+                type="text"
+                id="deliveryAddress"
+                placeholder="Enter delivery address"
+              />
             </label>
 
-            <label class="field" id="postalCodeField" style="display:none;">
+            <label
+              class="field"
+              id="postalCodeField"
+              style="display: none;"
+            >
               <span class="label">Postal Code *</span>
-              <input type="text" id="postalCode" placeholder="e.g. 123456" />
+              <input
+                type="text"
+                id="postalCode"
+                placeholder="e.g. 123456"
+              />
             </label>
           </div>
         </section>
 
-        <!-- Payment -->
+        <!-- Payment Method -->
         <section class="card">
           <div class="card-title">
             <span class="card-icon">
@@ -109,7 +133,7 @@
 
           <div class="payment-list">
             <label class="pay-option is-selected">
-              <input type="radio" name="pay" checked />
+              <input type="radio" name="pay" value="card" checked />
               Credit / Debit Card
               <span class="pay-logos">
                 <img src="img/mastercard.webp" class="pay-logo pay-logo-mc" />
@@ -118,7 +142,7 @@
             </label>
 
             <label class="pay-option">
-              <input type="radio" name="pay" />
+              <input type="radio" name="pay" value="paynow" />
               PayNow
               <span class="pay-logos">
                 <img src="img/paynow.webp" class="pay-logo pay-logo-paynow" />
@@ -126,7 +150,7 @@
             </label>
 
             <label class="pay-option">
-              <input type="radio" name="pay" />
+              <input type="radio" name="pay" value="cash" />
               Cash on Pickup
             </label>
           </div>
@@ -142,36 +166,34 @@
           <span id="checkoutSubtotal">$0.00</span>
         </div>
 
-        <!-- Eco row (only shows when eco is ON) -->
-        <div class="row" id="checkoutEcoRow" style="display:none;">
+        <div
+          class="row"
+          id="checkoutEcoRow"
+          style="display: none;"
+        >
           <span>Eco Packaging</span>
           <span id="checkoutEcoFee">+$0.00</span>
         </div>
 
-        <!-- Discount row (only shows when discount > 0) -->
-        <div class="row" id="discountRow" style="display:none;">
+        <div
+          class="row"
+          id="discountRow"
+          style="display: none;"
+        >
           <span>Discount</span>
           <span id="discountAmount">-$0.00</span>
         </div>
 
-        <!-- Promo input -->
-        <div style="display:flex; gap:10px; margin:12px 0;">
+        <div class="promo-row">
           <input
             id="promoCodeInput"
             type="text"
             placeholder="Enter promo code"
-            style="flex:1; padding:10px 12px; border-radius:10px; border:1px solid #ddd;"
           />
-          <button
-            id="applyPromoBtn"
-            type="button"
-            style="padding:10px 12px; border-radius:10px; border:0; background:#ff6a00; color:#fff; font-weight:800; cursor:pointer;"
-          >
-            Apply
-          </button>
+          <button id="applyPromoBtn" type="button">Apply</button>
         </div>
 
-        <div id="promoMsg" style="font-size:12px; margin-bottom:8px;"></div>
+        <div id="promoMsg" class="promo-msg"></div>
 
         <div class="divider"></div>
 
@@ -182,10 +204,61 @@
 
         <button class="cta" type="button">Submit</button>
 
-        <div class="footnote">Pickup time will be confirmed after checkout</div>
+        <div class="footnote">
+          Pickup time will be confirmed after checkout
+        </div>
       </aside>
     </main>
 
+    <!-- Credit / Debit Card Modal -->
+    <div class="modal-overlay" id="cardModalOverlay">
+      <div class="modal">
+        <h3>Card Details</h3>
+
+        <div class="grid">
+          <label class="row1">
+            Name on card
+            <input id="cardName" type="text" placeholder="J. Smith" />
+          </label>
+
+          <label class="row1">
+            Card number
+            <input
+              id="cardNumber"
+              type="text"
+              placeholder="1234 5678 9012 3456"
+            />
+          </label>
+
+          <label>
+            Expiry date
+            <input id="cardExpiry" type="text" placeholder="MM/YY" />
+          </label>
+
+          <label>
+            Security code
+            <input id="cardCvv" type="text" placeholder="3 digits" />
+          </label>
+        </div>
+
+        <div id="cardModalError" class="error"></div>
+
+        <div class="actions">
+          <button id="cardCancelBtn" class="btn" type="button">
+            Cancel
+          </button>
+          <button id="cardAddBtn" class="btn btn-primary" type="button">
+            Add
+          </button>
+        </div>
+
+        <div class="hint">
+          Your card is saved locally (demo only).
+        </div>
+      </div>
+    </div>
+
+    <!-- Checkout logic -->
     <script src="checkout.js"></script>
   </body>
 </html>
