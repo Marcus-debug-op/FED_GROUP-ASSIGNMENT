@@ -100,6 +100,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const deliveryAddress = document.getElementById("deliveryAddress");
   const postalCode = document.getElementById("postalCode");
 
+  function clearInvalid(el) {
+    if (!el) return;
+    el.style.borderColor = "";
+  }
+
+  function markInvalid(el) {
+    if (!el) return;
+    el.style.borderColor = "crimson";
+  }
+
   function applyDeliveryUI() {
     const method = String(collectionMethod?.value || "Pickup");
     const show = method === "Delivery";
@@ -110,7 +120,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!show) {
       if (deliveryAddress) deliveryAddress.value = "";
       if (postalCode) postalCode.value = "";
-      // clear red borders when switching back
       clearInvalid(deliveryAddress);
       clearInvalid(postalCode);
     }
@@ -122,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================
-  // ✅ RESTORED: Checkout form validation
+  // Checkout form validation
   // =========================
   const fullNameInput = document.getElementById("fullName");
   const phoneInput = document.getElementById("phoneNumber");
@@ -133,14 +142,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function normalizePhone(raw) {
     const digits = digitsOnly(raw);
-    // +65XXXXXXXX -> keep last 8
     if (digits.startsWith("65") && digits.length === 10) return digits.slice(2);
     return digits;
   }
 
   function isValidSGPhone(raw) {
     const p = normalizePhone(raw);
-    // SG numbers are 8 digits, often start 6/8/9
     return /^[689]\d{7}$/.test(p);
   }
 
@@ -152,18 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return /^\d{6}$/.test(normalizePostal(raw));
   }
 
-  function markInvalid(el) {
-    if (!el) return;
-    el.style.borderColor = "crimson";
-  }
-
-  function clearInvalid(el) {
-    if (!el) return;
-    el.style.borderColor = "";
-  }
-
   function validateCheckoutForm() {
-    // reset
     [fullNameInput, phoneInput, collectionMethod, deliveryAddress, postalCode].forEach(clearInvalid);
 
     const name = String(fullNameInput?.value || "").trim();
@@ -185,7 +181,6 @@ document.addEventListener("DOMContentLoaded", () => {
       markInvalid(phoneInput);
     }
 
-    // method always has value in your HTML (Pickup/Delivery), but we keep this safe anyway
     if (!method) {
       errors.push("Please select a collection method.");
       markInvalid(collectionMethod);
@@ -194,6 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let addr = "";
     let postal = "";
 
+    // ✅ delivery validation
     if (method === "Delivery") {
       addr = String(deliveryAddress?.value || "").trim();
       postal = String(postalCode?.value || "").trim();
@@ -227,13 +223,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  // optional: clear red border while typing
-  if (fullNameInput) fullNameInput.addEventListener("input", () => clearInvalid(fullNameInput));
-  if (phoneInput) phoneInput.addEventListener("input", () => clearInvalid(phoneInput));
-  if (deliveryAddress) deliveryAddress.addEventListener("input", () => clearInvalid(deliveryAddress));
-  if (postalCode) postalCode.addEventListener("input", () => clearInvalid(postalCode));
-  if (collectionMethod) collectionMethod.addEventListener("change", () => clearInvalid(collectionMethod));
-
   // =========================
   // Card modal helpers
   // =========================
@@ -244,7 +233,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const cardCvv = document.getElementById("cardCvv");
   const cardAddBtn = document.getElementById("cardAddBtn");
   const cardCancelBtn = document.getElementById("cardCancelBtn");
-  const cardErr = document.getElementById("cardModalError");
+  const cardMsg = document.getElementById("cardModalError"); // reuse for error + success
 
   let lastPayValue = "card";
 
@@ -275,22 +264,31 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem(CARD_DETAILS_KEY, JSON.stringify(details));
   }
 
-  function clearCardError() {
-    if (!cardErr) return;
-    cardErr.style.display = "none";
-    cardErr.textContent = "";
+  function clearCardMsg() {
+    if (!cardMsg) return;
+    cardMsg.style.display = "none";
+    cardMsg.textContent = "";
+    cardMsg.style.color = ""; // reset
   }
 
   function showCardError(msg) {
-    if (!cardErr) return;
-    cardErr.style.display = "block";
-    cardErr.textContent = msg;
+    if (!cardMsg) return;
+    cardMsg.style.display = "block";
+    cardMsg.textContent = msg;
+    cardMsg.style.color = "#ff6b6b";
+  }
+
+  function showCardSuccess(msg) {
+    if (!cardMsg) return;
+    cardMsg.style.display = "block";
+    cardMsg.textContent = msg;
+    cardMsg.style.color = "#008330"; // green
   }
 
   function openCardModal() {
     if (!overlay) return;
 
-    clearCardError();
+    clearCardMsg();
 
     const saved = readCardDetails();
     if (saved) {
@@ -317,7 +315,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!overlay) return;
     overlay.style.display = "none";
     overlay.setAttribute("aria-hidden", "true");
-    clearCardError();
+    clearCardMsg();
   }
 
   function isValidCardNumber(num) {
@@ -357,9 +355,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (overlay) {
     overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) {
-        handleCardCancel();
-      }
+      if (e.target === overlay) handleCardCancel();
     });
   }
 
@@ -376,7 +372,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (cardAddBtn) {
     cardAddBtn.addEventListener("click", () => {
-      clearCardError();
+      clearCardMsg();
 
       const name = String(cardName?.value || "").trim();
       const number = String(cardNumber?.value || "").trim();
@@ -388,6 +384,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!isValidExpiry(expiry)) return showCardError("Please enter a valid expiry date (MM/YY).");
       if (!isValidCvv(cvv)) return showCardError("Please enter a valid security code (3–4 digits).");
 
+      // Save minimal (demo-safe) details
       const details = {
         name,
         numberMasked: maskCardNumber(number),
@@ -396,8 +393,14 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       saveCardDetails(details);
-      closeCardModal();
+
+      // ✅ show success, then close
+      showCardSuccess("Successful!");
       setSelectedPayValue("card");
+
+      setTimeout(() => {
+        closeCardModal();
+      }, 700);
     });
   }
 
@@ -411,11 +414,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (code === "FIRSTORDER") {
       const history = readHistory();
       if (history && history.length >= 1) {
-        return {
-          ok: false,
-          discount: 0,
-          message: "FIRSTORDER can only be used if you have no previous orders.",
-        };
+        return { ok: false, discount: 0, message: "FIRSTORDER can only be used if you have no previous orders." };
       }
     }
 
@@ -427,17 +426,9 @@ document.addEventListener("DOMContentLoaded", () => {
       return { ok: false, discount: 0, message: "HAWKER20 requires subtotal above $10." };
     }
 
-    if (promo.type === "freeship") {
-      return { ok: true, discount: 0, message: "FREESHIP applied." };
-    }
-
-    if (promo.type === "percent") {
-      return { ok: true, discount: subtotal * promo.value, message: `${code} applied.` };
-    }
-
-    if (promo.type === "flat") {
-      return { ok: true, discount: Math.min(promo.value, subtotal), message: `${code} applied.` };
-    }
+    if (promo.type === "freeship") return { ok: true, discount: 0, message: "FREESHIP applied." };
+    if (promo.type === "percent") return { ok: true, discount: subtotal * promo.value, message: `${code} applied.` };
+    if (promo.type === "flat") return { ok: true, discount: Math.min(promo.value, subtotal), message: `${code} applied.` };
 
     return { ok: false, discount: 0, message: "Promo rule error." };
   }
@@ -538,11 +529,9 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // ✅ Validate contact + delivery info BEFORE payment checks
     const form = validateCheckoutForm();
     if (!form.ok) return;
 
-    // ✅ If card selected but no card saved, force modal
     const pay = getSelectedPayValue();
     if (pay === "card") {
       const saved = readCardDetails();
@@ -568,13 +557,11 @@ document.addEventListener("DOMContentLoaded", () => {
       promoCode: info.promoCode || "",
       total: info.total,
 
-      // ✅ store payment type + masked card (demo)
       payment: {
         method: pay,
         card: pay === "card" ? readCardDetails() : null,
       },
 
-      // ✅ store contact + collection info
       contact: {
         fullName: form.fullName,
         phone: form.phone,
@@ -589,7 +576,6 @@ document.addEventListener("DOMContentLoaded", () => {
     history.push(order);
     saveHistory(history);
 
-    // Clear after payment
     localStorage.removeItem(CART_KEY);
     localStorage.removeItem(ECO_KEY);
     localStorage.removeItem(COUPON_KEY);
