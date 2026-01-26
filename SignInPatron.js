@@ -1,6 +1,4 @@
 // SignInPatron.js
-// Patron login using localStorage -> redirects to Home Guest.html
-
 document.addEventListener("DOMContentLoaded", () => {
   const emailEl = document.getElementById("email");
   const passEl = document.getElementById("password");
@@ -8,9 +6,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!emailEl || !passEl || !signInBtn) return;
 
-  signInBtn.addEventListener("click", () => {
-    const email = emailEl.value.trim().toLowerCase();
-    const password = passEl.value;
+  signInBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    const email = (emailEl.value || "").trim().toLowerCase();
+    const password = passEl.value || "";
 
     if (!email || !password) {
       alert("Please enter email and password.");
@@ -19,12 +19,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const users = JSON.parse(localStorage.getItem("hawkerHubUsers")) || [];
 
-    // Patron-only match
     const matched = users.find(
       (u) =>
-        (u.email || "").toLowerCase() === email &&
-        u.password === password &&
-        (u.role === "patron" || u.role === "customer")
+        String(u?.email || "").trim().toLowerCase() === email &&
+        String(u?.password || "") === password &&
+        String(u?.role || "").trim().toLowerCase() === "patron"
     );
 
     if (!matched) {
@@ -32,7 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Save current session user
     localStorage.setItem(
       "hawkerHubCurrentUser",
       JSON.stringify({
