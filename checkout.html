@@ -61,7 +61,7 @@
           </div>
         </section>
 
-        <!-- Pickup -->
+        <!-- Pickup / Delivery -->
         <section class="card">
           <div class="card-title">
             <span class="card-icon">
@@ -73,14 +73,27 @@
           <div class="form-grid">
             <label class="field">
               <span class="label">Collection Method</span>
-              <select>
-                <option>Pickup</option>
+              <select id="collectionMethod">
+                <option value="">Select</option>
+                <option value="Pickup">Pickup</option>
+                <option value="Delivery">Delivery</option>
               </select>
             </label>
 
             <label class="field">
               <span class="label">Special instructions (Optional)</span>
               <input type="text" placeholder="E.g. less spicy" />
+            </label>
+
+            <!-- Delivery-only fields -->
+            <label class="field" id="deliveryAddressField" style="display:none;">
+              <span class="label">Delivery Address *</span>
+              <input type="text" id="deliveryAddress" placeholder="Enter delivery address" />
+            </label>
+
+            <label class="field" id="postalCodeField" style="display:none;">
+              <span class="label">Postal Code *</span>
+              <input type="text" id="postalCode" placeholder="e.g. 123456" />
             </label>
           </div>
         </section>
@@ -173,7 +186,6 @@
       </aside>
     </main>
 
-    <!-- ✅ Checkout logic -->
     <script src="checkout.js"></script>
   </body>
 </html>

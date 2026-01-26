@@ -88,6 +88,172 @@ document.addEventListener("DOMContentLoaded", () => {
     return "Multiple stalls";
   }
 
+  // ---------- ✅ NEW: get fields ----------
+  function getCheckoutFields() {
+    const cards = document.querySelectorAll(".checkout-left .card");
+    const contactCard = cards[0];
+    const pickupCard = cards[1];
+
+    const contactInputs = contactCard
+      ? contactCard.querySelectorAll('input[type="text"]')
+      : [];
+    const nameInput = contactInputs[0] || null;
+    const phoneInput = contactInputs[1] || null;
+
+    const methodSelect = document.getElementById("collectionMethod");
+    const pickupInputs = pickupCard
+      ? pickupCard.querySelectorAll('input[type="text"]')
+      : [];
+    const instructionsInput = pickupInputs[0] || null;
+
+    const deliveryAddressField = document.getElementById("deliveryAddressField");
+    const postalCodeField = document.getElementById("postalCodeField");
+    const deliveryAddressInput = document.getElementById("deliveryAddress");
+    const postalCodeInput = document.getElementById("postalCode");
+
+    return {
+      nameInput,
+      phoneInput,
+      methodSelect,
+      instructionsInput,
+      deliveryAddressField,
+      postalCodeField,
+      deliveryAddressInput,
+      postalCodeInput,
+    };
+  }
+
+  // ---------- ✅ NEW: delivery show/hide ----------
+  function bindDeliveryToggle() {
+    const {
+      methodSelect,
+      deliveryAddressField,
+      postalCodeField,
+      deliveryAddressInput,
+      postalCodeInput,
+    } = getCheckoutFields();
+
+    if (!methodSelect) return;
+
+    const apply = () => {
+      const method = String(methodSelect.value || "").trim();
+      const show = method === "Delivery";
+
+      if (deliveryAddressField) deliveryAddressField.style.display = show ? "block" : "none";
+      if (postalCodeField) postalCodeField.style.display = show ? "block" : "none";
+
+      if (!show) {
+        if (deliveryAddressInput) deliveryAddressInput.value = "";
+        if (postalCodeInput) postalCodeInput.value = "";
+      }
+    };
+
+    methodSelect.addEventListener("change", apply);
+    apply();
+  }
+
+  // ---------- ✅ NEW: validation ----------
+  function normalizePhone(raw) {
+    const digits = String(raw || "").replace(/\D/g, "");
+    if (digits.startsWith("65") && digits.length === 10) return digits.slice(2);
+    return digits;
+  }
+
+  function isValidSGPhone(raw) {
+    const p = normalizePhone(raw);
+    return /^[689]\d{7}$/.test(p);
+  }
+
+  function normalizePostal(raw) {
+    return String(raw || "").replace(/\D/g, "");
+  }
+
+  function isValidSGPostal(raw) {
+    const p = normalizePostal(raw);
+    return /^\d{6}$/.test(p);
+  }
+
+  function markInvalid(el) {
+    if (!el) return;
+    el.style.borderColor = "crimson";
+  }
+
+  function clearInvalid(el) {
+    if (!el) return;
+    el.style.borderColor = "";
+  }
+
+  function validateCheckoutForm() {
+    const {
+      nameInput,
+      phoneInput,
+      methodSelect,
+      deliveryAddressInput,
+      postalCodeInput,
+    } = getCheckoutFields();
+
+    [nameInput, phoneInput, methodSelect, deliveryAddressInput, postalCodeInput].forEach(clearInvalid);
+
+    const name = String(nameInput?.value || "").trim();
+    const phoneRaw = String(phoneInput?.value || "").trim();
+    const method = String(methodSelect?.value || "").trim();
+
+    const errors = [];
+
+    if (!name) {
+      errors.push("Please enter your full name.");
+      markInvalid(nameInput);
+    }
+
+    if (!phoneRaw) {
+      errors.push("Please enter your phone number.");
+      markInvalid(phoneInput);
+    } else if (!isValidSGPhone(phoneRaw)) {
+      errors.push("Please enter a valid Singapore phone number (e.g. 91234567 or +65 9123 4567).");
+      markInvalid(phoneInput);
+    }
+
+    if (!method) {
+      errors.push("Please select a collection method.");
+      markInvalid(methodSelect);
+    }
+
+    let deliveryAddress = "";
+    let postalCode = "";
+
+    if (method === "Delivery") {
+      deliveryAddress = String(deliveryAddressInput?.value || "").trim();
+      postalCode = String(postalCodeInput?.value || "").trim();
+
+      if (!deliveryAddress) {
+        errors.push("Please enter your delivery address.");
+        markInvalid(deliveryAddressInput);
+      }
+
+      if (!postalCode) {
+        errors.push("Please enter your postal code.");
+        markInvalid(postalCodeInput);
+      } else if (!isValidSGPostal(postalCode)) {
+        errors.push("Please enter a valid 6-digit postal code (e.g. 123456).");
+        markInvalid(postalCodeInput);
+      }
+    }
+
+    if (errors.length) {
+      alert(errors.join("\n"));
+      return { ok: false };
+    }
+
+    return {
+      ok: true,
+      fullName: name,
+      phone: normalizePhone(phoneRaw),
+      method,
+      deliveryAddress: method === "Delivery" ? deliveryAddress : "",
+      postalCode: method === "Delivery" ? normalizePostal(postalCode) : "",
+    };
+  }
+
   // ---------- Promo calculation ----------
   function computeDiscount(subtotal, code) {
     if (!code) return { ok: true, discount: 0, message: "" };
@@ -107,7 +273,6 @@ document.addEventListener("DOMContentLoaded", () => {
         };
       }
     }
-
 
     if (promo.weekdayOnly && !isWeekday()) {
       return { ok: false, discount: 0, message: "WEEKDAY80 is only valid on weekdays (Mon–Fri)." };
@@ -196,6 +361,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initial render
   updateCheckoutSummary();
 
+  // ✅ NEW: delivery toggle
+  bindDeliveryToggle();
+
   // ---------- Payment option highlight ----------
   paymentOptions.forEach((option) => {
     const radio = option.querySelector("input[type='radio']");
@@ -222,6 +390,13 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // ✅ NEW: validate required fields
+    const form = validateCheckoutForm();
+    if (!form.ok) return;
+
+    const { instructionsInput } = getCheckoutFields();
+    const instructions = String(instructionsInput?.value || "").trim();
+
     const history = readHistory();
 
     const order = {
@@ -230,6 +405,19 @@ document.addEventListener("DOMContentLoaded", () => {
       status: "Paid",
       createdAt: new Date().toISOString(),
       stallSummary: buildStallSummary(info.cart),
+
+      // ✅ NEW: save contact + collection info
+      contact: {
+        fullName: form.fullName,
+        phone: form.phone,
+      },
+      collection: {
+        method: form.method,
+        instructions,
+        deliveryAddress: form.deliveryAddress,
+        postalCode: form.postalCode,
+      },
+
       items: info.cart,
       subtotal: info.subtotal,
       ecoFee: info.ecoFee,
