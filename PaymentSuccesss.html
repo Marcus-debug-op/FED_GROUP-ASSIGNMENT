@@ -31,7 +31,7 @@
     <section class="banner-wrap">
       <div class="banner">
         <div class="banner-left">
-          <a class="continue" href="#">← Continue Shopping</a>
+          <a class="continue" href="browsestalls.html">← Continue Shopping</a>
 
           <div class="mini">
             <div class="mini-icon" aria-hidden="true">
@@ -51,11 +51,11 @@
       <section class="success">
         <!-- Green circle check -->
         <div class="check-circle" aria-hidden="true">
-            <img
-                src="img/check.png"
-                alt="Payment Successful"
-                class="success-icon"
-            />
+          <img
+            src="img/check.png"
+            alt="Payment Successful"
+            class="success-icon"
+          />
         </div>
 
         <div class="success-text">
@@ -73,14 +73,22 @@
         </div>
       </section>
     </main>
-    <script>
-    // Generate random queue number (1–99)
-    const queueEl = document.getElementById("queueNumber");
 
-    if (queueEl) {
-        const randomQueue = Math.floor(Math.random() * 99) + 1;
-        queueEl.textContent = randomQueue.toString().padStart(2, "0");
-    }
+    <!-- ✅ Queue number from order history (NO RANDOM) -->
+    <script>
+      const HISTORY_KEY = "hawkerhub_order_history";
+      const queueEl = document.getElementById("queueNumber");
+
+      try {
+        const history = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+
+        if (queueEl && history.length > 0) {
+          const latestOrder = history[history.length - 1];
+          queueEl.textContent = latestOrder.orderNo;
+        }
+      } catch (e) {
+        if (queueEl) queueEl.textContent = "01";
+      }
     </script>
   </body>
 </html>
