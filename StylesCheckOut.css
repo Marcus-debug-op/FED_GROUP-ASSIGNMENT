@@ -363,3 +363,33 @@ input::placeholder{ color: rgba(0,0,0,0.35); }
 .cta{
   cursor: pointer;
 }
+/* Promo code row (Order Summary) */
+.promo-row{
+  display:flex;
+  gap:10px;
+  margin:12px 0;
+}
+
+.promo-row input{
+  flex:1;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  outline:none;
+}
+
+.promo-row button{
+  padding:10px 14px;
+  border-radius:10px;
+  border:0;
+  background:#ffffff;
+  color:#F43C13;
+  font-weight:800;
+  cursor:pointer;
+  white-space:nowrap;
+}
+
+.promo-msg{
+  font-size:12px;
+  margin-bottom:8px;
+}
