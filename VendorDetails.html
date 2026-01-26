@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HawkerHub – Vendor Details</title>
+  <link rel="stylesheet" href="VendorDetails.css">
+</head>
+
+<body data-auth-role="vendor-details">
+
+  <div class="app">
+    <button class="back-btn" type="button" onclick="history.back()">
+      ↩ Back
+    </button>
+
+    <div class="logo">
+      <img src="img/logo.png" alt="HawkerHub Logo" />
+    </div>
+
+    <div class="panel-wrap">
+      <div class="panel">
+        
+        <div class="panel-top">
+          <div class="step-indicator">Step 2: Stall Details</div>
+        </div>
+
+        <div class="panel-body">
+          <div class="icon">🏪</div>
+          <div class="title">Vendor Details</div>
+          <div class="subtitle">Tell us more about your business</div>
+
+          <div class="form-scroll">
+            
+            <label for="stallName">Stall Name</label>
+            <input id="stallName" type="text" placeholder="e.g. Ah Seng Chicken Rice" />
+
+            <label for="location">Hawker Centre / Location</label>
+            <input id="location" type="text" placeholder="e.g. Maxwell Food Centre" />
+
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="unitNumber">Unit No.</label>
+                    <input id="unitNumber" type="text" placeholder="#01-XX" />
+                </div>
+                <div class="form-group half">
+                    <label for="cuisine">Cuisine Type</label>
+                    <select id="cuisine">
+                        <option value="" disabled selected>Select...</option>
+                        <option value="Chinese">Chinese</option>
+                        <option value="Malay">Malay</option>
+                        <option value="Indian">Indian</option>
+                    </select>
+                </div>
+            </div>
+
+            <label for="description">Short Description</label>
+            <textarea id="description" rows="3" placeholder="What is your signature dish?"></textarea>
+
+            <label for="hours">Opening Hours</label>
+            <input id="hours" type="text" placeholder="e.g. 9am - 8pm (Closed Mondays)" />
+
+            <label>Stall Image</label>
+            <div class="file-upload-container">
+                <label for="stallImage" class="file-upload-btn">
+                    Choose Photo
+                </label>
+                <input id="stallImage" type="file" accept="image/*" />
+                <span id="fileName">No file chosen</span>
+            </div>
+            <div id="imagePreviewContainer" style="display:none; margin-top:10px;">
+                <img id="imagePreview" src="" alt="Preview" />
+            </div>
+
+            <button class="submit-btn" id="finishBtn" type="button">Complete Registration</button>
+
+          </div>
+        </div>
+
+        <div class="panel-footer">
+          <div class="footer-message">Almost there!</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="VendorDetails.js" defer></script>
+</body>
+</html>

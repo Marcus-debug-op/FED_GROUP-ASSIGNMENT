@@ -1,0 +1,276 @@
+body {
+  /* Make sure 'Signin-bg.png' is in the same folder as this CSS file */
+  background-image: url('img/Signin-bg.png'); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* --- REUSED STYLES --- */
+
+.app {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333; /* Dark text for visibility on light parts of BG */
+  cursor: pointer;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.9); /* White background for readability */
+  border-radius: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.logo {
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.logo img {
+  height: 60px;
+}
+
+.panel-wrap {
+  width: 100%;
+  max-width: 400px;
+  padding: 0 20px;
+  box-sizing: border-box;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.panel {
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: 75vh;
+}
+
+.panel-top {
+  padding: 15px 20px 0;
+}
+
+.panel-body {
+  padding: 10px 30px 30px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.icon {
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  color: #1a1a1a;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #666;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form-scroll {
+  overflow-y: auto;
+  padding-right: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc #f1f1f1;
+}
+
+.form-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.form-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+.form-scroll::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: -8px;
+  display: block;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 14px;
+  outline: none;
+  background: #fafafa;
+  box-sizing: border-box;
+  transition: all 0.2s;
+}
+
+input:focus {
+  border-color: #FF5722;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.1);
+}
+
+.submit-btn {
+  background-color: #FF5722;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.2s;
+  width: 100%;
+}
+
+.submit-btn:hover {
+  background-color: #E64A19;
+}
+
+.panel-footer {
+  padding: 15px;
+  text-align: center;
+  border-top: 1px solid #f0f0f0;
+  background: #fafafa;
+}
+
+/* --- NEW STYLES FOR THIS PAGE --- */
+
+.step-indicator {
+  font-size: 12px;
+  color: #FF5722;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+}
+
+.form-group.half {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Style select and textarea to match inputs */
+select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 14px;
+  outline: none;
+  background: #fafafa;
+  box-sizing: border-box;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+select:focus, textarea:focus {
+  border-color: #FF5722;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.1);
+}
+
+textarea {
+  resize: none;
+}
+
+/* File Upload Styling */
+.file-upload-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Hide the ugly default file input */
+input[type="file"] {
+  display: none;
+}
+
+/* Style the label to look like a button */
+.file-upload-btn {
+  display: inline-block;
+  padding: 10px 16px;
+  background: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 0 !important;
+}
+
+.file-upload-btn:hover {
+  background: #f0f0f0;
+  border-color: #ccc;
+}
+
+#fileName {
+  font-size: 13px;
+  color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+#imagePreview {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid #eee;
+}
+
+.footer-message {
+  font-size: 12px;
+  color: #888;
+  font-weight: 500;
+}
