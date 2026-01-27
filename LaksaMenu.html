@@ -70,104 +70,10 @@
 
     <main class="container menu-section">
         <h2 class="section-title">Menu</h2>
-        <div class="menu-grid">
-            
-            <div class="menu-card">
-                <div class="image-container">
-                    <img src="img/Standard Laksa.jpg" alt="Signature Standard Laksa">
-                </div>
-                <div class="card-body">
-                    <div class="card-header">
-                        <h3>Signature Standard Laksa</h3>
-                        <div class="likes-container">
-                            <span class="heart-icon">♡</span>
-                            <span class="likes-count">1.5k likes</span>
-                        </div>
-                    </div>
-                    <p class="desc">The classic favorite. Thick vermicelli in rich coconut broth with cockles, fish cake, and egg.</p>
-                    <div class="card-footer">
-                        <span class="price">$5.00</span>
-                        <button
-                            class="add-to-cart"
-                            data-add-to-cart
-                            data-id="laksalegend-standard"
-                            data-name="Signature Standard Laksa"
-                            data-price="5.00"
-                            data-stall="Laksa Legend"
-                            data-img="img/Standard Laksa.jpg"
-                            type="button"
-                        >
-                            🛒 Add to Cart
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="menu-card">
-                <div class="image-container">
-                    <img src="img/Beef Meetball Laksa.jpg" alt="Beef Meatball Laksa">
-                </div>
-                <div class="card-body">
-                    <div class="card-header">
-                        <h3>Beef Meatball Laksa</h3>
-                        <div class="likes-container">
-                            <span class="heart-icon">♡</span>
-                            <span class="likes-count">850 likes</span>
-                        </div>
-                    </div>
-                    <p class="desc">A unique twist featuring juicy beef meatballs soaking up the spicy, creamy curry goodness.</p>
-                    <div class="card-footer">
-                        <span class="price">$6.00</span>
-                        <button
-                            class="add-to-cart"
-                            data-add-to-cart
-                            data-id="laksalegend-beef"
-                            data-name="Beef Meatball Laksa"
-                            data-price="6.00"
-                            data-stall="Laksa Legend"
-                            data-img="img/Beef Meetball Laksa.jpg"
-                            type="button"
-                        >
-                            🛒 Add to Cart
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="menu-card">
-                <div class="image-container">
-                    <img src="img/SeaFood Laksa.jpg" alt="Premium Seafood Laksa">
-                </div>
-                <div class="card-body">
-                    <div class="card-header">
-                        <h3>Premium Seafood Laksa</h3>
-                        <div class="likes-container">
-                            <span class="heart-icon">♡</span>
-                            <span class="likes-count">1.1k likes</span>
-                        </div>
-                    </div>
-                    <p class="desc">The ultimate bowl. Topped with fresh prawns, clams, and squid for seafood lovers.</p>
-                    <div class="card-footer">
-                        <span class="price">$7.00</span>
-                        <button
-                            class="add-to-cart"
-                            data-add-to-cart
-                            data-id="laksalegend-seafood"
-                            data-name="Premium Seafood Laksa"
-                            data-price="7.00"
-                            data-stall="Laksa Legend"
-                            data-img="img/SeaFood Laksa.jpg"
-                            type="button"
-                        >
-                            🛒 Add to Cart
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+        <div class="menu-grid" id="menu-container" data-stall="Laksa"></div>
     </main>
 
+    <script type="module" src="menu.js"></script>
     <script src="ScriptCart.js"></script>
 </body>
 </html>

@@ -68,104 +68,10 @@
 
     <main class="container menu-section">
         <h2 class="section-title">Menu</h2>
-        <div class="menu-grid">
-            
-            <div class="menu-card">
-                <div class="image-container">
-                    <img src="img/Standard Nasi Lemak.jpg" alt="Standard Nasi Lemak Set">
-                </div>
-                <div class="card-body">
-                    <div class="card-header">
-                        <h3>Standard Set</h3>
-                        <div class="likes-container">
-                            <span class="heart-icon">♡</span>
-                            <span class="likes-count">750 likes</span>
-                        </div>
-                    </div>
-                    <p class="desc">The classic breakfast. Coconut rice served with fried egg, ikan bilis, peanuts, and cucumber.</p>
-                    <div class="card-footer">
-                        <span class="price">$4.00</span>
-                        <button
-                            class="add-to-cart"
-                            data-add-to-cart
-                            data-id="nasilemak-standard"
-                            data-name="Standard Nasi Lemak Set"
-                            data-price="4.00"
-                            data-stall="Nasi Lemak Galore"
-                            data-img="img/Standard Nasi Lemak.jpg"
-                            type="button"
-                        >
-                            🛒 Add to Cart
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="menu-card">
-                <div class="image-container">
-                    <img src="img/Nasi Lemak With Chicken.jpg" alt="Chicken Wing Set">
-                </div>
-                <div class="card-body">
-                    <div class="card-header">
-                        <h3>Chicken Wing Set</h3>
-                        <div class="likes-container">
-                            <span class="heart-icon">♡</span>
-                            <span class="likes-count">1.3k likes</span>
-                        </div>
-                    </div>
-                    <p class="desc">Our bestseller. Includes a crispy, golden-brown fried chicken wing and extra sambal.</p>
-                    <div class="card-footer">
-                        <span class="price">$5.50</span>
-                        <button
-                            class="add-to-cart"
-                            data-add-to-cart
-                            data-id="nasilemak-chicken"
-                            data-name="Chicken Wing Set"
-                            data-price="5.50"
-                            data-stall="Nasi Lemak Galore"
-                            data-img="img/Nasi Lemak With Chicken.jpg"
-                            type="button"
-                        >
-                            🛒 Add to Cart
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="menu-card">
-                <div class="image-container">
-                    <img src="img/Small Nasi Lemak.jpg" alt="Basic Nasi Lemak">
-                </div>
-                <div class="card-body">
-                    <div class="card-header">
-                        <h3>Basic Nasi Lemak</h3>
-                        <div class="likes-container">
-                            <span class="heart-icon">♡</span>
-                            <span class="likes-count">420 likes</span>
-                        </div>
-                    </div>
-                    <p class="desc">A lighter portion perfect for a quick snack. Wrapped in traditional banana leaf.</p>
-                    <div class="card-footer">
-                        <span class="price">$3.00</span>
-                        <button
-                            class="add-to-cart"
-                            data-add-to-cart
-                            data-id="nasilemak-small"
-                            data-name="Basic Nasi Lemak"
-                            data-price="3.00"
-                            data-stall="Nasi Lemak Galore"
-                            data-img="img/Small Nasi Lemak.jpg"
-                            type="button"
-                        >
-                            🛒 Add to Cart
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+        <div class="menu-grid" id="menu-container" data-stall="nasi_lemak"></div>
     </main>
 
+    <script type="module" src="menu.js"></script>
     <script src="ScriptCart.js"></script>
 </body>
 </html>

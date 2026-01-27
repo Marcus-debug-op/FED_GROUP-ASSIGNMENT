@@ -9,44 +9,44 @@
 </head>
 <body class="menu-page">
 
-   <header class="topbar">
-    <div class="container topbar-inner">
-      <img src="img/Dashboard button.png" alt="Dashboard" class="icon-btn" id="menu-btn" />
+    <header class="topbar">
+        <div class="container topbar-inner">
+            <img src="img/Dashboard button.png" alt="Dashboard" class="icon-btn" id="menu-btn" />
 
-      <div class="brand">
-        <img src="img/Logo.png" alt="HawkerHub Logo" class="logo" />
-      </div>
+            <div class="brand">
+                <img src="img/Logo.png" alt="HawkerHub Logo" class="logo" />
+            </div>
 
-      <nav class="navlinks">
-        <a href="browsestalls.html" class="navlink">Browse</a>
-        <a href="history.html" class="navlink">History</a>
-        <a href="cart.html" class="navlink">Cart</a>
-      </nav>
+            <nav class="navlinks">
+                <a href="browsestalls.html" class="navlink">Browse</a>
+                <a href="history.html" class="navlink">History</a>
+                <a href="cart.html" class="navlink">Cart</a>
+            </nav>
 
-      <a class="btn btn-signin" href="Sign in/sign-in.html">Sign in</a>
+            <a class="btn btn-signin" href="Sign in/sign-in.html">Sign in</a>
+        </div>
+    </header>
+
+    <div id="overlay" class="overlay hidden"></div>
+
+    <div id="dashboard" class="dashboard hidden">
+        <div class="dashboard-header">
+            <div class="dashboard-brand">
+                <img src="img/Logo.png" alt="HawkerHub" class="logo" />
+                <span>HawkerHub</span>
+            </div>
+            <button id="close-btn" type="button">✕</button>
+        </div>
+
+        <a href="browsestalls.html">Browse</a>
+        <a href="history.html">History</a>
+        <a href="cart.html">Cart</a>
+
+        <div class="dashboard-footer">
+            <p>Hungry? Let's get started!</p>
+            <a href="Sign in/sign-in.html">Sign in</a>
+        </div>
     </div>
-  </header>
-
-  <div id="overlay" class="overlay hidden"></div>
-
-  <div id="dashboard" class="dashboard hidden">
-    <div class="dashboard-header">
-      <div class="dashboard-brand">
-        <img src="img/Logo.png" alt="HawkerHub" class="logo" />
-        <span>HawkerHub</span>
-      </div>
-      <button id="close-btn" type="button">✕</button>
-    </div>
-
-    <a href="browsestalls.html">Browse</a>
-    <a href="history.html">History</a>
-    <a href="cart.html">  Cart</a>
-
-    <div class="dashboard-footer">
-      <p>Hungry? Let's get started!</p>
-      <a href="Sign in/sign-in.html">Sign in</a>
-    </div>
-  </div>
 
     <header class="sub-header">
         <div class="container sub-header-left">
@@ -68,104 +68,10 @@
 
     <main class="container menu-section">
         <h2 class="section-title">Menu</h2>
-        <div class="menu-grid">
-            
-            <div class="menu-card">
-                <div class="image-container">
-                    <img src="img/Prata 3 PC.jpg" alt="Plain Prata Set">
-                </div>
-                <div class="card-body">
-                    <div class="card-header">
-                        <h3>Plain Prata Set (2pcs)</h3>
-                        <div class="likes-container">
-                            <span class="heart-icon">♡</span>
-                            <span class="likes-count">560 likes</span>
-                        </div>
-                    </div>
-                    <p class="desc">Crispy on the outside, fluffy on the inside. Served with sugar or curry.</p>
-                    <div class="card-footer">
-                        <span class="price">$2.40</span>
-                        <button
-                            class="add-to-cart"
-                            data-add-to-cart
-                            data-id="springleaf-plain"
-                            data-name="Plain Prata Set"
-                            data-price="2.40"
-                            data-stall="Spring Leaf Prata"
-                            data-img="img/Prata 3 PC.jpg"
-                            type="button"
-                        >
-                            🛒 Add to Cart
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="menu-card">
-                <div class="image-container">
-                    <img src="img/Prata.jpg" alt="Egg Prata">
-                </div>
-                <div class="card-body">
-                    <div class="card-header">
-                        <h3>Signature Egg Prata</h3>
-                        <div class="likes-container">
-                            <span class="heart-icon">♡</span>
-                            <span class="likes-count">890 likes</span>
-                        </div>
-                    </div>
-                    <p class="desc">A classic favorite. Fresh egg folded into the dough and grilled to golden perfection.</p>
-                    <div class="card-footer">
-                        <span class="price">$3.00</span>
-                        <button
-                            class="add-to-cart"
-                            data-add-to-cart
-                            data-id="springleaf-egg"
-                            data-name="Signature Egg Prata"
-                            data-price="3.00"
-                            data-stall="Spring Leaf Prata"
-                            data-img="img/Prata.jpg"
-                            type="button"
-                        >
-                            🛒 Add to Cart
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="menu-card">
-                <div class="image-container">
-                    <img src="img/Prata with curry.jpg" alt="Prata with Fish Curry">
-                </div>
-                <div class="card-body">
-                    <div class="card-header">
-                        <h3>Prata with Fish Curry</h3>
-                        <div class="likes-container">
-                            <span class="heart-icon">♡</span>
-                            <span class="likes-count">1.2k likes</span>
-                        </div>
-                    </div>
-                    <p class="desc">Complete meal with 2 pieces of prata served with a bowl of our signature spicy fish curry.</p>
-                    <div class="card-footer">
-                        <span class="price">$5.00</span>
-                        <button
-                            class="add-to-cart"
-                            data-add-to-cart
-                            data-id="springleaf-curry"
-                            data-name="Prata with Fish Curry"
-                            data-price="5.00"
-                            data-stall="Spring Leaf Prata"
-                            data-img="img/Prata with curry.jpg"
-                            type="button"
-                        >
-                            🛒 Add to Cart
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+        <div class="menu-grid" id="menu-container" data-stall="springleaf"></div>
     </main>
 
+    <script type="module" src="menu.js"></script>
     <script src="ScriptCart.js"></script>
 </body>
 </html>
