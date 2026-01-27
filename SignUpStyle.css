@@ -114,7 +114,7 @@
 
     .card {
     width: 320px;          /* adjust if needed */
-    height: 420px;         /* controls total card height */
+    height: 460px;         /* controls total card height */
     background: white;
     border-radius: 16px;
     overflow: hidden;      /* IMPORTANT: clips image to card */
@@ -149,7 +149,7 @@ padding: 24px 24px 24px 32px;
 
 /* Header becomes a "window" */
 .card-header {
-  height: 150px;        /* controls how much of the top you see */
+  height: 180px;        /* controls how much of the top you see */
   overflow: hidden;
 }
 
@@ -164,7 +164,7 @@ padding: 24px 24px 24px 32px;
     
 
     .card h2 {
-        margin: 10;
+        margin: 20;
         padding: auto;
         font-size: 22px;
         color: var(--text-dark);
