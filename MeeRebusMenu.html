@@ -9,44 +9,44 @@
 </head>
 <body class="menu-page">
 
-   <header class="topbar">
-    <div class="container topbar-inner">
-      <img src="img/Dashboard button.png" alt="Dashboard" class="icon-btn" id="menu-btn" />
+    <header class="topbar">
+        <div class="container topbar-inner">
+            <img src="img/Dashboard button.png" alt="Dashboard" class="icon-btn" id="menu-btn" />
 
-      <div class="brand">
-        <img src="img/Logo.png" alt="HawkerHub Logo" class="logo" />
-      </div>
+            <div class="brand">
+                <img src="img/Logo.png" alt="HawkerHub Logo" class="logo" />
+            </div>
 
-      <nav class="navlinks">
-        <a href="browsestalls.html" class="navlink">Browse</a>
-        <a href="history.html" class="navlink">History</a>
-        <a href="cart.html" class="navlink">Cart</a>
-      </nav>
+            <nav class="navlinks">
+                <a href="browsestalls.html" class="navlink">Browse</a>
+                <a href="history.html" class="navlink">History</a>
+                <a href="cart.html" class="navlink">Cart</a>
+            </nav>
 
-      <a class="btn btn-signin" href="Sign in/sign-in.html">Sign in</a>
+            <a class="btn btn-signin" href="Sign in/sign-in.html">Sign in</a>
+        </div>
+    </header>
+
+    <div id="overlay" class="overlay hidden"></div>
+
+    <div id="dashboard" class="dashboard hidden">
+        <div class="dashboard-header">
+            <div class="dashboard-brand">
+                <img src="img/Logo.png" alt="HawkerHub" class="logo" />
+                <span>HawkerHub</span>
+            </div>
+            <button id="close-btn" type="button">✕</button>
+        </div>
+
+        <a href="browsestalls.html">Browse</a>
+        <a href="history.html">History</a>
+        <a href="cart.html">Cart</a>
+
+        <div class="dashboard-footer">
+            <p>Hungry? Let's get started!</p>
+            <a href="Sign in/sign-in.html">Sign in</a>
+        </div>
     </div>
-  </header>
-
-  <div id="overlay" class="overlay hidden"></div>
-
-  <div id="dashboard" class="dashboard hidden">
-    <div class="dashboard-header">
-      <div class="dashboard-brand">
-        <img src="img/Logo.png" alt="HawkerHub" class="logo" />
-        <span>HawkerHub</span>
-      </div>
-      <button id="close-btn" type="button">✕</button>
-    </div>
-
-    <a href="browsestalls.html">Browse</a>
-    <a href="history.html">History</a>
-    <a href="cart.html">  Cart</a>
-
-    <div class="dashboard-footer">
-      <p>Hungry? Let's get started!</p>
-      <a href="Sign in/sign-in.html">Sign in</a>
-    </div>
-  </div>
 
     <header class="sub-header">
         <div class="container sub-header-left">
@@ -68,104 +68,10 @@
 
     <main class="container menu-section">
         <h2 class="section-title">Menu</h2>
-        <div class="menu-grid">
-            
-            <div class="menu-card">
-                <div class="image-container">
-                    <img src="img/Small Mee Rebus.jpg" alt="Classic Mee Rebus">
-                </div>
-                <div class="card-body">
-                    <div class="card-header">
-                        <h3>Classic Mee Rebus</h3>
-                        <div class="likes-container">
-                            <span class="heart-icon">♡</span>
-                            <span class="likes-count">610 likes</span>
-                        </div>
-                    </div>
-                    <p class="desc">Traditional yellow noodles in thick, sweet potato gravy. Topped with egg, tofu, and chilies.</p>
-                    <div class="card-footer">
-                        <span class="price">$3.50</span>
-                        <button
-                            class="add-to-cart"
-                            data-add-to-cart
-                            data-id="meerebus-classic"
-                            data-name="Classic Mee Rebus"
-                            data-price="3.50"
-                            data-stall="Mee Rebus Master"
-                            data-img="img/Small Mee Rebus.jpg"
-                            type="button"
-                        >
-                            🛒 Add to Cart
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="menu-card">
-                <div class="image-container">
-                    <img src="img/Nyonya Mee Rebus.jpg" alt="Nyonya Mee Rebus">
-                </div>
-                <div class="card-body">
-                    <div class="card-header">
-                        <h3>Nyonya Mee Rebus</h3>
-                        <div class="likes-container">
-                            <span class="heart-icon">♡</span>
-                            <span class="likes-count">850 likes</span>
-                        </div>
-                    </div>
-                    <p class="desc">A tangy twist on the classic with added tamarind and lemongrass for extra zest.</p>
-                    <div class="card-footer">
-                        <span class="price">$4.50</span>
-                        <button
-                            class="add-to-cart"
-                            data-add-to-cart
-                            data-id="meerebus-nyonya"
-                            data-name="Nyonya Mee Rebus"
-                            data-price="4.50"
-                            data-stall="Mee Rebus Master"
-                            data-img="img/Nyonya Mee Rebus.jpg"
-                            type="button"
-                        >
-                            🛒 Add to Cart
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="menu-card">
-                <div class="image-container">
-                    <img src="img/Mee rebus chili.jpg" alt="Spicy Mee Rebus Special">
-                </div>
-                <div class="card-body">
-                    <div class="card-header">
-                        <h3>Spicy Mee Rebus Special</h3>
-                        <div class="likes-container">
-                            <span class="heart-icon">♡</span>
-                            <span class="likes-count">520 likes</span>
-                        </div>
-                    </div>
-                    <p class="desc">For spice lovers! Served with an extra dollop of our homemade spicy sambal chili.</p>
-                    <div class="card-footer">
-                        <span class="price">$5.50</span>
-                        <button
-                            class="add-to-cart"
-                            data-add-to-cart
-                            data-id="meerebus-spicy"
-                            data-name="Spicy Mee Rebus Special"
-                            data-price="5.50"
-                            data-stall="Mee Rebus Master"
-                            data-img="img/Mee rebus chili.jpg"
-                            type="button"
-                        >
-                            🛒 Add to Cart
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+        <div class="menu-grid" id="menu-container" data-stall="mee_rebus"></div>
     </main>
 
+    <script type="module" src="menu.js"></script>
     <script src="ScriptCart.js"></script>
 </body>
 </html>
