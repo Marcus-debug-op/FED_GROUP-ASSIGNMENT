@@ -6,7 +6,7 @@
   <title>HawkerHub – Log In</title>
       <link rel="stylesheet" href="SignInStyle.css">
 
-<script src="SignInPatron.js" defer></script>
+ <script type="module" src="SignInPatron.js"></script>
 </head>
 
 <body>
@@ -46,23 +46,23 @@
         </div>
 
         <div class="panel-footer">
-          <div class="divider">More Methods</div>
-          <div id="googleBtn"></div>
-    </div>
+         <div class="divider">More Methods</div>
+
+      <button class="google-btn" type="button">
+        <img src="img/google icon.png" alt="Google" class="google-icon">
+        <span class="google-label"></span>
+        <span class="google-spinner" aria-hidden="true"></span>
+      </button>
   </div>
+
 
  <!-- Google Identity Services -->
 
 <!-- Your Google sign-in logic -->
-<script src="GoogleAuth.js"></script>
+<script type="module" src="GoogleAuth.js"></script>
+
 
 <!-- Google Identity Services -->
-<script
-  src="https://accounts.google.com/gsi/client"
-  async
-  defer
-  onload="__hawkerhubInitGIS()">
-</script>
 
 <script src="AuthenticationTabs.js" defer></script>
 </body>
