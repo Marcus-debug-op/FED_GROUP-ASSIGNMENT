@@ -1,5 +1,11 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDo8B0OLtAj-Upfz7yNFeGz4cx3KWLZLuQ",
@@ -12,68 +18,122 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const db =  getFirestore(app);
 
 
-const menuContainer = document.getElementById('menu-container');
-
-if (menuContainer) {
-    
-    const stallId = menuContainer.getAttribute('data-stall');
-    
-    
-    if (stallId) {
-        
-        const menuRef = ref(db, 'menu_items/' + stallId);
-
-        onValue(menuRef, (snapshot) => {
-            const data = snapshot.val();
-            menuContainer.innerHTML = "";
-            
-            if (!data) {
-                menuContainer.innerHTML = "<p>Menu coming soon!</p>";
-                return;
-            }
-
-            for (let key in data) {
-                const item = data[key];
-                
-                
-                const price = Number(item.price) || 0;
-
-                const cardHTML = `
-                <div class="menu-card">
-                    <div class="image-container">
-                        <img src="${item.image}" alt="${item.name}">
-                    </div>
-                    <div class="card-body">
-                        <div class="card-header">
-                            <h3>${item.name}</h3>
-                            <div class="likes-container">
-                                <span class="heart-icon">♡</span>
-                                <span class="likes-count">${item.likes || 0} likes</span>
-                            </div>
-                        </div>
-                        <p class="desc">${item.description || ""}</p>
-                        <div class="card-footer">
-                            <span class="price">$${price.toFixed(2)}</span>
-                            <button class="add-to-cart"
-                                data-add-to-cart
-                                data-id="${item.id}"
-                                data-name="${item.name}"
-                                data-price="${price}"
-                                data-stall="${item.stall}"
-                                data-img="${item.image}">
-                                🛒 Add to Cart
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                `;
-                menuContainer.innerHTML += cardHTML;
-            }
-        });
-    } else {
-        console.error("Error: This page is missing the data-stall attribute on the menu-container!");
-    }
+function getStallIdFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  return (params.get("stall") || "").trim();
 }
+
+function money(n) {
+  const num = Number(n);
+  if (Number.isNaN(num)) return "$0.00";
+  return `$${num.toFixed(2)}`;
+}
+
+function setHero(stallData) {
+  document.title = `${stallData.name || "Menu"} - Menu`;
+
+  document.getElementById("stall-name").textContent = stallData.name || "Unknown Stall";
+  document.getElementById("stall-location").textContent = `📍 ${stallData.location || "-"}`;
+
+  const rating = stallData.rating ?? "-";
+  const reviews = stallData.reviews ?? "-";
+  document.getElementById("stall-rating").textContent = `★ ${rating} (${reviews} reviews)`;
+
+  // Optional: set banner background from Firestore
+  if (stallData.heroImage) {
+    const hero = document.getElementById("hero");
+    hero.style.backgroundImage = `url('${stallData.heroImage}')`;
+    hero.style.backgroundPosition = "center";
+    hero.style.backgroundSize = "cover";
+  }
+}
+
+function renderMenuItemCard(itemId, item) {
+  // Adjust field names to match what you store in Firestore
+  const name = item.name || itemId;
+  const desc = item.desc || "";
+  const price = money(item.price);
+  const img = item.image || ""; // optional
+
+  const div = document.createElement("div");
+  div.className = "menu-card";
+  div.innerHTML = `
+    ${img ? `<img class="menu-card-img" src="${img}" alt="${name}">` : ""}
+    <div class="menu-card-body">
+      <h3 class="menu-card-title">${name}</h3>
+      ${desc ? `<p class="menu-card-desc">${desc}</p>` : ""}
+      <div class="menu-card-footer">
+        <span class="menu-card-price">${price}</span>
+        <button class="btn add-to-cart" data-item="${itemId}">Add</button>
+      </div>
+    </div>
+  `;
+
+  return div;
+}
+
+async function loadMenuPage() {
+  const stallId = getStallIdFromUrl();
+
+  if (!stallId) {
+    document.getElementById("stall-name").textContent = "No stall selected";
+    document.getElementById("menu-container").innerHTML =
+      `<p>Please open this page like: <b>menu.html?stall=ahseng</b></p>`;
+    return;
+  }
+
+  // 1) Load stall details
+  const stallRef = doc(db, "stalls", stallId);
+  const stallSnap = await getDoc(stallRef);
+
+  if (!stallSnap.exists()) {
+    document.getElementById("stall-name").textContent = "Stall not found";
+    document.getElementById("menu-container").innerHTML =
+      `<p>No such stall: <b>${stallId}</b></p>`;
+    return;
+  }
+
+  const stallData = stallSnap.data();
+  setHero(stallData);
+
+  // 2) Load menu items from subcollection
+  const menuCol = collection(db, "stalls", stallId, "menu");
+  const menuSnap = await getDocs(menuCol);
+
+  const container = document.getElementById("menu-container");
+  container.innerHTML = "";
+
+  if (menuSnap.empty) {
+    container.innerHTML = "<p>No menu items yet.</p>";
+    return;
+  }
+
+  menuSnap.forEach((d) => {
+    const card = renderMenuItemCard(d.id, d.data());
+    container.appendChild(card);
+  });
+
+  // 3) Hook “Add” buttons into your existing cart logic
+  // If ScriptCart.js expects specific functions, tell me what it uses and I’ll wire it properly.
+  container.addEventListener("click", (e) => {
+    const btn = e.target.closest(".add-to-cart");
+    if (!btn) return;
+
+    const itemId = btn.dataset.item;
+
+    // TODO: call your cart function here
+    // Example:
+    // addToCart(stallId, itemId);
+
+    console.log("Add to cart:", { stallId, itemId });
+  });
+}
+
+loadMenuPage().catch((err) => {
+  console.error(err);
+  document.getElementById("menu-container").innerHTML =
+    "<p>Something went wrong loading the menu.</p>";
+});

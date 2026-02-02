@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stall Details</title>
+  <link rel="stylesheet" href="Menu.css">
+</head>
+
+<body class="details-page">
+  <div class="details-wrapper">
+    <a href="browsestalls.html" class="btn-go-back">↩ Go Back</a>
+
+    <div class="stall-modal-card">
+      <div class="modal-img-container">
+        <img id="stall-img" src="" alt="Stall Image">
+        <div class="badge-popular" id="stall-badge" style="display:none;"></div>
+      </div>
+
+      <div class="modal-content">
+        <div class="content-header">
+          <div class="header-text">
+            <div class="title-row">
+              <h1 id="stall-name">Loading...</h1>
+              <span class="hygiene-tag" id="stall-hygiene"></span>
+            </div>
+            <p class="cuisine-type" id="stall-cuisine"></p>
+          </div>
+        </div>
+
+        <div class="rating-action-row">
+          <div class="rating-box">
+            <span class="star-icon">★</span>
+            <span class="score" id="stall-rating"></span>
+          </div>
+          <div class="action-btns">
+            <a id="feedback-link" href="#" class="btn-orange-sm">View Feedbacks</a>
+            <a href="complaint.html" class="btn-orange-sm">+ Add Complaint</a>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="description-section">
+          <h3>Description</h3>
+          <p id="stall-desc"></p>
+        </div>
+
+        <div class="details-grid">
+          <button class="grid-btn" id="stall-location"></button>
+          <button class="grid-btn" id="stall-hours"></button>
+          <button class="grid-btn" id="stall-price"></button>
+          <button class="grid-btn" id="stall-phone"></button>
+
+          <a id="menu-link" href="#" class="grid-btn btn-white">Menu</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="stalldetails.js"></script>
+</body>
+</html>
