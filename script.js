@@ -1,135 +1,126 @@
+// script.js (module)
+import { auth, db } from "./firebase-init.js"; 
+// If your firebase-init.js is NOT in /js/, change to: "./firebase-init.js"
+
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+import { ref, get } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+// ===============================
+// Menu open/close (keep your code)
+// ===============================
 const menuBtn = document.getElementById("menu-btn");
 const dashboard = document.getElementById("dashboard");
 const overlay = document.getElementById("overlay");
 const closeBtn = document.getElementById("close-btn");
 
-menuBtn.addEventListener("click", () => {
-  dashboard.classList.remove("hidden");
-  overlay.classList.remove("hidden");
+if (menuBtn && dashboard && overlay) {
+  menuBtn.addEventListener("click", () => {
+    dashboard.classList.remove("hidden");
+    overlay.classList.remove("hidden");
+    setTimeout(() => dashboard.classList.add("show"), 10);
+  });
+}
 
-  // small delay so CSS transition works
-  setTimeout(() => {
-    dashboard.classList.add("show");
-  }, 10);
-});
-
-function closeMenu(){
+function closeMenu() {
+  if (!dashboard || !overlay) return;
   dashboard.classList.remove("show");
   overlay.classList.add("hidden");
-
-  setTimeout(() => {
-    dashboard.classList.add("hidden");
-  }, 300);
+  setTimeout(() => dashboard.classList.add("hidden"), 300);
 }
 
-closeBtn.addEventListener("click", closeMenu);
-overlay.addEventListener("click", closeMenu);
-
-
+if (closeBtn) closeBtn.addEventListener("click", closeMenu);
+if (overlay) overlay.addEventListener("click", closeMenu);
 
 // ===============================
-// Dashboard Sign In / Sign Out
+// Firebase-driven UI state
 // ===============================
 const dashboardAuthBtn = document.getElementById("dashboardAuthBtn");
+const signinBtn = document.getElementById("signinBtn");
 
-if (dashboardAuthBtn) {
-  const currentUser = JSON.parse(
-    localStorage.getItem("hawkerHubCurrentUser")
-  );
-
-  if (currentUser) {
-    dashboardAuthBtn.textContent = "Sign out";
-
-    dashboardAuthBtn.onclick = () => {
-      if (confirm("Sign out?")) {
-        localStorage.removeItem("hawkerHubCurrentUser");
-        window.location.reload();
-      }
-    };
-  } else {
-    dashboardAuthBtn.textContent = "Sign in";
-
-    dashboardAuthBtn.onclick = () => {
-      window.location.href = "sign up.html";
-    };
-  }
-}
-
-
-// ===============================
-// Role-based Navigation
-// ===============================
-document.addEventListener("DOMContentLoaded", () => {
-  const currentUser = JSON.parse(
-    localStorage.getItem("hawkerHubCurrentUser")
-  );
-
+// Call this to apply role-based visibility
+function applyRoleBasedNav(role) {
+  // header/normal nav links
   const navLinks = document.querySelectorAll(".navlink[data-role]");
-
-  navLinks.forEach(link => {
-    const allowedRole = link.dataset.role;
-
-    // If not logged in → hide role-specific links
-    if (!currentUser) {
-      if (allowedRole !== "all") {
-        link.style.display = "none";
-      }
-      return;
-    }
-
-    // Logged in
-    if (
-      allowedRole === "all" ||
-      allowedRole === currentUser.role
-    ) {
-      link.style.display = "inline-flex";
+  navLinks.forEach((link) => {
+    const allowedRole = link.dataset.role; // all / patron / vendor
+    if (!role) {
+      link.style.display = (allowedRole === "all") ? "" : "none";
     } else {
-      link.style.display = "none";
+      link.style.display = (allowedRole === "all" || allowedRole === role) ? "" : "none";
     }
   });
-});
 
-
-document.addEventListener("DOMContentLoaded", () => {
-  let user = null;
-  try { user = JSON.parse(localStorage.getItem("hawkerHubCurrentUser")); } catch {}
-
-  const role = user?.role || null;
-
-  // ✅ Dashboard-only filtering
+  // dashboard-only filtering
   document.querySelectorAll("#dashboard a[data-role]").forEach((a) => {
     const allowed = a.getAttribute("data-role"); // all / patron / vendor
-
     if (!role) {
-      // Guest: show only 'all'
       a.style.display = (allowed === "all") ? "" : "none";
     } else {
-      // Logged in: show 'all' + their role
       a.style.display = (allowed === "all" || allowed === role) ? "" : "none";
     }
   });
-});
+}
 
+// fetch user profile from RTDB: users/<uid>
+async function fetchUserProfile(uid) {
+  const snap = await get(ref(db, `users/${uid}`));
+  return snap.exists() ? snap.val() : null;
+}
 
-// ===============================
-// Top-right Sign In / Profile button
-// ===============================
-document.addEventListener("DOMContentLoaded", () => {
-  const signinBtn = document.getElementById("signinBtn");
-  if (!signinBtn) return;
+// Listen to auth session
+onAuthStateChanged(auth, async (user) => {
+  // ---------------------------
+  // Not logged in
+  // ---------------------------
+  if (!user) {
+    // Dashboard button
+    if (dashboardAuthBtn) {
+      dashboardAuthBtn.textContent = "Sign in";
+      dashboardAuthBtn.onclick = () => {
+        window.location.href = "sign up.html";
+      };
+    }
 
-  let user = null;
-  try {
-    user = JSON.parse(localStorage.getItem("hawkerHubCurrentUser"));
-  } catch {}
+    // Top-right button
+    if (signinBtn) {
+      signinBtn.textContent = "Sign in";
+      signinBtn.href = "sign up.html";
+    }
 
-  if (user && user.fullname) {
-    // Logged in → show username & link to profile
-    signinBtn.textContent = user.fullname;
-    signinBtn.href = "Profile(Patron & Vendor).html";
-  } else {
-    // Guest → normal sign in
-    signinBtn.textContent = "Sign in";
-    signinBtn.href = "sign up.html";
+    applyRoleBasedNav(null);
+    return;
   }
-});
+
+  // ---------------------------
+// Logged in
+// ---------------------------
+let profile = null;
+try {
+  profile = await fetchUserProfile(user.uid);
+} catch (e) {
+  console.log("Failed to load profile from RTDB:", e);
+}
+
+const role = (profile?.role || "").toLowerCase() || null;
+const fullname = profile?.fullname || user.displayName || "Account";
+
+// Dashboard button
+if (dashboardAuthBtn) {
+  dashboardAuthBtn.textContent = "Sign out";
+  dashboardAuthBtn.onclick = async () => {
+    if (!confirm("Sign out?")) return;
+    await signOut(auth);
+    window.location.reload();
+  };
+}
+
+// Top-right button (profile link)
+const profileUrl = "Profile(Patron & Vendor).html";
+
+if (signinBtn) {
+  signinBtn.textContent = fullname;
+    signinBtn.onclick = () => window.location.href = profileUrl;
+  }
+
+applyRoleBasedNav(role);
+})

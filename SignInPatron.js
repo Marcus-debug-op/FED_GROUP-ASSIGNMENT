@@ -1,12 +1,17 @@
-// SignInPatron.js
+// SignInVendor.js (module)
+import { auth, db } from "./firebase-init.js";
+import { signInWithEmailAndPassword } from
+  "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+import { ref, get } from
+  "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   const emailEl = document.getElementById("email");
   const passEl = document.getElementById("password");
-  const signInBtn = document.querySelector(".submit");
+  const btn = document.querySelector(".submit");
+  if (!emailEl || !passEl || !btn) return;
 
-  if (!emailEl || !passEl || !signInBtn) return;
-
-  signInBtn.addEventListener("click", (e) => {
+  btn.addEventListener("click", async (e) => {
     e.preventDefault();
 
     const email = (emailEl.value || "").trim().toLowerCase();
@@ -17,29 +22,28 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const users = JSON.parse(localStorage.getItem("hawkerHubUsers")) || [];
+    try {
+      const cred = await signInWithEmailAndPassword(auth, email, password);
 
-    const matched = users.find(
-      (u) =>
-        String(u?.email || "").trim().toLowerCase() === email &&
-        String(u?.password || "") === password &&
-        String(u?.role || "").trim().toLowerCase() === "patron"
-    );
+      // Read role from RTDB
+      const snap = await get(ref(db, `users/${cred.user.uid}`));
+      const data = snap.exists() ? snap.val() : null;
 
-    if (!matched) {
-      alert("Invalid patron credentials.");
-      return;
+      if (!data || String(data.role).toLowerCase() !== "patron") {
+        alert("This account is not a patron account.");
+        return;
+      }
+
+      window.location.href = "Home Guest.html";
+    } catch (err) {
+      alert(prettyFirebaseError(err));
     }
-
-    localStorage.setItem(
-      "hawkerHubCurrentUser",
-      JSON.stringify({
-        fullname: matched.fullname,
-        email: matched.email,
-        role: matched.role,
-      })
-    );
-
-    window.location.href = "Home Guest.html";
   });
 });
+
+function prettyFirebaseError(err) {
+  const code = err?.code || "";
+  if (code.includes("invalid-credential") || code.includes("wrong-password")) return "Wrong email or password.";
+  if (code.includes("user-not-found")) return "No account found for this email.";
+  return err?.message || "Sign in failed.";
+}

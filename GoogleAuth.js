@@ -1,73 +1,65 @@
-// GoogleAuth.js
-(() => {
-  const GOOGLE_CLIENT_ID = "428815132009-a3m1idhb8795kf55ntn6tjt01ira35s7.apps.googleusercontent.com";
+import { auth, db } from "./firebase-init.js";
+import { GoogleAuthProvider, signInWithPopup, signOut } from
+  "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+import { ref, get, set, update } from
+  "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-  const SUCCESS_REDIRECT = "Home Guest.html";
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.querySelector(".google-btn");
+  if (!btn) return;
 
-  function onGoogleCredentialResponse(response) {
-    const jwt = response?.credential;
-    if (!jwt) return;
-
-    // Store token + basic profile (demo only)
-    localStorage.setItem("hawkerhub_google_jwt", jwt);
-
+  btn.addEventListener("click", async () => {
+    setLoading(btn, true);
     try {
-      const payload = JSON.parse(
-        atob(jwt.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))
-      );
-      localStorage.setItem("hawkerhub_google_profile", JSON.stringify({
-        name: payload.name,
-        email: payload.email,
-        picture: payload.picture
-      }));
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
 
-      // Figure out intended role (set by your pages)
-      const intendedRole =
-        document.body?.dataset?.authRole ||
-        localStorage.getItem("hawkerhub_role") ||   // you already set this in SignUpVendor/Patron.js
-        "patron";                                  // safe default
+      const pageRole = document.body?.dataset?.authRole;
 
-      localStorage.setItem("hawkerHubCurrentUser", JSON.stringify({
-        fullname: payload.name,
-        email: payload.email,
-        role: intendedRole
-      }));
+if (!pageRole || !["vendor", "patron"].includes(pageRole)) {
+  alert("Invalid sign-in page. Please refresh or use the correct page.");
+  await signOut(auth);
+  setLoading(btn, false);
+  return;
+}
 
-    } catch (_) {}
+const intendedRole = pageRole;
 
-    window.location.href = SUCCESS_REDIRECT;
-  }
 
-  function initGIS() {
-    if (!window.google?.accounts?.id) return;
+      const userRef = ref(db, `users/${user.uid}`);
+      const snap = await get(userRef);
 
-    google.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback: onGoogleCredentialResponse,
-      ux_mode: "popup"
-    });
+      if (snap.exists()) {
+        const existingRole = String(snap.val()?.role || "").toLowerCase();
+        if (existingRole && existingRole !== intendedRole) {
+          await signOut(auth);
+          alert(`This Google account is registered as "${existingRole}". Use the ${existingRole} page.`);
+          return;
+        }
+        if (!existingRole) await update(userRef, { role: intendedRole });
+      } else {
+        await set(userRef, {
+          fullname: user.displayName || "",
+          email: user.email || "",
+          phone: "",
+          role: intendedRole,
+          createdAt: Date.now()
+        });
+      }
 
-    // 1) If page has <div id="googleBtn"></div>, render official button
-    const googleBtnDiv = document.getElementById("googleBtn");
-    if (googleBtnDiv) {
-      google.accounts.id.renderButton(googleBtnDiv, {
-  theme: "outline",
-  size: "large",
-  shape: "pill",
-  text: "continue_with",
-  width: 320
+      window.location.href =
+  intendedRole === "vendor"
+    ? "HomeVendor.html"
+    : "HomePatron.html";
+    } catch (err) {
+      alert(err?.message || "Google sign-in failed.");
+    } finally {
+      setLoading(btn, false);
+    }
+  });
 });
 
-    }
-
-    // 2) If page has your custom .google-btn, hook it to prompt
-    const customBtn = document.querySelector(".google-btn");
-    if (customBtn) {
-      customBtn.addEventListener("click", () => {
-        google.accounts.id.prompt();
-      });
-    }
-  }
-
-  window.__hawkerhubInitGIS = initGIS;
-})();
+function setLoading(btn, isLoading) {
+  btn.classList.toggle("is-loading", isLoading);
+}

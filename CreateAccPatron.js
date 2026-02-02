@@ -1,13 +1,19 @@
-// CreateAccPatron.js
-document.addEventListener("DOMContentLoaded", () => {
-  const createBtn = document.querySelector(".submit-btn");
-  if (!createBtn) return;
+// CreateAccPatron.js (module)
+import { auth, db } from "./firebase-init.js";
+import { createUserWithEmailAndPassword, updateProfile } from
+  "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+import { ref, set } from
+  "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-  createBtn.addEventListener("click", (e) => {
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.querySelector(".submit-btn"); // your current patron create button
+  if (!btn) return;
+
+  btn.addEventListener("click", async (e) => {
     e.preventDefault();
 
     const fullname = document.getElementById("fullname")?.value.trim();
-    const email = document.getElementById("email")?.value.trim();
+    const email = document.getElementById("email")?.value.trim().toLowerCase();
     const phone = document.getElementById("phone")?.value.trim();
     const password = document.getElementById("password")?.value;
     const confirm = document.getElementById("confirm")?.value;
@@ -16,36 +22,36 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Please fill in all fields.");
       return;
     }
-
     if (password !== confirm) {
       alert("Passwords do not match!");
       return;
     }
 
-    const existingUsers = JSON.parse(localStorage.getItem("hawkerHubUsers")) || [];
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
 
-    // ✅ Same duplicate check as vendor (case-insensitive)
-    const userExists = existingUsers.some(
-      (u) => (u.email || "").toLowerCase() === email.toLowerCase()
-    );
+      await updateProfile(cred.user, { displayName: fullname });
 
-    if (userExists) {
-      alert("An account with this email already exists.");
-      return;
+      await set(ref(db, `users/${cred.user.uid}`), {
+        fullname,
+        email,
+        phone,
+        role: "patron",
+        createdAt: Date.now()
+      });
+
+      alert("Patron Account Created Successfully!");
+      window.location.href = "Sign inPatron.html";
+    } catch (err) {
+      alert(prettyFirebaseError(err));
     }
-
-    const newUser = {
-      fullname,
-      email,
-      phone,
-      password,   // demo only
-      role: "patron",
-    };
-
-    existingUsers.push(newUser);
-    localStorage.setItem("hawkerHubUsers", JSON.stringify(existingUsers));
-
-    alert("Patron Account Created Successfully!");
-    window.location.href = "Sign InPatron.html"; 
   });
 });
+
+function prettyFirebaseError(err) {
+  const code = err?.code || "";
+  if (code.includes("email-already-in-use")) return "This email is already registered.";
+  if (code.includes("invalid-email")) return "Invalid email format.";
+  if (code.includes("weak-password")) return "Password too weak (6+ characters).";
+  return err?.message || "Sign up failed.";
+}

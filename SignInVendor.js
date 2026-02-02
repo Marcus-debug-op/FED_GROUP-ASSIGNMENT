@@ -1,54 +1,49 @@
-// SignInVendor.js
+// SignInVendor.js (module)
+import { auth, db } from "./firebase-init.js";
+import { signInWithEmailAndPassword } from
+  "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+import { ref, get } from
+  "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   const emailEl = document.getElementById("email");
   const passEl = document.getElementById("password");
-  const signInBtn = document.querySelector(".submit");
+  const btn = document.querySelector(".submit");
+  if (!emailEl || !passEl || !btn) return;
 
-  if (!emailEl || !passEl || !signInBtn) return;
-
-  signInBtn.addEventListener("click", (e) => {
+  btn.addEventListener("click", async (e) => {
     e.preventDefault();
 
     const email = (emailEl.value || "").trim().toLowerCase();
-    const password = passEl.value ?? "";
+    const password = passEl.value || "";
 
-    const raw = localStorage.getItem("hawkerHubUsers");
-    const users = raw ? JSON.parse(raw) : [];
-
-    // ✅ Helpful debug so you immediately see the real cause
-    console.log("hawkerHubUsers raw =", raw);
-    console.log("parsed users =", users);
-
-    if (!users.length) {
-      alert(
-        "No saved accounts found on this page.\n\n" +
-        "This usually happens when pages are opened under different origins (e.g., file://).\n" +
-        "Run the site using a local server (VS Code Live Server) so Create + Sign In share the same localStorage."
-      );
+    if (!email || !password) {
+      alert("Please enter email and password.");
       return;
     }
 
-    const matched = users.find((u) => {
-      const uEmail = String(u?.email ?? "").trim().toLowerCase();
-      const uPass = String(u?.password ?? "");
-      const uRole = String(u?.role ?? "").trim().toLowerCase();
-      return uEmail === email && uPass === password && uRole === "vendor";
-    });
+    try {
+      const cred = await signInWithEmailAndPassword(auth, email, password);
 
-    if (!matched) {
-      alert("Invalid vendor credentials.");
-      return;
+      // Read role from RTDB
+      const snap = await get(ref(db, `users/${cred.user.uid}`));
+      const data = snap.exists() ? snap.val() : null;
+
+      if (!data || String(data.role).toLowerCase() !== "vendor") {
+        alert("This account is not a vendor account.");
+        return;
+      }
+
+      window.location.href = "Home Guest.html";
+    } catch (err) {
+      alert(prettyFirebaseError(err));
     }
-
-    localStorage.setItem(
-      "hawkerHubCurrentUser",
-      JSON.stringify({
-        fullname: matched.fullname,
-        email: matched.email,
-        role: matched.role,
-      })
-    );
-
-    window.location.href = "Home Guest.html";
   });
 });
+
+function prettyFirebaseError(err) {
+  const code = err?.code || "";
+  if (code.includes("invalid-credential") || code.includes("wrong-password")) return "Wrong email or password.";
+  if (code.includes("user-not-found")) return "No account found for this email.";
+  return err?.message || "Sign in failed.";
+}
