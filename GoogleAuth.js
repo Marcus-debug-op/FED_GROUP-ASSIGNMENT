@@ -15,8 +15,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      const intendedRole =
-        (document.body?.dataset?.authRole || "vendor").toLowerCase(); // vendor page should be vendor already :contentReference[oaicite:11]{index=11}
+      const pageRole = document.body?.dataset?.authRole;
+
+if (!pageRole || !["vendor", "patron"].includes(pageRole)) {
+  alert("Invalid sign-in page. Please refresh or use the correct page.");
+  await signOut(auth);
+  setLoading(btn, false);
+  return;
+}
+
+const intendedRole = pageRole;
+
 
       const userRef = ref(db, `users/${user.uid}`);
       const snap = await get(userRef);
@@ -39,7 +48,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
 
-      window.location.href = "HomeVendor.html";
+      window.location.href =
+  intendedRole === "vendor"
+    ? "HomeVendor.html"
+    : "HomePatron.html";
     } catch (err) {
       alert(err?.message || "Google sign-in failed.");
     } finally {
