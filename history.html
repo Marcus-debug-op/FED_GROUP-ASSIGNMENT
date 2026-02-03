@@ -4,73 +4,79 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>History - HawkerHub</title>
-
-    <!-- Reuse your existing styles so the topbar matches -->
     <link rel="stylesheet" href="StylesCheckOut.css" />
-    <!-- Optional: add a small history css if you want -->
-    <!-- <link rel="stylesheet" href="history.css" /> -->
+    
+    <style>
+      /* Toggle helper class to hide sections */
+      .hidden { display: none !important; }
+      
+      /* Style for the "Back" button in detail view */
+      .back-btn {
+        background: none;
+        border: none;
+        color: #ff6a00;
+        font-weight: 800;
+        cursor: pointer;
+        font-size: 16px;
+        margin-bottom: 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .back-btn:hover { text-decoration: underline; }
+    </style>
   </head>
 
   <body>
-    <!-- Navbar (same structure as checkout) -->
     <header class="topbar">
       <div class="container topbar-inner">
         <img src="img/Dashboard button.png" alt="Menu" class="icon-btn" />
-
         <div class="brand">
           <img src="img/Logo.png" alt="HawkerHub Logo" class="logo" />
         </div>
-
         <nav class="navlinks">
           <a href="browsestalls.html" class="navlink">Browse</a>
           <a href="history.html" class="navlink">History</a>
           <a href="cart.html" class="navlink">Cart</a>
         </nav>
-
         <a class="btn btn-signin" href="Sign in/sign-in.html">Sign in</a>
       </div>
     </header>
 
-    <!-- Orange banner -->
     <section class="page-banner-wrap">
       <div class="page-banner">
-        <h1 class="page-title">History</h1>
-        <p style="margin: 6px 0 0; opacity: 0.9;">
-          View and manage your current/past order
-        </p>
+        <h1 class="page-title">Order History</h1>
       </div>
     </section>
 
     <main class="checkout-layout" style="display:block;">
       <section class="card" style="max-width: 900px; margin: 20px auto;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <h2 style="margin:0;">Order History</h2>
+        
+        <div id="listView">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h2 style="margin:0;">Your Orders</h2>
+            <button id="refreshBtn" style="padding:8px 12px; border-radius:10px; border:1px solid #ccc; cursor:pointer;">
+              Refresh
+            </button>
+          </div>
 
-        <button
-            id="clearHistoryBtn"
-            style="
-            background:#ffe6e6;
-            color:#c40000;
-            border:1px solid #ffb3b3;
-            padding:8px 12px;
-            border-radius:10px;
-            font-weight:800;
-            cursor:pointer;
-            "
-            type="button"
-        >
-            Clear History
-        </button>
+          <div id="loadingMsg" style="text-align:center; padding:20px;">Loading orders...</div>
+
+          <div id="historyList" style="display:grid; gap:14px;"></div>
+          
+          <div id="historyEmpty" style="display:none; padding:18px; text-align:center;">
+            No orders found.
+          </div>
         </div>
 
-        <div id="historyList" style="display:grid; gap:14px;"></div>
-
-        <div id="historyEmpty" style="display:none; padding:18px; text-align:center;">
-        No orders yet.
+        <div id="detailView" class="hidden">
+          <button class="back-btn" id="backToListBtn">← Back to History</button>
+          <div id="detailsBody"></div>
         </div>
+
       </section>
     </main>
 
-    <script src="history.js"></script>
+    <script type="module" src="history.js"></script>
   </body>
 </html>
