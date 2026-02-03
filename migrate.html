@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RTDB ➜ Firestore Migrator</title>
+  <style>
+    body { font-family: system-ui, Arial; padding: 20px; }
+    button { padding: 10px 14px; margin-right: 8px; cursor: pointer; }
+    pre { background: #111; color: #0f0; padding: 12px; border-radius: 8px; height: 360px; overflow: auto; }
+    .row { margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+  <h1>RTDB ➜ Firestore Migrator</h1>
+
+  <div class="row">
+    <button id="btnSignIn">Sign in (Google)</button>
+    <button id="btnMigrate" disabled>Migrate RTDB → Firestore</button>
+  </div>
+
+  <div class="row">
+    <label>Nodes to migrate (top-level RTDB paths):</label><br/>
+    <input id="nodes" style="width:100%" value="foodStalls,menu_items,users,vendorStalls" />
+  </div>
+
+  <pre id="log"></pre>
+
+  <script type="module">
+    // Firebase v10+ modular SDKs (browser)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+    import {
+      getDatabase,
+      ref as rtdbRef,
+      get as rtdbGet
+    } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+    import {
+      getFirestore,
+      doc,
+      writeBatch
+    } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+    // ------------- CONFIG: paste your Firebase config here -------------
+    // You already have this inside firebase-init.js. Copy/paste it here.
+    const firebaseConfig = {
+  apiKey: "AIzaSyDo8B0OLtAj-Upfz7yNFeGz4cx3KWLZLuQ",
+  authDomain: "hawkerhub-64e2d.firebaseapp.com",
+  databaseURL: "https://hawkerhub-64e2d-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "hawkerhub-64e2d",
+  storageBucket: "hawkerhub-64e2d.firebasestorage.app",
+  messagingSenderId: "722888051277",
+  appId: "1:722888051277:web:59926d0a54ae0e4fe36a04"
+};
+    // ------------------------------------------------------------------
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);       // RTDB
+    const fs = getFirestore(app);      // Firestore
+
+    const $log = document.getElementById("log");
+    const btnSignIn = document.getElementById("btnSignIn");
+    const btnMigrate = document.getElementById("btnMigrate");
+    const nodesInput = document.getElementById("nodes");
+
+    function log(msg) {
+      $log.textContent += msg + "\n";
+      $log.scrollTop = $log.scrollHeight;
+      console.log(msg);
+    }
+
+    function chunkArray(arr, size) {
+      const chunks = [];
+      for (let i = 0; i < arr.length; i += size) chunks.push(arr.slice(i, i + size));
+      return chunks;
+    }
+
+    // Writes an object like {key1: {...}, key2: {...}} into Firestore collection
+    // - collectionName = node name
+    // - docId = key
+    // - doc fields = object value
+    async function writeObjectAsCollection(collectionName, obj) {
+      if (!obj || typeof obj !== "object") {
+        log(`[SKIP] ${collectionName}: empty or not an object`);
+        return;
+      }
+
+      const entries = Object.entries(obj); // [ [docId, data], ... ]
+      log(`\n[START] ${collectionName}: ${entries.length} docs`);
+
+      // Firestore batch limit = 500 operations; keep below that
+      const groups = chunkArray(entries, 450);
+
+      for (let i = 0; i < groups.length; i++) {
+        const batch = writeBatch(fs);
+
+        for (const [docId, docData] of groups[i]) {
+          const safeData = (docData && typeof docData === "object")
+            ? docData
+            : { value: docData };
+
+          const docRef = doc(fs, collectionName, String(docId));
+          batch.set(docRef, safeData, { merge: true });
+        }
+
+        await batch.commit();
+        log(`  ✅ batch ${i + 1}/${groups.length} committed`);
+      }
+
+      log(`[DONE] ${collectionName}`);
+    }
+
+    async function migrate() {
+      const nodes = nodesInput.value
+        .split(",")
+        .map(s => s.trim())
+        .filter(Boolean);
+
+      if (nodes.length === 0) {
+        log("No nodes provided.");
+        return;
+      }
+
+      log("Fetching RTDB nodes: " + nodes.join(", "));
+
+      for (const node of nodes) {
+        try {
+          const snap = await rtdbGet(rtdbRef(db, "/" + node));
+          const val = snap.val();
+          await writeObjectAsCollection(node, val);
+        } catch (e) {
+          log(`❌ Error migrating ${node}: ${e?.message || e}`);
+        }
+      }
+
+      log("\n🎉 All done.");
+    }
+
+    btnSignIn.addEventListener("click", async () => {
+      try {
+        const provider = new GoogleAuthProvider();
+        await signInWithPopup(auth, provider);
+      } catch (e) {
+        log("❌ Sign-in failed: " + (e?.message || e));
+      }
+    });
+
+    btnMigrate.addEventListener("click", async () => {
+      btnMigrate.disabled = true;
+      $log.textContent = "";
+      log("Starting migration...");
+      await migrate();
+      btnMigrate.disabled = false;
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        log(`Signed in as: ${user.email}`);
+        btnMigrate.disabled = false;
+      } else {
+        log("Not signed in.");
+        btnMigrate.disabled = true;
+      }
+    });
+  </script>
+</body>
+</html>
