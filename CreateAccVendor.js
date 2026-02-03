@@ -5,7 +5,7 @@ import { ref, set } from
   "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.querySelector(".submit-btn"); // your current patron create button
+  const btn = document.querySelector(".submit-btn");
   if (!btn) return;
 
   btn.addEventListener("click", async (e) => {
@@ -28,19 +28,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
-
       await updateProfile(cred.user, { displayName: fullname });
 
       await set(ref(db, `users/${cred.user.uid}`), {
         fullname,
         email,
         phone,
-        role: "patron",
+        role: "vendor",
+        hasCompletedVendorSetup: false,
         createdAt: Date.now()
       });
 
-      alert("Patron Account Created Successfully!");
-      window.location.href = "Sign inPatron.html";
+      alert("Vendor Account Created Successfully!");
+      window.location.href = "VendorDetails.html";
     } catch (err) {
       alert(prettyFirebaseError(err));
     }

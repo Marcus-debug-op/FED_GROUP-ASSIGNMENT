@@ -6,7 +6,7 @@
   <title>HawkerHub – Log In</title>
       <link rel="stylesheet" href="SignInStyle.css">
 
-  <script type="module" src="SignUpVendor.js"></script>
+  <script type="module" src="SignInVendor.js"></script>
 </head>
 
 <body data-auth-role="Vendor">
@@ -45,25 +45,15 @@
           <button class="submit" type="button">Sign In</button>
         </div>
 
-       <div class="panel-footer">
-          <div class="divider">More Methods</div>
+       <div id="stallPicker" style="display:none; margin-top: 14px;">
+  <label for="stallAfterLogin">Choose your stall</label>
+  <select id="stallAfterLogin">
+    <option value="">Loading your stalls...</option>
+  </select>
 
-      <button class="google-btn" type="button">
-        <img src="img/google icon.png" alt="Google" class="google-icon">
-        <span class="google-label"></span>
-        <span class="google-spinner" aria-hidden="true"></span>
-      </button>
-  </div>
-
-
- <!-- Google Identity Services -->
-
-<!-- Your Google sign-in logic -->
-<script type="module" src="GoogleAuth.js"></script>
-
-
-<!-- Google Identity Services -->
-
-<script src="AuthenticationTabs.js" defer></script>
+  <button class="submit-btn" id="continueBtn" type="button" style="margin-top:12px;">
+    Continue
+  </button>
+</div>
 </body>
 </html>

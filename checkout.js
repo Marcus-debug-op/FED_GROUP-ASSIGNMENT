@@ -1,14 +1,28 @@
+// Import Firebase SDKs (Realtime Database)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+// --- YOUR CONFIG ---
+const firebaseConfig = {
+  apiKey: "AIzaSyDo8B0OLtAj-Upfz7yNFeGz4cx3KWLZLuQ",
+  authDomain: "hawkerhub-64e2d.firebaseapp.com",
+  databaseURL: "https://hawkerhub-64e2d-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "hawkerhub-64e2d",
+  storageBucket: "hawkerhub-64e2d.firebasestorage.app",
+  messagingSenderId: "722888051277",
+  appId: "1:722888051277:web:59926d0a54ae0e4fe36a04"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
 document.addEventListener("DOMContentLoaded", () => {
-  const paymentOptions = document.querySelectorAll(".pay-option");
   const proceedBtn = document.querySelector(".cta");
 
   // ===== Storage keys =====
   const CART_KEY = "hawkerhub_cart";
   const ECO_KEY = "hawkerhub_eco_packaging";
-  const HISTORY_KEY = "hawkerhub_order_history";
   const COUPON_KEY = "hawkerhub_coupon";
-
-  // card storage
   const CARD_DETAILS_KEY = "hawkerhub_card_details";
 
   const ECO_FEE = 0.20;
@@ -21,182 +35,110 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // ---------- Helpers ----------
-  function readCart() {
-    try {
-      const raw = localStorage.getItem(CART_KEY);
-      const data = raw ? JSON.parse(raw) : [];
-      return Array.isArray(data) ? data : [];
-    } catch {
-      return [];
-    }
+  function readCart() { try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch { return []; } }
+  function readEco() { return localStorage.getItem(ECO_KEY) === "true"; }
+  function readCardDetails() { try { return JSON.parse(localStorage.getItem(CARD_DETAILS_KEY)); } catch { return null; } }
+  function saveCardDetails(details) { localStorage.setItem(CARD_DETAILS_KEY, JSON.stringify(details)); }
+  function formatMoney(n) { return `$${(Number(n) || 0).toFixed(2)}`; }
+  function digitsOnly(s) { return String(s || "").replace(/\D/g, ""); }
+  
+  // =========================
+  // STRICT Validation Helpers
+  // =========================
+  function normalizePhone(raw) {
+    const digits = digitsOnly(raw);
+    if (digits.startsWith("65") && digits.length === 10) return digits.slice(2);
+    return digits;
   }
-
-  function readEco() {
-    return localStorage.getItem(ECO_KEY) === "true";
+  function isValidSGPhone(raw) {
+    const p = normalizePhone(raw);
+    return /^[689]\d{7}$/.test(p);
   }
-
-  function readHistory() {
-    try {
-      const raw = localStorage.getItem(HISTORY_KEY);
-      const data = raw ? JSON.parse(raw) : [];
-      return Array.isArray(data) ? data : [];
-    } catch {
-      return [];
-    }
+  function isValidSGPostal(raw) {
+    return /^\d{6}$/.test(digitsOnly(raw));
   }
-
-  function saveHistory(arr) {
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(arr));
+  function isValidCardNumber(num) {
+    const d = digitsOnly(num);
+    return d.length >= 13 && d.length <= 19;
   }
-
-  function formatMoney(n) {
-    const num = Number(n) || 0;
-    return `$${num.toFixed(2)}`;
+  function isValidExpiry(mmYY) {
+    const v = String(mmYY || "").trim();
+    const m = v.match(/^(\d{2})\s*\/\s*(\d{2})$/);
+    if (!m) return false;
+    const mm = Number(m[1]);
+    const yy = Number(m[2]);
+    if (mm < 1 || mm > 12) return false;
+    const now = new Date();
+    const curYY = now.getFullYear() % 100;
+    const curMM = now.getMonth() + 1;
+    if (yy < curYY) return false;
+    if (yy === curYY && mm < curMM) return false;
+    return true;
   }
-
-  function cartSubtotal(cart) {
-    return cart.reduce((sum, x) => {
-      const qty = Number(x.qty) || 0;
-      const price = Number(x.price) || 0;
-      return sum + qty * price;
-    }, 0);
-  }
-
-  function normalizeCode(code) {
-    return String(code || "").trim().toUpperCase();
-  }
-
-  function isWeekday() {
-    const day = new Date().getDay();
-    return day >= 1 && day <= 5;
-  }
-
-  function getAppliedCode() {
-    return normalizeCode(localStorage.getItem(COUPON_KEY) || "");
-  }
-
-  function setAppliedCode(code) {
-    localStorage.setItem(COUPON_KEY, normalizeCode(code));
-  }
-
-  function clearAppliedCode() {
-    localStorage.removeItem(COUPON_KEY);
-  }
-
-  function buildStallSummary(items) {
-    const stalls = [...new Set(items.map((i) => i.stall).filter(Boolean))];
-    if (stalls.length === 1) return stalls[0];
-    if (stalls.length === 0) return "Order";
-    return "Multiple stalls";
+  function isValidCvv(cvv) {
+    const d = digitsOnly(cvv);
+    return d.length === 3 || d.length === 4;
   }
 
   // =========================
-  // Delivery show/hide
+  // UI Logic
   // =========================
   const collectionMethod = document.getElementById("collectionMethod");
   const deliveryAddressField = document.getElementById("deliveryAddressField");
   const postalCodeField = document.getElementById("postalCodeField");
   const deliveryAddress = document.getElementById("deliveryAddress");
   const postalCode = document.getElementById("postalCode");
-
-  function clearInvalid(el) {
-    if (!el) return;
-    el.style.borderColor = "";
-  }
-
-  function markInvalid(el) {
-    if (!el) return;
-    el.style.borderColor = "crimson";
-  }
-
-  function applyDeliveryUI() {
-    const method = String(collectionMethod?.value || "Pickup");
-    const show = method === "Delivery";
-
-    if (deliveryAddressField) deliveryAddressField.style.display = show ? "block" : "none";
-    if (postalCodeField) postalCodeField.style.display = show ? "block" : "none";
-
-    if (!show) {
-      if (deliveryAddress) deliveryAddress.value = "";
-      if (postalCode) postalCode.value = "";
-      clearInvalid(deliveryAddress);
-      clearInvalid(postalCode);
-    }
-  }
-
-  if (collectionMethod) {
-    collectionMethod.addEventListener("change", applyDeliveryUI);
-    applyDeliveryUI();
-  }
-
-  // =========================
-  // Checkout validation
-  // =========================
   const fullNameInput = document.getElementById("fullName");
   const phoneInput = document.getElementById("phoneNumber");
 
-  function digitsOnly(s) {
-    return String(s || "").replace(/\D/g, "");
-  }
+  function clearInvalid(el) { if(el) el.style.borderColor = ""; }
+  function markInvalid(el) { if(el) el.style.borderColor = "crimson"; }
 
-  function normalizePhone(raw) {
-    const digits = digitsOnly(raw);
-    if (digits.startsWith("65") && digits.length === 10) return digits.slice(2);
-    return digits;
+  function applyDeliveryUI() {
+    const isDelivery = collectionMethod?.value === "Delivery";
+    if (deliveryAddressField) deliveryAddressField.style.display = isDelivery ? "block" : "none";
+    if (postalCodeField) postalCodeField.style.display = isDelivery ? "block" : "none";
   }
+  if (collectionMethod) collectionMethod.addEventListener("change", applyDeliveryUI);
+  applyDeliveryUI(); 
 
-  function isValidSGPhone(raw) {
-    const p = normalizePhone(raw);
-    return /^[689]\d{7}$/.test(p);
-  }
-
-  function normalizePostal(raw) {
-    return digitsOnly(raw);
-  }
-
-  function isValidSGPostal(raw) {
-    return /^\d{6}$/.test(normalizePostal(raw));
-  }
-
+  // =========================
+  // STRICT Form Validation
+  // =========================
   function validateCheckoutForm() {
     [fullNameInput, phoneInput, collectionMethod, deliveryAddress, postalCode].forEach(clearInvalid);
 
     const name = String(fullNameInput?.value || "").trim();
     const phoneRaw = String(phoneInput?.value || "").trim();
     const method = String(collectionMethod?.value || "Pickup").trim();
-
     const errors = [];
 
     if (!name) {
       errors.push("Please enter your full name.");
       markInvalid(fullNameInput);
     }
-
     if (!phoneRaw) {
       errors.push("Please enter your phone number.");
       markInvalid(phoneInput);
     } else if (!isValidSGPhone(phoneRaw)) {
-      errors.push("Please enter a valid Singapore phone number (e.g. 91234567 or +65 9123 4567).");
+      errors.push("Please enter a valid Singapore phone number (e.g. 91234567).");
       markInvalid(phoneInput);
     }
 
     let addr = "";
     let postal = "";
-
     if (method === "Delivery") {
       addr = String(deliveryAddress?.value || "").trim();
       postal = String(postalCode?.value || "").trim();
-
       if (!addr) {
         errors.push("Please enter your delivery address.");
         markInvalid(deliveryAddress);
       }
-
       if (!postal) {
         errors.push("Please enter your postal code.");
         markInvalid(postalCode);
       } else if (!isValidSGPostal(postal)) {
-        errors.push("Please enter a valid 6-digit postal code (e.g. 123456).");
+        errors.push("Please enter a valid 6-digit postal code.");
         markInvalid(postalCode);
       }
     }
@@ -205,64 +147,56 @@ document.addEventListener("DOMContentLoaded", () => {
       alert(errors.join("\n"));
       return { ok: false };
     }
-
-    return {
-      ok: true,
-      fullName: name,
-      phone: normalizePhone(phoneRaw),
-      method,
-      deliveryAddress: method === "Delivery" ? addr : "",
-      postalCode: method === "Delivery" ? normalizePostal(postal) : "",
-    };
+    return { ok: true, fullName: name, phone: normalizePhone(phoneRaw), method, deliveryAddress: addr, postalCode: digitsOnly(postal) };
   }
 
   // =========================
-  // Card modal
+  // FIXED: Visual Highlighting Logic
   // =========================
-  const overlay = document.getElementById("cardModalOverlay");
+  const paymentOptions = document.querySelectorAll(".pay-option");
+  let lastPayValue = "card"; 
+
+  // 1. Force the red border onto the correct box
+  function updateRedBorder() {
+    paymentOptions.forEach(option => {
+      const radio = option.querySelector("input[type='radio']");
+      if (radio && radio.checked) {
+        option.classList.add("is-selected"); // Shows Red Border
+      } else {
+        option.classList.remove("is-selected"); // Removes Red Border
+      }
+    });
+  }
+
+  // 2. Add click listener to the entire BOX
+  paymentOptions.forEach(option => {
+    option.addEventListener("click", () => {
+      const radio = option.querySelector("input[type='radio']");
+      if(radio) {
+        radio.checked = true; // Manually check the radio
+        updateRedBorder();    // Immediately update border
+        
+        // Handle Modals
+        if (radio.value === "card") openCardModal();
+        else if (radio.value === "paynow") openPayNowModal();
+        else lastPayValue = radio.value;
+      }
+    });
+  });
+
+  // 3. Initialize on load
+  updateRedBorder();
+
+  // =========================
+  // Modals
+  // =========================
+  const cardOverlay = document.getElementById("cardModalOverlay");
+  const paynowOverlay = document.getElementById("paynowModalOverlay");
+  const cardMsg = document.getElementById("cardModalError");
   const cardName = document.getElementById("cardName");
   const cardNumber = document.getElementById("cardNumber");
   const cardExpiry = document.getElementById("cardExpiry");
   const cardCvv = document.getElementById("cardCvv");
-  const cardAddBtn = document.getElementById("cardAddBtn");
-  const cardCancelBtn = document.getElementById("cardCancelBtn");
-  const cardMsg = document.getElementById("cardModalError");
-
-  let lastPayValue = "card";
-
-  function getSelectedPayValue() {
-    const checked = document.querySelector('input[name="pay"]:checked');
-    return checked ? String(checked.value || "") : "";
-  }
-
-  function setSelectedPayValue(val) {
-    const radio = document.querySelector(`input[name="pay"][value="${val}"]`);
-    if (radio) radio.checked = true;
-
-    paymentOptions.forEach((o) => o.classList.remove("is-selected"));
-    const label = radio ? radio.closest(".pay-option") : null;
-    if (label) label.classList.add("is-selected");
-  }
-
-  function readCardDetails() {
-    try {
-      const raw = localStorage.getItem(CARD_DETAILS_KEY);
-      return raw ? JSON.parse(raw) : null;
-    } catch {
-      return null;
-    }
-  }
-
-  function saveCardDetails(details) {
-    localStorage.setItem(CARD_DETAILS_KEY, JSON.stringify(details));
-  }
-
-  function clearCardMsg() {
-    if (!cardMsg) return;
-    cardMsg.style.display = "none";
-    cardMsg.textContent = "";
-    cardMsg.style.color = "";
-  }
 
   function showCardError(msg) {
     if (!cardMsg) return;
@@ -271,341 +205,177 @@ document.addEventListener("DOMContentLoaded", () => {
     cardMsg.style.color = "#ff6b6b";
   }
 
-  function showCardSuccess(msg) {
-    if (!cardMsg) return;
-    cardMsg.style.display = "block";
-    cardMsg.textContent = msg;
-    cardMsg.style.color = "#22c55e";
-  }
-
   function openCardModal() {
-    if (!overlay) return;
-    clearCardMsg();
-
-    const saved = readCardDetails();
-    if (saved) {
-      if (cardName) cardName.value = saved.name || "";
-      if (cardNumber) cardNumber.value = "";
-      if (cardExpiry) cardExpiry.value = saved.expiry || "";
-      if (cardCvv) cardCvv.value = "";
-    } else {
-      if (cardName) cardName.value = "";
-      if (cardNumber) cardNumber.value = "";
-      if (cardExpiry) cardExpiry.value = "";
-      if (cardCvv) cardCvv.value = "";
-    }
-
-    overlay.style.display = "flex";
-    overlay.setAttribute("aria-hidden", "false");
-    setTimeout(() => cardName && cardName.focus(), 0);
-  }
-
-  function closeCardModal() {
-    if (!overlay) return;
-    overlay.style.display = "none";
-    overlay.setAttribute("aria-hidden", "true");
-    clearCardMsg();
-  }
-
-  function isValidCardNumber(num) {
-    const d = digitsOnly(num);
-    return d.length >= 13 && d.length <= 19;
-  }
-
-  function isValidExpiry(mmYY) {
-    const v = String(mmYY || "").trim();
-    const m = v.match(/^(\d{2})\s*\/\s*(\d{2})$/);
-    if (!m) return false;
-
-    const mm = Number(m[1]);
-    const yy = Number(m[2]);
-    if (mm < 1 || mm > 12) return false;
-
-    const now = new Date();
-    const curYY = now.getFullYear() % 100;
-    const curMM = now.getMonth() + 1;
-
-    if (yy < curYY) return false;
-    if (yy === curYY && mm < curMM) return false;
-
-    return true;
-  }
-
-  function isValidCvv(cvv) {
-    const d = digitsOnly(cvv);
-    return d.length === 3 || d.length === 4;
-  }
-
-  function maskCardNumber(num) {
-    const d = digitsOnly(num);
-    const last4 = d.slice(-4);
-    return last4 ? `**** **** **** ${last4}` : "";
-  }
-
-  function handleCardCancel() {
-    const saved = readCardDetails();
-    closeCardModal();
-
-    if (!saved && lastPayValue && lastPayValue !== "card") {
-      setSelectedPayValue(lastPayValue);
+    if(cardOverlay) {
+        if(cardMsg) cardMsg.style.display = "none";
+        cardOverlay.style.display = "flex";
+        const saved = readCardDetails();
+        if(saved && cardName) {
+            cardName.value = saved.name || "";
+            cardExpiry.value = saved.expiry || "";
+        }
     }
   }
-
-  if (overlay) {
-    overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) handleCardCancel();
-    });
-  }
-  if (cardCancelBtn) cardCancelBtn.addEventListener("click", handleCardCancel);
-
-  if (cardAddBtn) {
-    cardAddBtn.addEventListener("click", () => {
-      clearCardMsg();
-
-      const name = String(cardName?.value || "").trim();
-      const number = String(cardNumber?.value || "").trim();
-      const expiry = String(cardExpiry?.value || "").trim();
-      const cvv = String(cardCvv?.value || "").trim();
-
-      if (!name) return showCardError("Please enter the name on card.");
-      if (!isValidCardNumber(number)) return showCardError("Please enter a valid card number.");
-      if (!isValidExpiry(expiry)) return showCardError("Please enter a valid expiry date (MM/YY).");
-      if (!isValidCvv(cvv)) return showCardError("Please enter a valid security code (3–4 digits).");
-
-      saveCardDetails({
-        name,
-        numberMasked: maskCardNumber(number),
-        expiry,
-        savedAt: new Date().toISOString(),
-      });
-
-      showCardSuccess("Successful!");
-      setSelectedPayValue("card");
-
-      setTimeout(() => closeCardModal(), 700);
-    });
-  }
-
-  // =========================
-  // PayNow QR modal + Success (NEW)
-  // =========================
-  const paynowOverlay = document.getElementById("paynowModalOverlay");
-  const paynowCloseBtn = document.getElementById("paynowCloseBtn");
-  const paynowQrWrap = document.getElementById("paynowQrWrap");
-  const paynowQrNote = document.getElementById("paynowQrNote");
-  const paynowSuccessMsg = document.getElementById("paynowSuccessMsg");
 
   function openPayNowModal() {
-    if (!paynowOverlay) return;
-
-    // reset view every time it opens
-    if (paynowSuccessMsg) paynowSuccessMsg.style.display = "none";
-    if (paynowQrWrap) paynowQrWrap.style.display = "flex";
-    if (paynowQrNote) paynowQrNote.style.display = "block";
-
-    paynowOverlay.style.display = "flex";
-    paynowOverlay.setAttribute("aria-hidden", "false");
+    if(paynowOverlay) {
+        paynowOverlay.style.display = "flex";
+        document.getElementById("paynowQrWrap").style.display = "flex";
+        document.getElementById("paynowSuccessMsg").style.display = "none";
+    }
   }
 
-  function closePayNowModal() {
-    if (!paynowOverlay) return;
-    paynowOverlay.style.display = "none";
-    paynowOverlay.setAttribute("aria-hidden", "true");
+  function closeModals() {
+    if(cardOverlay) cardOverlay.style.display = "none";
+    if(paynowOverlay) paynowOverlay.style.display = "none";
   }
 
-  if (paynowOverlay) {
-    paynowOverlay.addEventListener("click", (e) => {
-      if (e.target === paynowOverlay) closePayNowModal();
+  function handleRevert() {
+    const current = document.querySelector('input[name="pay"]:checked')?.value;
+    const saved = readCardDetails();
+    // If cancelling Card (and no card saved) OR Paynow, revert visuals
+    if ((current === "card" && !saved) || current === "paynow") {
+        const prevRadio = document.querySelector(`input[value="${lastPayValue}"]`);
+        if(prevRadio) {
+             prevRadio.checked = true;
+             updateRedBorder();
+        }
+    }
+  }
+
+  document.getElementById("cardCancelBtn")?.addEventListener("click", () => { closeModals(); handleRevert(); });
+  if(cardOverlay) cardOverlay.addEventListener("click", (e) => { if(e.target===cardOverlay) { closeModals(); handleRevert(); } });
+  if(paynowOverlay) paynowOverlay.addEventListener("click", (e) => { if(e.target===paynowOverlay) { closeModals(); handleRevert(); } });
+
+  // STRICT Card Validation on Add
+  document.getElementById("cardAddBtn")?.addEventListener("click", () => {
+    const name = String(cardName?.value || "").trim();
+    const number = String(cardNumber?.value || "").trim();
+    const expiry = String(cardExpiry?.value || "").trim();
+    const cvv = String(cardCvv?.value || "").trim();
+
+    if (!name) return showCardError("Please enter name on card.");
+    if (!isValidCardNumber(number)) return showCardError("Invalid card number.");
+    if (!isValidExpiry(expiry)) return showCardError("Invalid expiry date (MM/YY) or expired.");
+    if (!isValidCvv(cvv)) return showCardError("Invalid CVV.");
+
+    saveCardDetails({
+      name,
+      numberMasked: `**** **** **** ${digitsOnly(number).slice(-4)}`,
+      expiry,
+      savedAt: new Date().toISOString(),
     });
-  }
+    lastPayValue = "card";
+    closeModals();
+  });
 
-  if (paynowCloseBtn) {
-    paynowCloseBtn.addEventListener("click", () => {
-      // show success
-      if (paynowSuccessMsg) paynowSuccessMsg.style.display = "block";
-      if (paynowQrWrap) paynowQrWrap.style.display = "none";
-      if (paynowQrNote) paynowQrNote.style.display = "none";
+  document.getElementById("paynowCloseBtn")?.addEventListener("click", () => {
+    document.getElementById("paynowQrWrap").style.display = "none";
+    document.getElementById("paynowSuccessMsg").style.display = "block";
+    lastPayValue = "paynow"; 
+    setTimeout(closeModals, 1000);
+  });
 
-      // close after short delay
-      setTimeout(() => {
-        closePayNowModal();
-      }, 800);
-    });
-  }
-
-  // ---------- Promo calculation ----------
+  // =========================
+  // Promo Logic
+  // =========================
   function computeDiscount(subtotal, code) {
     if (!code) return { ok: true, discount: 0, message: "" };
-
     const promo = PROMOS[code];
     if (!promo) return { ok: false, discount: 0, message: "Invalid promo code." };
+    if (promo.weekdayOnly && !isWeekday()) return { ok: false, discount: 0, message: "Weekdays only." };
+    if (promo.minSubtotal && subtotal <= promo.minSubtotal) return { ok: false, discount: 0, message: `Min spend $${promo.minSubtotal}.` };
 
-    if (code === "FIRSTORDER") {
-      const history = readHistory();
-      if (history && history.length >= 1) {
-        return { ok: false, discount: 0, message: "FIRSTORDER can only be used if you have no previous orders." };
-      }
-    }
-
-    if (promo.weekdayOnly && !isWeekday()) {
-      return { ok: false, discount: 0, message: "WEEKDAY80 is only valid on weekdays (Mon–Fri)." };
-    }
-
-    if (promo.minSubtotal != null && !(subtotal > promo.minSubtotal)) {
-      return { ok: false, discount: 0, message: "HAWKER20 requires subtotal above $10." };
-    }
-
-    if (promo.type === "freeship") return { ok: true, discount: 0, message: "FREESHIP applied." };
-    if (promo.type === "percent") return { ok: true, discount: subtotal * promo.value, message: `${code} applied.` };
-    if (promo.type === "flat") return { ok: true, discount: Math.min(promo.value, subtotal), message: `${code} applied.` };
-
-    return { ok: false, discount: 0, message: "Promo rule error." };
+    let discount = 0;
+    if (promo.type === "percent") discount = subtotal * promo.value;
+    if (promo.type === "flat") discount = Math.min(promo.value, subtotal);
+    return { ok: true, discount, message: `${code} applied.` };
   }
 
   function updateCheckoutSummary() {
     const cart = readCart();
-    const subtotal = cartSubtotal(cart);
+    const subtotal = cart.reduce((sum, i) => sum + (i.qty * i.price), 0);
     const ecoFee = readEco() ? ECO_FEE : 0;
-
-    const code = getAppliedCode();
+    const code = (localStorage.getItem(COUPON_KEY) || "").trim().toUpperCase();
     const promoResult = computeDiscount(subtotal, code);
-    const discount = promoResult.ok ? promoResult.discount : 0;
+    
+    const total = Math.max(0, subtotal + ecoFee - promoResult.discount);
 
-    const total = Math.max(0, subtotal + ecoFee - discount);
-
-    const subEl = document.getElementById("checkoutSubtotal");
-    const totalEl = document.getElementById("checkoutTotal");
-    if (subEl) subEl.textContent = formatMoney(subtotal);
-    if (totalEl) totalEl.textContent = formatMoney(total);
-
+    document.getElementById("checkoutSubtotal").textContent = formatMoney(subtotal);
+    document.getElementById("checkoutTotal").textContent = formatMoney(total);
+    
     const ecoRow = document.getElementById("checkoutEcoRow");
-    const ecoAmt = document.getElementById("checkoutEcoFee");
-    if (ecoRow) ecoRow.style.display = ecoFee > 0 ? "flex" : "none";
-    if (ecoAmt) ecoAmt.textContent = `+${formatMoney(ecoFee)}`;
-
-    const discountRow = document.getElementById("discountRow");
-    const discountAmt = document.getElementById("discountAmount");
-    if (discountRow) discountRow.style.display = discount > 0 ? "flex" : "none";
-    if (discountAmt) discountAmt.textContent = `-${formatMoney(discount)}`;
+    if(ecoRow) {
+        ecoRow.style.display = ecoFee > 0 ? "flex" : "none";
+        document.getElementById("checkoutEcoFee").textContent = `+${formatMoney(ecoFee)}`;
+    }
+    
+    const discRow = document.getElementById("discountRow");
+    if(discRow) {
+        discRow.style.display = promoResult.discount > 0 ? "flex" : "none";
+        document.getElementById("discountAmount").textContent = `-${formatMoney(promoResult.discount)}`;
+    }
 
     const promoMsg = document.getElementById("promoMsg");
     if (promoMsg) {
       promoMsg.textContent = code ? promoResult.message : "";
       promoMsg.style.color = promoResult.ok ? "green" : "crimson";
     }
-
-    return { cart, subtotal, ecoFee, discount, total, promoCode: code };
+    return { cart, subtotal, ecoFee, discount: promoResult.discount, promoCode: code, total };
   }
 
-  const promoInput = document.getElementById("promoCodeInput");
-  const applyPromoBtn = document.getElementById("applyPromoBtn");
-
-  if (promoInput) promoInput.value = getAppliedCode();
-
-  if (applyPromoBtn && promoInput) {
-    applyPromoBtn.addEventListener("click", () => {
-      const code = normalizeCode(promoInput.value);
-      if (!code) {
-        clearAppliedCode();
-        updateCheckoutSummary();
-        return;
-      }
-      setAppliedCode(code);
-      updateCheckoutSummary();
-    });
-  }
-
+  document.getElementById("applyPromoBtn")?.addEventListener("click", () => {
+    const code = document.getElementById("promoCodeInput").value.trim().toUpperCase();
+    if(PROMOS[code]) localStorage.setItem(COUPON_KEY, code);
+    else { alert("Invalid Code"); localStorage.removeItem(COUPON_KEY); }
+    updateCheckoutSummary();
+  });
   updateCheckoutSummary();
 
-  // ---------- Payment highlight + open modal ----------
-  paymentOptions.forEach((option) => {
-    const radio = option.querySelector("input[type='radio']");
-    if (!radio) return;
-
-    radio.addEventListener("change", () => {
-      const current = getSelectedPayValue();
-      if (current && current !== "card") lastPayValue = current;
-
-      paymentOptions.forEach((o) => o.classList.remove("is-selected"));
-      option.classList.add("is-selected");
-
-      if (radio.value === "card") openCardModal();
-      if (radio.value === "paynow") openPayNowModal();
-    });
-
-    option.addEventListener("click", () => {
-      const current = getSelectedPayValue();
-      if (current && current !== "card") lastPayValue = current;
-
-      radio.checked = true;
-      paymentOptions.forEach((o) => o.classList.remove("is-selected"));
-      option.classList.add("is-selected");
-
-      if (radio.value === "card") openCardModal();
-      if (radio.value === "paynow") openPayNowModal();
-    });
-  });
-
-  // ---------- Submit ----------
-  proceedBtn.addEventListener("click", () => {
+  // =========================
+  // Submit
+  // =========================
+  proceedBtn.addEventListener("click", async () => {
     const info = updateCheckoutSummary();
-
-    if (!info.cart.length) {
-      alert("Your cart is empty.");
-      return;
-    }
+    if (!info.cart.length) return alert("Cart is empty");
 
     const form = validateCheckoutForm();
     if (!form.ok) return;
 
-    const pay = getSelectedPayValue();
+    const pay = document.querySelector('input[name="pay"]:checked')?.value;
     if (pay === "card") {
       const saved = readCardDetails();
-      if (!saved) {
-        alert("Please add your card details before submitting.");
-        openCardModal();
-        return;
-      }
+      if (!saved) { alert("Please add your card details."); openCardModal(); return; }
     }
 
-    const history = readHistory();
+    proceedBtn.textContent = "Processing...";
+    proceedBtn.disabled = true;
 
-    const order = {
-      id: crypto.randomUUID?.() || String(Date.now()),
-      orderNo: String(history.length + 1).padStart(3, "0"),
-      status: "Paid",
-      createdAt: new Date().toISOString(),
-      stallSummary: buildStallSummary(info.cart),
-      items: info.cart,
-      subtotal: info.subtotal,
-      ecoFee: info.ecoFee,
-      discount: info.discount,
-      promoCode: info.promoCode || "",
-      total: info.total,
+    try {
+      const orderRef = push(ref(db, 'orders'));
+      await set(orderRef, {
+        orderNo: String(Date.now()).slice(-6),
+        createdAt: new Date().toISOString(),
+        items: info.cart,
+        subtotal: info.subtotal,
+        ecoFee: info.ecoFee,
+        discount: info.discount,
+        total: info.total,
+        status: "Paid",
+        payment: { method: pay, card: pay === "card" ? readCardDetails() : null },
+        contact: { fullName: form.fullName, phone: form.phone },
+        collection: { method: form.method, deliveryAddress: form.deliveryAddress, postalCode: form.postalCode }
+      });
 
-      payment: {
-        method: pay,
-        card: pay === "card" ? readCardDetails() : null,
-      },
-
-      contact: {
-        fullName: form.fullName,
-        phone: form.phone,
-      },
-      collection: {
-        method: form.method,
-        deliveryAddress: form.deliveryAddress,
-        postalCode: form.postalCode,
-      },
-    };
-
-    history.push(order);
-    saveHistory(history);
-
-    localStorage.removeItem(CART_KEY);
-    localStorage.removeItem(ECO_KEY);
-    localStorage.removeItem(COUPON_KEY);
-
-    window.location.href = "PaymentSuccesss.html";
+      localStorage.removeItem(CART_KEY);
+      localStorage.removeItem(ECO_KEY);
+      localStorage.removeItem(COUPON_KEY);
+      window.location.href = "PaymentSuccesss.html";
+    } catch (e) {
+      console.error(e);
+      alert("Error processing order.");
+      proceedBtn.textContent = "Submit";
+      proceedBtn.disabled = false;
+    }
   });
 });
