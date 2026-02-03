@@ -4,17 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HawkerHub – Log In</title>
-      <link rel="stylesheet" href="SignInStyle.css">
-
- <script type="module" src="SignInPatron.js"></script>
+  <link rel="stylesheet" href="SignInStyle.css">
+  <script type="module" src="SignInPatron.js"></script>
 </head>
 
 <body data-auth-role="patron">
-   <div class="app">
+  <div class="app">
     <button class="back-btn" type="button" onclick="history.back()">← Go Back</button>
 
     <div class="logo">
-      <!-- same logo as before -->
       <img src="img/logo.png" alt="HawkerHub Logo" />
     </div>
 
@@ -29,13 +27,11 @@
           <div class="title">Sign In</div>
           <div class="subtitle">Patron Sign In</div>
 
-         <div class="segmented" data-role="patron">
-  <button class="inactive" id="tabSignUp" type="button">Sign Up</button>
-  <button class="active" id="tabSignIn" type="button">Sign In</button>
-</div>
+          <div class="segmented" data-role="patron">
+            <button class="inactive" id="tabSignUp" type="button">Sign Up</button>
+            <button class="active" id="tabSignIn" type="button">Sign In</button>
+          </div>
 
-
-          <!-- Just email + password -->
           <label for="email">Email Address</label>
           <input id="email" type="email" />
 
@@ -46,25 +42,19 @@
         </div>
 
         <div class="panel-footer">
-         <div class="divider">More Methods</div>
+          <div class="divider">More Methods</div>
 
-      <button class="google-btn" type="button">
-        <img src="img/google icon.png" alt="Google" class="google-icon">
-        <span class="google-label"></span>
-        <span class="google-spinner" aria-hidden="true"></span>
-      </button>
+          <button class="google-btn" type="button">
+            <img src="img/google icon.png" alt="Google" class="google-icon">
+            <span class="google-label"></span>
+            <span class="google-spinner" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
-
- <!-- Google Identity Services -->
-
-<!-- Your Google sign-in logic -->
-<script type="module" src="GoogleAuth.js"></script>
-
-
-<!-- Google Identity Services -->
-
-<script src="AuthenticationTabs.js" defer></script>
+  <script type="module" src="GoogleAuth.js"></script>
+  <script src="AuthenticationTabs.js" defer></script>
 </body>
 </html>
-

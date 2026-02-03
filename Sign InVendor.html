@@ -4,17 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HawkerHub – Log In</title>
-      <link rel="stylesheet" href="SignInStyle.css">
-
+  <link rel="stylesheet" href="SignInStyle.css">
   <script type="module" src="SignInVendor.js"></script>
 </head>
 
-<body data-auth-role="Vendor">
-   <div class="app">
+<body data-auth-role="vendor">
+  <div class="app">
     <button class="back-btn" type="button" onclick="history.back()">← Go Back</button>
 
     <div class="logo">
-      <!-- same logo as before -->
       <img src="img/logo.png" alt="HawkerHub Logo" />
     </div>
 
@@ -30,12 +28,10 @@
           <div class="subtitle">Vendor Sign In</div>
 
           <div class="segmented" data-role="vendor">
-  <button class="inactive" id="tabSignUp" type="button">Sign Up</button>
-  <button class="active" id="tabSignIn" type="button">Sign In</button>
-</div>
+            <button class="inactive" id="tabSignUp" type="button">Sign Up</button>
+            <button class="active" id="tabSignIn" type="button">Sign In</button>
+          </div>
 
-
-          <!-- Just email + password -->
           <label for="email">Email Address</label>
           <input id="email" type="email" />
 
@@ -43,17 +39,16 @@
           <input id="password" type="password" />
 
           <button class="submit" type="button">Sign In</button>
+
+         
+
+            
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
 
-       <div id="stallPicker" style="display:none; margin-top: 14px;">
-  <label for="stallAfterLogin">Choose your stall</label>
-  <select id="stallAfterLogin">
-    <option value="">Loading your stalls...</option>
-  </select>
-
-  <button class="submit-btn" id="continueBtn" type="button" style="margin-top:12px;">
-    Continue
-  </button>
-</div>
+  <script src="AuthenticationTabs.js" defer></script>
 </body>
 </html>

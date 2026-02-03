@@ -1,6 +1,15 @@
-import { auth, db } from "./firebase-init.js";
+import { auth, fs } from "./firebase-init.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-import { ref, get, update, push, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  updateDoc,
+  addDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const stallSelect = document.getElementById("stallSelect");
@@ -28,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Submit "stall not listed" request (does NOT create stalls; just requests)
+  // ---- Stall not listed request -> Firestore ----
   submitRequestBtn?.addEventListener("click", async () => {
     const user = auth.currentUser;
     if (!user) {
@@ -48,14 +57,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const reqRef = push(ref(db, `stallRequests/${user.uid}`));
-      await set(reqRef, {
+      // stallRequests/{uid}/requests/{autoId}
+      const reqCol = collection(fs, "stallRequests", user.uid, "requests");
+      await addDoc(reqCol, {
         stallName: name,
         hawkerCentre: centre,
         unitNo: unit,
         notes,
         status: "pending",
-        createdAt: Date.now()
+        createdAt: serverTimestamp()
       });
 
       alert("Request submitted! For now, please select an existing stall to continue.");
@@ -72,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Add selected stall to "chips"
+  // Add selected stall to chips
   addStallBtn?.addEventListener("click", () => {
     const id = stallSelect?.value;
     if (!id) return;
@@ -82,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderChips();
   });
 
-  // Clear selected stalls
+  // Clear selected
   clearBtn?.addEventListener("click", () => {
     selected.clear();
     renderChips();
@@ -90,8 +100,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderChips() {
     if (!chipsWrap) return;
-
     chipsWrap.innerHTML = "";
+
     for (const [id, label] of selected.entries()) {
       const chip = document.createElement("div");
       chip.className = "chip";
@@ -109,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Save vendor stall ownership + mark setup complete
+  // ---- Save vendor setup -> Firestore ----
   saveBtn?.addEventListener("click", async () => {
     const user = auth.currentUser;
     if (!user) {
@@ -123,77 +133,74 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Build vendorStalls/{uid}/{stallId}: true
-    const stallFlags = {};
-    for (const stallId of selected.keys()) stallFlags[stallId] = true;
-
     try {
-      const updates = {};
-      updates[`vendorStalls/${user.uid}`] = stallFlags;
-      updates[`users/${user.uid}/hasCompletedVendorSetup`] = true;
+      // users/{uid} merge {hasCompletedVendorSetup:true}
+      await setDoc(
+        doc(fs, "users", user.uid),
+        { hasCompletedVendorSetup: true },
+        { merge: true }
+      );
 
-      await update(ref(db), updates);
+      // users/{uid}/vendorStalls/{stallId} = {active:true, ...}
+      for (const stallId of selected.keys()) {
+        await setDoc(
+          doc(fs, "users", user.uid, "vendorStalls", stallId),
+          { active: true, createdAt: serverTimestamp() },
+          { merge: true }
+        );
+      }
 
-      // Optional: set first stall as active for convenience
       const firstStallId = selected.keys().next().value;
       sessionStorage.setItem("activeStallId", firstStallId);
 
       alert("Vendor setup saved!");
-      window.location.href = "Sign InVendor.html";
+      window.location.href = "Home guest.html";
     } catch (e) {
       alert(e?.message || "Failed to save vendor setup.");
     }
   });
 
-  // Require auth, then load stalls list
+  // ---- Load stalls list from Firestore "stalls" ----
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
       alert("Please sign in again.");
       window.location.href = "Sign InVendor.html";
       return;
     }
-    await loadFoodStalls();
+    await loadStallsFromFirestore();
   });
 
-  async function loadFoodStalls() {
+  async function loadStallsFromFirestore() {
     if (!stallSelect) return;
 
     try {
-      const snap = await get(ref(db, "foodStalls"));
-      const stalls = snap.exists() ? snap.val() : null;
+      const snap = await getDocs(collection(fs, "stalls"));
 
       stallSelect.innerHTML = "";
-
       const placeholder = document.createElement("option");
       placeholder.value = "";
-      placeholder.textContent = stalls ? "Select a stall..." : "No stalls found in Firebase.";
+      placeholder.textContent = snap.empty ? "No stalls found." : "Select a stall...";
       stallSelect.appendChild(placeholder);
 
-      if (!stalls) return;
+      snap.forEach((d) => {
+        const data = d.data() || {};
+        const stallId = d.id;
 
-      Object.entries(stalls).forEach(([stallId, data]) => {
-        const opt = document.createElement("option");
-        opt.value = stallId;
+        // Use doc id if no name field exists
+        const name = data.stallName || data.name || stallId;
+        const cuisine = data.cuisine || "";
+        const badge = data.badge || "";
+        const hours = data.hours || "";
 
-        // Keys based on your Firebase: stallName, hawkerCentre, unitNo, cuisine, halal
-        // Also supports alternative casing safely
-        const stallName = data?.stallName || data?.stallname || data?.StallName || "Unnamed Stall";
-        const centre = data?.hawkerCentre || data?.hawkercentre || "";
-        const unit = data?.unitNo || data?.unitno || "";
-        const cuisine = data?.cuisine || data?.Cuisine || "";
-        const halalRaw = data?.halal ?? data?.Halal ?? null;
+        const tags = [cuisine, badge].filter(Boolean).join(" • ");
+        const meta = [hours].filter(Boolean).join(" • ");
 
-        let halalLabel = "";
-        if (halalRaw === true) halalLabel = "Halal";
-        else if (halalRaw === false) halalLabel = "Non-Halal";
-
-        const tags = [cuisine, halalLabel].filter(Boolean).join(" • ");
-        const meta = [centre, unit].filter(Boolean).join(" • ");
-
-        let label = stallName;
+        let label = name;
         if (tags) label += ` (${tags})`;
         if (meta) label += ` — ${meta}`;
 
+        const opt = document.createElement("option");
+        opt.value = stallId;
         opt.textContent = label;
         stallSelect.appendChild(opt);
       });
