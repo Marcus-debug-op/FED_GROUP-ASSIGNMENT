@@ -1,3 +1,4 @@
+// menu.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
   getFirestore,
@@ -41,7 +42,7 @@ function saveCart(cart) {
   // Update dot (if present)
   updateCartDot();
 
-  // Tell other scripts (e.g., ScriptCart.js) to refresh dot
+  // Tell other scripts (e.g., ScriptCart.js) to refresh dot and UI
   window.dispatchEvent(new Event("cart-updated"));
 }
 
@@ -63,14 +64,17 @@ function addToCart({ stallId, stallName, itemId, name, price, image }) {
   if (existing) {
     existing.qty = (Number(existing.qty) || 0) + 1;
   } else {
+    // create an id field used by ScriptCart
+    const id = `${stallId}__${itemId}`;
     cart.push({
+      id,
       stallId,
       stallName: stallName || "",
       itemId,
       name,
       price: Number(price) || 0,
       qty: 1,
-      image: image || ""
+      img: image || ""
     });
   }
 
@@ -122,10 +126,10 @@ function renderMenuItemCard(stallId, stallName, itemId, item) {
   div.className = "menu-card";
 
   /**
-   * IMPORTANT:
-   * - We keep your existing .add-to-cart click handler (menu.js handles add)
-   * - We ALSO add data-add-to-cart attributes so ScriptCart.js can update dot/toast if needed
-   * - We add data-skip-scriptcart="1" so ScriptCart.js won't double-add (you'll add 1 small check there)
+   * We add:
+   * - data-add-to-cart attributes (ScriptCart listens for these)
+   * - data-skip-scriptcart="1" so ScriptCart won't double-add (menu.js handles the add)
+   * - the data-id used by ScriptCart for cart item id
    */
   div.innerHTML = `
     <div class="image-container">
@@ -219,7 +223,7 @@ async function loadMenuPage() {
     container.appendChild(card);
   });
 
-  // 3) Add to cart click handler (YOUR existing feature)
+  // 3) Add to cart click handler (menu.js handles add)
   container.addEventListener("click", (e) => {
     const btn = e.target.closest(".add-to-cart");
     if (!btn) return;

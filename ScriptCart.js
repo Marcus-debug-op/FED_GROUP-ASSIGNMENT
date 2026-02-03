@@ -1,3 +1,4 @@
+// ScriptCart.js
 const CART_KEY = "hawkerhub_cart";
 const ECO_KEY = "hawkerhub_eco_packaging";
 const ECO_FEE = 0.20;
@@ -6,11 +7,10 @@ const BROWSE_PAGE = "browsestalls.html";
 const CART_PAGE = "cart.html";
 
 /**
- * ✅ IMPORTANT FIX #1:
- * Add menus.html so the red dot can show on your new dynamic menu page.
+ * Where the cart red dot should appear
  */
 const DOT_ALLOWED_PAGES = new Set([
-  "menus.html", // ✅ ADDED
+  "menus.html",
   "AhSengMenu.html",
   "Sataymenu.html",
   "beancurdmenu.html",
@@ -25,62 +25,85 @@ function currentFileName() {
   const p = window.location.pathname;
   return p.substring(p.lastIndexOf("/") + 1) || "";
 }
-
 function isDotAllowedHere() {
   return DOT_ALLOWED_PAGES.has(currentFileName());
 }
 
-/* ---------- Storage ---------- */
+/* ---------------------------
+   CART NORMALIZATION (supports old + new cart formats)
+---------------------------- */
+function makeKey(item) {
+  if (item && item.id) return String(item.id);
+
+  const stallId = item?.stallId ? String(item.stallId) : "";
+  const itemId = item?.itemId ? String(item.itemId) : "";
+  if (stallId && itemId) return `${stallId}__${itemId}`;
+
+  return String(item?.name || "item") + "__" + String(item?.price || 0);
+}
+
+function normalizeItem(item) {
+  const key = makeKey(item);
+
+  return {
+    id: key,
+    name: item?.name || "Item",
+    price: Number(item?.price) || 0,
+    qty: Math.max(1, Number(item?.qty) || 1),
+    img: item?.img || item?.image || "",
+    stall: item?.stall || item?.stallName || "",
+    ...item,
+    id: key,
+    qty: Math.max(1, Number(item?.qty) || 1),
+    price: Number(item?.price) || 0,
+    img: item?.img || item?.image || "",
+    stall: item?.stall || item?.stallName || ""
+  };
+}
+
 function readCart() {
   try {
     const raw = localStorage.getItem(CART_KEY);
     const data = raw ? JSON.parse(raw) : [];
-    return Array.isArray(data) ? data : [];
+    if (!Array.isArray(data)) return [];
+    return data.map(normalizeItem);
   } catch {
     return [];
   }
 }
 
 function saveCart(cart) {
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
-
-  // ✅ Safe event for other pages/scripts
+  const normalized = (cart || []).map(normalizeItem);
+  localStorage.setItem(CART_KEY, JSON.stringify(normalized));
   window.dispatchEvent(new Event("cart-updated"));
 }
 
-/* ---------- Helpers ---------- */
+/* ---------- formatting ---------- */
 function formatMoney(n) {
   const num = Number(n) || 0;
   return `$${num.toFixed(2)}`;
 }
-
 function cartCount(cart) {
   return cart.reduce((sum, x) => sum + (Number(x.qty) || 0), 0);
 }
-
 function cartSubtotal(cart) {
-  return cart.reduce((sum, x) => {
-    const qty = Number(x.qty) || 0;
-    const price = Number(x.price) || 0;
-    return sum + qty * price;
-  }, 0);
+  return cart.reduce((sum, x) => sum + (Number(x.qty) * Number(x.price || 0)), 0);
 }
 
+/* ---------- UI helpers ---------- */
 function updateBannerCount(count) {
   const miniSub = document.querySelector(".cart-mini-sub");
   if (miniSub) miniSub.textContent = `${count} items`;
 }
 
-/* ---------- Eco packaging state ---------- */
 function readEco() {
   return localStorage.getItem(ECO_KEY) === "true";
 }
-
-function saveEco(isOn) {
-  localStorage.setItem(ECO_KEY, String(!!isOn));
+function saveEco(v) {
+  localStorage.setItem(ECO_KEY, String(!!v));
 }
 
-/* ---------- Totals UI (cart page only elements) ---------- */
+/* ---------- Cart summary UI ---------- */
 function updateSummary(cart) {
   const subtotal = cartSubtotal(cart);
   const ecoOn = readEco();
@@ -93,12 +116,11 @@ function updateSummary(cart) {
 
   if (subtotalEl) subtotalEl.textContent = formatMoney(subtotal);
   if (totalEl) totalEl.textContent = formatMoney(total);
-
   if (ecoRow) ecoRow.style.display = ecoOn ? "flex" : "none";
   if (ecoAmt) ecoAmt.textContent = formatMoney(ECO_FEE);
 }
 
-/* ---------- Red dot beside Cart tab ---------- */
+/* ---------- Cart dot handling (navbar) ---------- */
 function findNavCartLink() {
   return (
     document.querySelector('a.navlink[href="cart.html"]') ||
@@ -130,7 +152,7 @@ function updateCartDot() {
   if (!isDotAllowedHere()) return;
 
   const ok = ensureCartDot();
-  if (!ok) return; // navbar not ready yet
+  if (!ok) return;
 
   const cart = readCart();
   const count = cartCount(cart);
@@ -144,13 +166,8 @@ function updateCartDot() {
   dot.style.display = count > 0 ? "inline-block" : "none";
 }
 
-/**
- * ✅ Helps when navbar is injected later (e.g., navbar-init.js)
- * Tries a few times until the Cart link exists.
- */
 function updateCartDotWithRetry() {
   if (!isDotAllowedHere()) return;
-
   let tries = 0;
   const t = setInterval(() => {
     tries++;
@@ -159,10 +176,9 @@ function updateCartDotWithRetry() {
   }, 150);
 }
 
-/* ---------- Toast notification ---------- */
+/* ---------- Toast ---------- */
 function ensureToastHost() {
   if (document.getElementById("toastHost")) return;
-
   const host = document.createElement("div");
   host.id = "toastHost";
   host.style.position = "fixed";
@@ -178,12 +194,11 @@ function ensureToastHost() {
 
 function showToast(message) {
   ensureToastHost();
-
   const toast = document.createElement("div");
   toast.className = "toast";
   toast.textContent = message;
 
-  toast.style.background = "rgba(0,0,0,0.85)";
+  toast.style.background = "#ff6a00";
   toast.style.color = "#fff";
   toast.style.padding = "12px 16px";
   toast.style.borderRadius = "999px";
@@ -207,19 +222,13 @@ function showToast(message) {
     toast.style.opacity = "0";
     toast.style.transform = "translateY(-6px)";
     setTimeout(() => toast.remove(), 220);
-  }, 1200);
+  }, 1500);
 }
 
-/* ---------- Render cart items (cart page only) ---------- */
+/* ---------- Render cart (cart page) ---------- */
 function escapeHtml(str) {
   return String(str).replace(/[&<>"']/g, (m) => {
-    const map = {
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;",
-    };
+    const map = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" };
     return map[m];
   });
 }
@@ -227,7 +236,7 @@ function escapeHtml(str) {
 const IMAGE_MAP = {
   "Steamed Chicken Rice": "img/Ah Seng Chicken Rice.jpg",
   "Braised Chicken Rice": "img/red-pork-rice-famous-thai-food-recipe.jpg",
-  "Lemon Chicken Rice": "img/spicy-salad-with-fried-chicken.jpg",
+  "Lemon Chicken Rice": "img/spicy-salad-with-fried-chicken.jpg"
 };
 
 function getItemImage(item) {
@@ -237,7 +246,6 @@ function getItemImage(item) {
 function renderCart(cart) {
   const itemsArea = document.querySelector(".cart-items-area");
   const emptyState = document.querySelector(".cart-empty-state");
-
   if (!itemsArea || !emptyState) return;
 
   if (!cart.length) {
@@ -253,14 +261,14 @@ function renderCart(cart) {
       const qty = Number(item.qty) || 1;
       const price = Number(item.price) || 0;
       const lineTotal = qty * price;
+      const key = makeKey(item);
 
       return `
-        <div class="cart-item-card" data-id="${escapeHtml(item.id)}">
+        <div class="cart-item-card" data-id="${escapeHtml(key)}">
           <div class="cart-item-left">
             <div class="cart-item-img">
               <img src="${escapeHtml(getItemImage(item))}" alt="${escapeHtml(item.name)}">
             </div>
-
             <div class="cart-item-info">
               <div class="cart-item-name">${escapeHtml(item.name)}</div>
               <div class="cart-item-stall">${escapeHtml(item.stall || "")}</div>
@@ -286,52 +294,44 @@ function renderCart(cart) {
 }
 
 /* ---------- Mutations ---------- */
-function setQty(id, newQty) {
+function setQty(key, newQty) {
   const cart = readCart();
-  const item = cart.find((x) => x.id === id);
-  if (!item) return cart;
+  const idx = cart.findIndex((x) => makeKey(x) === key);
+  if (idx === -1) return;
 
-  const qty = Math.max(1, Number(newQty) || 1);
-  item.qty = qty;
-
+  cart[idx].qty = Math.max(1, Number(newQty) || 1);
   saveCart(cart);
-  return cart;
+  refreshCartUI(cart);
 }
 
-function removeItem(id) {
-  const cart = readCart().filter((x) => x.id !== id);
+function removeItem(key) {
+  const cart = readCart().filter((x) => makeKey(x) !== key);
   saveCart(cart);
-  return cart;
+  refreshCartUI(cart);
+}
+
+/* ---------- UI refresh ---------- */
+function refreshCartUI(cart) {
+  updateBannerCount(cartCount(cart));
+  renderCart(cart);
+  updateSummary(cart);
+  updateCartDot();
 }
 
 /* ---------- Navigation ---------- */
 function bindNavigation() {
-  const browseBtn = document.querySelector(".cart-browse-btn");
-  if (browseBtn) {
-    browseBtn.addEventListener("click", () => {
-      window.location.href = BROWSE_PAGE;
-    });
-  }
+  document.querySelector(".cart-browse-btn")?.addEventListener("click", () => {
+    window.location.href = BROWSE_PAGE;
+  });
 
-  const continueLink = document.querySelector(".cart-continue");
-  if (continueLink) {
-    continueLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      window.location.href = BROWSE_PAGE;
-    });
-  }
-
-  const proceed = document.getElementById("proceedCheckout");
-  if (proceed) {
-    proceed.addEventListener("click", () => {
-      const cart = readCart();
-      if (!cart.length) {
-        showToast("Your cart has no menu items");
-        return;
-      }
-      window.location.href = "checkout.html";
-    });
-  }
+  document.getElementById("proceedCheckout")?.addEventListener("click", () => {
+    const cart = readCart();
+    if (!cart.length) {
+      showToast("Your cart has no menu items");
+      return;
+    }
+    window.location.href = "checkout.html";
+  });
 }
 
 /* ---------- Eco checkbox ---------- */
@@ -340,117 +340,97 @@ function bindEcoCheckbox() {
   if (!ecoCheckbox) return;
 
   ecoCheckbox.checked = readEco();
-
   ecoCheckbox.addEventListener("change", () => {
     saveEco(ecoCheckbox.checked);
     updateSummary(readCart());
   });
 }
 
-/* ---------- Add-to-cart listener (menu pages) ---------- */
+/* ---------- Add-to-cart handler (toast included) ---------- */
 function bindAddToCartButtons() {
   document.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-add-to-cart]");
     if (!btn) return;
 
-    /**
-     * ✅ IMPORTANT FIX #2 (PREVENT DOUBLE-ADD)
-     * If menu.js already added to cart, it tags the button as:
-     * data-skip-scriptcart="1"
-     * So ScriptCart will NOT add a second time.
-     */
+    const itemName = decodeURIComponent(btn.dataset.name || "Item");
+
+    // ✅ If menu.js already added to cart, still show toast + update dot
     if (btn.dataset.skipScriptcart === "1") {
-      // Still update the dot + show toast (optional)
       updateCartDot();
+      showToast(`${itemName} added to cart`);
       return;
     }
 
     const cart = readCart();
 
-    const newItem = {
-      id: btn.dataset.id || (crypto.randomUUID?.() || String(Date.now())),
-      name: btn.dataset.name || "Item",
+    const key = btn.dataset.id || (crypto.randomUUID?.() || String(Date.now()));
+    const newItem = normalizeItem({
+      id: key,
+      name: itemName,
       price: Number(btn.dataset.price) || 0,
       qty: Number(btn.dataset.qty) || 1,
-      stall: btn.dataset.stall || "",
-      img: btn.dataset.img || "",
-    };
+      stall: decodeURIComponent(btn.dataset.stall || ""),
+      img: decodeURIComponent(btn.dataset.img || "")
+    });
 
-    const existing = cart.find((x) => x.id === newItem.id);
+    const existing = cart.find((x) => makeKey(x) === makeKey(newItem));
     if (existing) existing.qty = (Number(existing.qty) || 1) + 1;
     else cart.push(newItem);
 
     saveCart(cart);
-
-    showToast(`${newItem.name} added to cart`);
-
-    updateCartDot();
-
-    // If on cart page, refresh UI
-    if (document.querySelector(".cart-items-area")) {
-      updateBannerCount(cartCount(cart));
-      renderCart(cart);
-      updateSummary(cart);
-    }
+    showToast(`${itemName} added to cart`);
+    refreshCartUI(cart);
   });
 }
 
-/* ---------- Cart item actions ---------- */
+/* ---------- Cart item actions (inc/dec/remove) ---------- */
 function bindCartItemActions() {
   document.addEventListener("click", (e) => {
     const card = e.target.closest(".cart-item-card");
     if (!card) return;
 
-    const id = card.dataset.id;
+    const key = card.dataset.id;
     const action = e.target?.dataset?.action;
     if (!action) return;
 
+    const cart = readCart();
+    const item = cart.find((x) => makeKey(x) === key);
+    if (!item) return;
+
     if (action === "remove") {
-      const updated = removeItem(id);
-      updateBannerCount(cartCount(updated));
-      renderCart(updated);
-      updateSummary(updated);
-      updateCartDot();
+      removeItem(key);
+      showToast("Item removed");
       return;
     }
 
     if (action === "inc") {
-      const current = Number(card.querySelector(".qty")?.textContent) || 1;
-      const updated = setQty(id, current + 1);
-      updateBannerCount(cartCount(updated));
-      renderCart(updated);
-      updateSummary(updated);
-      updateCartDot();
+      setQty(key, (Number(item.qty) || 1) + 1);
       return;
     }
 
     if (action === "dec") {
-      const current = Number(card.querySelector(".qty")?.textContent) || 1;
-      const updated = setQty(id, Math.max(1, current - 1));
-      updateBannerCount(cartCount(updated));
-      renderCart(updated);
-      updateSummary(updated);
-      updateCartDot();
+      setQty(key, Math.max(1, (Number(item.qty) || 1) - 1));
       return;
     }
   });
 }
 
-/* ---------- Init ---------- */
+/* ---------- INIT ---------- */
 document.addEventListener("DOMContentLoaded", () => {
   bindNavigation();
   bindEcoCheckbox();
   bindAddToCartButtons();
   bindCartItemActions();
 
-  // ✅ Dot works even if navbar loads later
   updateCartDotWithRetry();
 
   const cart = readCart();
-  updateBannerCount(cartCount(cart));
-  renderCart(cart);
-  updateSummary(cart);
+  // save once to migrate
+  saveCart(cart);
+  refreshCartUI(cart);
 
-  // Update dot if other scripts update cart
-  window.addEventListener("cart-updated", updateCartDot);
+  window.addEventListener("cart-updated", () => {
+    const c = readCart();
+    refreshCartUI(c);
+  });
 });
