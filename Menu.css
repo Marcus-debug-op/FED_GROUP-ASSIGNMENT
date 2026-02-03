@@ -89,8 +89,21 @@ body {
 
 
 /* --- Sub-header & Hero --- */
-.sub-header { background: var(--accent); padding: 15px 0; }
-.back-link { color: white; text-decoration: none; font-weight: bold; }
+.sub-header {
+    background: var(--accent);
+    padding: 15px 0;
+    width: 100%;
+    position: relative;
+}
+.back-link {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 100px; 
+    box-shadow: none;
+    background: transparent;
+    padding: 0;
+}
 
 .hero-banner-satay {
     height: 320px;
@@ -129,7 +142,6 @@ body {
 .badge { background: white; color: #333; padding: 6px 16px; border-radius: 20px; font-weight: 700; font-size: 14px; }
 
 /* --- Menu Grid --- */
-.menu-section { padding: 50px 0; }
 .menu-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -142,8 +154,23 @@ body {
 .card-body { padding: 24px; }
 
 .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-.likes-container { text-align: right; color: #6b6b6b; font-size: 11px; }
-.heart-icon { font-size: 20px; display: block; }
+
+.likes-container { 
+    display: flex;        
+    align-items: center;   
+    justify-content: flex-end; 
+    gap: 6px;              
+    color: #6b6b6b; 
+    font-size: 14px;       
+}
+
+.heart-icon {
+    width: 24px;           
+    height: 24px;         
+    object-fit: contain;   
+    cursor: pointer;       
+}
+
 
 .card-footer {
     display: flex;
@@ -483,7 +510,7 @@ body {
 .divider {
     border: 0;
     border-top: 1px solid #eee;
-    margin: 25px 0;
+    margin: 10px 0;
 }
 
 /* 6-Button Grid */
@@ -1122,4 +1149,87 @@ textarea:focus {
     border-radius: 8px;
     border: 1px solid #eee;
     object-fit: cover;
+}
+
+.stall-description {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #444;
+    margin-bottom: 20px;
+}
+
+.info-box {
+    background: #F97316;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    margin-top: 50px;
+    color: white;
+    display: grid;
+    grid-template-columns: max-content max-content;
+    justify-content: center;
+    align-items: center;
+    gap: 20px 60px;
+}
+
+.info-item {
+    font-weight: 800;
+    font-size: 18px;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* --- 2. View Menu Button (Keep this so it stays orange!) --- */
+.btn-view-menu {
+    display: block;
+    width: 100%;
+    background: #F97316;
+    color: white;
+    text-align: center;
+    padding: 18px;
+    border-radius: 16px;
+    font-size: 22px;
+    font-weight: 900;
+    text-decoration: none;
+    transition: transform 0.2s;
+    border: none;
+}
+
+.btn-view-menu:hover {
+    background-color: #ea580c;
+    transform: scale(1.02);
+}
+
+/* --- Mobile Adjustment --- */
+@media (max-width: 440px) {
+    .info-box {
+        /* Stack to 1 column on small phones */
+        grid-template-columns: 1fr; 
+        justify-items: start;
+        gap: 15px;
+    }
+}
+
+.description-section h3 {
+    margin-top: 0;
+    margin-bottom: 8px; 
+}
+
+.description-section p {
+    margin-top: 0;
+}
+
+.menu-section h2{
+    font-size: 42px;
+    font-weight: 900;
+    margin-top: 20px;
+    margin-bottom: 40px;
+    text-align: center;
+    color: var(--text);
+}
+
+.menu-section {
+    padding: 60px 0;
 }
