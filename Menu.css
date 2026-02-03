@@ -16,81 +16,15 @@ body {
 .container {
     width: 1100px;
     margin: 0 auto;
-    /* Removed padding to match your correct code */
+
 }
 
-/* --- NAVBAR (Exact match to your Correct CSS) --- */
-.topbar {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: var(--bg);
-    border-bottom: 1px solid rgba(0,0,0,0.06);
-}
 
-.topbar-inner {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 12px 0;
-}
-
-.icon-btn {
-    height: 40px;
-    width: auto;
-    cursor: pointer;
-    padding: 8px 10px;
-    border-radius: 10px;
-}
-
-.icon-btn:hover {
-    background: rgba(0,0,0,0.06);
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.logo {
-    height: 130px; /* Restored to 130px as requested */
-    width: auto;
-}
-
-.navlinks {
-    margin-left: auto;
-    display: flex;
-    gap: 36px;
-}
-
-.navlink {
-    text-decoration: none;
-    color: var(--text);
-    font-weight: 700;
-    font-size: 20px;
-}
-
-.navlink:hover { opacity: 0.8; }
-
-.btn-signin {
-    text-decoration: none;
-    background: var(--accent);
-    color: #fff;
-    font-weight: 700;
-    font-size: 20px;
-    margin-left: 32px;
-    border-radius: 999px;
-    padding: 12px 24px;
-    display: inline-flex;
-    align-items: center;
-}
-/* --- END NAVBAR --- */
 
 
 /* --- Sub-header & Hero --- */
 .sub-header {
-background: var(--accent);
+    background: var(--accent);
     padding: 15px 0;
     width: 100%;
     position: relative;
@@ -393,19 +327,16 @@ background: var(--accent);
 }
 
 /*Details page*/
-.details-page {
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    font-family: system-ui, -apple-system, sans-serif;
-    /* Full background cover with tint */
-    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
-                url('img/hawker_background1.avif');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+.details-page{
+  margin: 0;
+  min-height: 100vh;
+  background:linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('img/hawker_background1.avif');
+  background-size: cover;    
+  background-position: center; 
+  background-repeat: no-repeat; 
+
 }
+
 
 .details-wrapper {
     width: 100%;
@@ -414,6 +345,13 @@ background: var(--accent);
     display: flex;
     flex-direction: column;
 }
+
+.page-shell{
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
 
 .btn-go-back {
     color: white;
@@ -1159,37 +1097,36 @@ textarea:focus {
 }
 
 .info-box {
-    background: lightblue;
-    /* 70% opacity black border */
-    border: 2px solid rgba(0, 0, 0, 0.7); 
-    color: black !important;
-    
+    background: #F6A76B;
     border-radius: 16px;
-    padding: 30px;
+    padding: 24px;
     margin-bottom: 20px;
-    margin-top: 50px;
-    
+    margin-top: 20px;
+    color: white;
     display: grid;
     grid-template-columns: max-content max-content;
     justify-content: center;
     align-items: center;
-    gap: 30px 200px;
-}
-.info-icon {
-    width: 24px;         /* Adjust this size if you want them bigger/smaller */
-    height: 24px;
-    object-fit: contain; /* Ensures the icon doesn't stretch or distort */
-    display: block;
+    gap: 20px 250px;
 }
 
 .info-item {
-    font-weight: 400;
+    font-weight: 800;
     font-size: 18px;
-    color: black !important;
+    color: white;
     display: flex;
-    align-items: center; /* Vertically centers the text with the icon */
-    gap: 15px;           /* Space between icon and text */
+    align-items: center;
+    gap: 10px;
 }
+
+/* Fix huge icons in the orange info box */
+.info-icon{
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex: 0 0 22px;   /* stops flex from stretching it */
+}
+
 
 /* --- 2. View Menu Button (Keep this so it stays orange!) --- */
 .btn-view-menu {
@@ -1214,13 +1151,12 @@ textarea:focus {
 
 /* --- Mobile Adjustment --- */
 @media (max-width: 440px) {
-    .info-box {
-        /* Stack to 1 column on small phones */
-        grid-template-columns: 1fr; 
-        justify-items: start;
-        gap: 15px;
-    }
+  .info-box {
+    grid-template-columns: 1fr;  /* stack */
+    row-gap: 16px;
+  }
 }
+
 
 .description-section h3 {
     margin-top: 0;
@@ -1242,36 +1178,4 @@ textarea:focus {
 
 .menu-section {
     padding: 60px 0;
-}
-
-.right-actions-group {
-    display: flex;
-    flex-direction: column; /* Stacks items vertically */
-    align-items: center;    /* Centers the ID text relative to the buttons */
-    gap: 6px;               /* Space between the ID and the buttons */
-}
-
-/* Styling for the Stall ID text */
-.stall-id-text {
-    color: black;           /* Black font */
-    font-weight: bold;
-    font-size: 14px;
-}
-
-.stall-id-text {
-    font-size: 24px;
-    font-weight: 900;
-    color: black;          /* changed from gray to black */
-    margin-left: auto;     /* This magic rule pushes it to the far right */
-}
-
-.header-text {
-    width: 100%;
-}
-
-.title-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%; /* Important: Allows the ID to push to the edge */
 }
