@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operator Portal - Ah Seng's Stall</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <link rel="stylesheet" href="operator.css">
+</head>
+<body>
+
+    <div class="container">
+        
+        <aside class="sidebar">
+            <div class="brand">
+                <img src="img/Logo.png" alt="Stall Logo" class="brand-logo">
+                <div class="brand-info">
+                    <div class="brand-title">Operator Portal</div>
+                    <div class="brand-subtitle">Hawker Hub</div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-item active" onclick="switchPage('overview', this)">
+                Overview
+                </div>
+                
+                <div class="nav-item" onclick="switchPage('orders', this)">
+                Orders
+                </div>
+                
+                <div class="nav-item" onclick="switchPage('menu', this)">
+                Menu Management
+                </div>
+                
+                <div class="nav-item" onclick="switchPage('reviews', this)">
+                Reviews
+                </div>
+                
+                <div class="nav-item" onclick="switchPage('settings', this)">
+                Settings
+                </div>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            
+            <div id="page-overview">
+                <header class="header">
+                    <div>
+                        <h1>Dashboard Overview</h1>
+                        <p class="subtitle">Track your stall performance and key metrics</p>
+                    </div>
+                </header>
+
+                <div class="stats-grid">
+                    <div class="card stat-card">
+                        <div class="stat-header">
+                            <span>Total Revenue</span>
+                            <span class="icon">$</span>
+                        </div>
+                        <div class="stat-value" id="total-revenue">$0,000</div>
+                        <div class="stat-trend positive">
+                            <span id="revenue-trend">+0%</span> from last month
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="stat-header">
+                            <span>Orders Today</span>
+                            <span class="icon">📦</span>
+                        </div>
+                        <div class="stat-value" id="orders-today">0</div>
+                        <div class="stat-trend positive">
+                            <span id="orders-trend">+0%</span> from yesterday
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="stat-header">
+                            <span>Average Rating</span>
+                            <span class="icon">⭐</span>
+                        </div>
+                        <div class="stat-value" id="avg-rating">0.0</div>
+                        <div class="stat-subtext">Based on <span id="review-count">0</span> reviews</div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="stat-header">
+                            <span>Hygiene Grade</span>
+                            <span class="icon">🛡️</span>
+                        </div>
+                        <div class="flex-align">
+                            <div class="grade-badge" id="hygiene-grade">-</div>
+                            <span class="grade-score"><span id="hygiene-score">0</span>/100</span>
+                        </div>
+                        <div class="stat-subtext">Last inspected: <span id="last-inspection">-</span></div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="card chart-container">
+                        <h3>Sales Trend</h3>
+                        <p class="subtitle">Monthly sales performance</p>
+                        <div class="canvas-wrapper">
+                            <canvas id="salesChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card chart-container">
+                        <h3>Order Types</h3>
+                        <p class="subtitle">Distribution by order type</p>
+                        <div class="canvas-wrapper">
+                            <canvas id="orderTypeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-orders" class="hidden">
+                <header class="header"><h1>Orders</h1></header>
+                <div class="card"><p>Order content goes here...</p></div>
+            </div>
+
+            <div id="page-menu" class="hidden">
+                <header class="header"><h1>Menu Management</h1></header>
+                <div class="card"><p>Menu content goes here...</p></div>
+            </div>
+
+            <div id="page-reviews" class="hidden">
+                <header class="header"><h1>Reviews</h1></header>
+                <div class="card"><p>Reviews content goes here...</p></div>
+            </div>
+
+            <div id="page-inspections" class="hidden">
+                <header class="header"><h1>Inspections</h1></header>
+                <div class="card"><p>Inspections content goes here...</p></div>
+            </div>
+
+            <div id="page-settings" class="hidden">
+                <header class="header"><h1>Settings</h1></header>
+                <div class="card"><p>Settings content goes here...</p></div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // --- 1. NAVIGATION LOGIC ---
+        function switchPage(pageId, element) {
+            // A. Hide all pages
+            const pages = document.querySelectorAll('[id^="page-"]');
+            pages.forEach(page => page.classList.add('hidden'));
+
+            // B. Show selected page
+            document.getElementById('page-' + pageId).classList.remove('hidden');
+
+            // C. Update Sidebar Active State
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+
+            // D. Resize charts if going back to Overview
+            if (pageId === 'overview') {
+                window.dispatchEvent(new Event('resize'));
+            }
+        }
+
+        // --- 2. DATA & CHARTS LOGIC ---
+        const mockFirebaseData = {
+            totalRevenue: 6247,
+            revenueIncrease: 12.5,
+            ordersToday: 143,
+            ordersIncrease: 8.2,
+            avgRating: 4.8,
+            totalReviews: 342,
+            hygieneGrade: "A",
+            hygieneScore: 92,
+            lastInspected: "Jan 15, 2026",
+            salesTrend: [4200, 3800, 5100, 4600, 5400, 6247], 
+            orderDistribution: [45, 35, 20] 
+        };
+
+        function updateDashboard(data) {
+            document.getElementById('total-revenue').innerText = `$${data.totalRevenue.toLocaleString()}`;
+            document.getElementById('revenue-trend').innerText = `+${data.revenueIncrease}%`;
+            document.getElementById('orders-today').innerText = data.ordersToday;
+            document.getElementById('orders-trend').innerText = `+${data.ordersIncrease}%`;
+            document.getElementById('avg-rating').innerText = data.avgRating;
+            document.getElementById('review-count').innerText = data.totalReviews;
+            document.getElementById('hygiene-grade').innerText = data.hygieneGrade;
+            document.getElementById('hygiene-score').innerText = data.hygieneScore;
+            document.getElementById('last-inspection').innerText = data.lastInspected;
+            
+            renderCharts(data);
+        }
+
+        function renderCharts(data) {
+            const ctxSales = document.getElementById('salesChart').getContext('2d');
+            new Chart(ctxSales, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Revenue',
+                        data: data.salesTrend,
+                        borderColor: '#ff6b00',
+                        backgroundColor: 'rgba(255, 107, 0, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f0f0f0' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            const ctxOrders = document.getElementById('orderTypeChart').getContext('2d');
+            new Chart(ctxOrders, {
+                type: 'pie',
+                data: {
+                    labels: ['Dine-in', 'Takeaway', 'Delivery'],
+                    datasets: [{
+                        data: data.orderDistribution,
+                        backgroundColor: ['#ff6b00', '#ffb380', '#ffe0cc'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right' } }
+                }
+            });
+        }
+
+        // Initialize with data
+        updateDashboard(mockFirebaseData);
+    </script>
+</body>
+</html>
