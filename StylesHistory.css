@@ -1,0 +1,230 @@
+/* Toggle helper class to hide sections */
+.hidden {
+  display: none !important;
+}
+
+/* Main layout tweaks previously inline */
+/* UPDATED: center the white history card */
+.history-main {
+  display: flex;
+  justify-content: center; /* centers the card horizontally */
+  width: 100%;
+}
+
+.history-card {
+  width: 100%;
+  max-width: 900px;
+  margin: 40px 16px; /* top/bottom spacing + side padding on small screens */
+}
+
+/* Toolbar */
+.history-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.history-title {
+  margin: 0;
+}
+
+/* Refresh button */
+.history-refresh-btn {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  background: #fff;
+}
+
+/* Loading + Empty */
+.history-loading {
+  text-align: center;
+  padding: 20px;
+}
+
+.history-empty {
+  display: none;
+  padding: 18px;
+  text-align: center;
+}
+
+/* List container */
+.history-list {
+  display: grid;
+  gap: 14px;
+}
+
+/* History item card */
+.history-item {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+/* Left column meta */
+.history-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.history-status-pill {
+  background: #d9fbe1;
+  color: #0b6b2b;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.history-order-no {
+  color: #ff5a5a;
+  font-weight: 800;
+  font-size: 12px;
+}
+
+.history-stall {
+  font-weight: 800;
+}
+
+.history-date {
+  opacity: 0.75;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.history-total {
+  margin-top: 8px;
+  font-weight: 800;
+}
+
+/* View Details button */
+.history-view-btn {
+  background: #ff6a00;
+  color: #fff;
+  border: 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* Detail view back button */
+.back-btn {
+  background: none;
+  border: none;
+  color: #ff6a00;
+  font-weight: 800;
+  cursor: pointer;
+  font-size: 16px;
+  margin-bottom: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.back-btn:hover {
+  text-decoration: underline;
+}
+
+/* Detail view */
+.detail-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.detail-date {
+  opacity: 0.75;
+  font-size: 12px;
+}
+
+.detail-order {
+  font-weight: 900;
+  font-size: 18px;
+  margin-top: 6px;
+}
+
+.detail-stall-block {
+  margin-top: 10px;
+}
+
+.detail-status-pill {
+  background: #d9fbe1;
+  color: #0b6b2b;
+  font-weight: 900;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+}
+
+/* Detail items */
+.detail-section-title {
+  margin-top: 18px;
+  font-weight: 900;
+}
+
+.detail-items {
+  margin-top: 8px;
+}
+
+.detail-item-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.detail-item-name {
+  font-weight: 800;
+}
+
+.detail-item-qty {
+  opacity: 0.7;
+  font-size: 12px;
+}
+
+.detail-item-line {
+  font-weight: 800;
+}
+
+/* Totals */
+.detail-totals {
+  margin-top: 16px;
+  border-top: 1px solid #ddd;
+  padding-top: 12px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.detail-row strong {
+  font-weight: 900;
+}
+
+.detail-discount {
+  font-weight: 900;
+  color: crimson;
+}
+
+.detail-total-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  font-size: 18px;
+}
+
+.detail-total-row span {
+  font-weight: 900;
+}
