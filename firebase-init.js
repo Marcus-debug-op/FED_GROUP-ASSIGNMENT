@@ -1,4 +1,6 @@
-// js/firebase-init.js
+// firebase-init.js (module)
+// Paste your Firebase web config from Firebase Console:
+// Project settings -> Your apps -> Firebase SDK snippet -> Config
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";

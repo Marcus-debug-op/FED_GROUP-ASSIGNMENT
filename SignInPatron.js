@@ -1,21 +1,22 @@
-// SignInVendor.js (module)
-import { auth, db } from "./firebase-init.js";
+// SignInPatron.js (module) — Firestore + role check
+import { auth, fs } from "./firebase-init.js";
+
 import { signInWithEmailAndPassword } from
   "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-import { ref, get } from
-  "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+import { doc, getDoc } from
+  "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const emailEl = document.getElementById("email");
   const passEl = document.getElementById("password");
   const btn = document.querySelector(".submit");
-  if (!emailEl || !passEl || !btn) return;
 
-  btn.addEventListener("click", async (e) => {
+  btn?.addEventListener("click", async (e) => {
     e.preventDefault();
 
-    const email = (emailEl.value || "").trim().toLowerCase();
-    const password = passEl.value || "";
+    const email = (emailEl?.value || "").trim().toLowerCase();
+    const password = passEl?.value || "";
 
     if (!email || !password) {
       alert("Please enter email and password.");
@@ -25,11 +26,11 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const cred = await signInWithEmailAndPassword(auth, email, password);
 
-      // Read role from RTDB
-      const snap = await get(ref(db, `users/${cred.user.uid}`));
-      const data = snap.exists() ? snap.val() : null;
+      // Role check: users/{uid}.role must be "patron"
+      const userSnap = await getDoc(doc(fs, "users", cred.user.uid));
+      const role = (userSnap.exists() ? (userSnap.data()?.role || "") : "").toString().toLowerCase();
 
-      if (!data || String(data.role).toLowerCase() !== "patron") {
+      if (role !== "patron") {
         alert("This account is not a patron account.");
         return;
       }
@@ -45,5 +46,6 @@ function prettyFirebaseError(err) {
   const code = err?.code || "";
   if (code.includes("invalid-credential") || code.includes("wrong-password")) return "Wrong email or password.";
   if (code.includes("user-not-found")) return "No account found for this email.";
+  if (code.includes("too-many-requests")) return "Too many attempts. Try again later.";
   return err?.message || "Sign in failed.";
 }

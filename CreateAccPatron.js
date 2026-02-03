@@ -1,9 +1,6 @@
-// CreateAccPatron.js (module)
-import { auth, db } from "./firebase-init.js";
-import { createUserWithEmailAndPassword, updateProfile } from
-  "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-import { ref, set } from
-  "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+import { getFirestore, doc, getDoc } from
+  "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+  const fs = getFirestore();
 
 document.addEventListener("DOMContentLoaded", () => {
   const btn = document.querySelector(".submit-btn"); // your current patron create button
