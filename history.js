@@ -1,21 +1,19 @@
-// Import Firebase SDKs (Realtime Database version)
+// Import FIRESTORE SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+import { getFirestore, collection, getDocs, query } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-// --- YOUR CONFIG (Same as checkout.js) ---
+// --- YOUR CONFIG ---
 const firebaseConfig = {
   apiKey: "AIzaSyDo8B0OLtAj-Upfz7yNFeGz4cx3KWLZLuQ",
   authDomain: "hawkerhub-64e2d.firebaseapp.com",
-  databaseURL: "https://hawkerhub-64e2d-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "hawkerhub-64e2d",
   storageBucket: "hawkerhub-64e2d.firebasestorage.app",
   messagingSenderId: "722888051277",
   appId: "1:722888051277:web:59926d0a54ae0e4fe36a04"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const db = getFirestore(app); // CONNECT TO FIRESTORE
 
 // Global variable to store orders
 let allOrders = [];
@@ -61,7 +59,7 @@ function showDetail(orderId) {
   }
 }
 
-// ================= RENDER LIST (Fetch from Realtime DB) =================
+// ================= RENDER LIST (Fetch from FIRESTORE) =================
 async function loadHistory() {
   const listEl = document.getElementById("historyList");
   const emptyEl = document.getElementById("historyEmpty");
@@ -73,26 +71,18 @@ async function loadHistory() {
   emptyEl.style.display = "none";
 
   try {
-    // 1. Fetch from Realtime Database
-    const dbRef = ref(db);
-    const snapshot = await get(child(dbRef, `orders`));
+    // 1. Fetch from Firestore
+    const q = query(collection(db, "orders"));
+    const snapshot = await getDocs(q);
 
     allOrders = [];
+    snapshot.forEach((doc) => {
+      // Firestore separates ID from Data, so we merge them
+      allOrders.push({ id: doc.id, ...doc.data() });
+    });
 
-    if (snapshot.exists()) {
-      const data = snapshot.val();
-      // Realtime DB returns an object of objects { "id1": {...}, "id2": {...} }
-      // We convert this into an array
-      Object.keys(data).forEach((key) => {
-        allOrders.push({
-          id: key,
-          ...data[key]
-        });
-      });
-
-      // Sort by createdAt descending (newest first)
-      allOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    }
+    // Sort manually (Newest first)
+    allOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     loadingEl.style.display = "none";
 

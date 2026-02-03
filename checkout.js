@@ -1,12 +1,11 @@
-// Import Firebase SDKs (Realtime Database)
+// Import FIRESTORE SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 // --- YOUR CONFIG ---
 const firebaseConfig = {
   apiKey: "AIzaSyDo8B0OLtAj-Upfz7yNFeGz4cx3KWLZLuQ",
   authDomain: "hawkerhub-64e2d.firebaseapp.com",
-  databaseURL: "https://hawkerhub-64e2d-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "hawkerhub-64e2d",
   storageBucket: "hawkerhub-64e2d.firebasestorage.app",
   messagingSenderId: "722888051277",
@@ -14,7 +13,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const db = getFirestore(app); // CONNECT TO FIRESTORE
 
 document.addEventListener("DOMContentLoaded", () => {
   const proceedBtn = document.querySelector(".cta");
@@ -24,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const ECO_KEY = "hawkerhub_eco_packaging";
   const COUPON_KEY = "hawkerhub_coupon";
   const CARD_DETAILS_KEY = "hawkerhub_card_details";
-
   const ECO_FEE = 0.20;
 
   const PROMOS = {
@@ -151,40 +149,35 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================
-  // FIXED: Visual Highlighting Logic
+  // VISUAL HIGHLIGHTING (Red Border Fix)
   // =========================
   const paymentOptions = document.querySelectorAll(".pay-option");
   let lastPayValue = "card"; 
 
-  // 1. Force the red border onto the correct box
   function updateRedBorder() {
     paymentOptions.forEach(option => {
       const radio = option.querySelector("input[type='radio']");
       if (radio && radio.checked) {
-        option.classList.add("is-selected"); // Shows Red Border
+        option.classList.add("is-selected");
       } else {
-        option.classList.remove("is-selected"); // Removes Red Border
+        option.classList.remove("is-selected");
       }
     });
   }
 
-  // 2. Add click listener to the entire BOX
   paymentOptions.forEach(option => {
     option.addEventListener("click", () => {
       const radio = option.querySelector("input[type='radio']");
       if(radio) {
-        radio.checked = true; // Manually check the radio
-        updateRedBorder();    // Immediately update border
+        radio.checked = true;
+        updateRedBorder();
         
-        // Handle Modals
         if (radio.value === "card") openCardModal();
         else if (radio.value === "paynow") openPayNowModal();
         else lastPayValue = radio.value;
       }
     });
   });
-
-  // 3. Initialize on load
   updateRedBorder();
 
   // =========================
@@ -233,7 +226,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function handleRevert() {
     const current = document.querySelector('input[name="pay"]:checked')?.value;
     const saved = readCardDetails();
-    // If cancelling Card (and no card saved) OR Paynow, revert visuals
     if ((current === "card" && !saved) || current === "paynow") {
         const prevRadio = document.querySelector(`input[value="${lastPayValue}"]`);
         if(prevRadio) {
@@ -247,7 +239,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if(cardOverlay) cardOverlay.addEventListener("click", (e) => { if(e.target===cardOverlay) { closeModals(); handleRevert(); } });
   if(paynowOverlay) paynowOverlay.addEventListener("click", (e) => { if(e.target===paynowOverlay) { closeModals(); handleRevert(); } });
 
-  // STRICT Card Validation on Add
   document.getElementById("cardAddBtn")?.addEventListener("click", () => {
     const name = String(cardName?.value || "").trim();
     const number = String(cardNumber?.value || "").trim();
@@ -333,7 +324,7 @@ document.addEventListener("DOMContentLoaded", () => {
   updateCheckoutSummary();
 
   // =========================
-  // Submit
+  // SUBMIT TO FIRESTORE
   // =========================
   proceedBtn.addEventListener("click", async () => {
     const info = updateCheckoutSummary();
@@ -352,8 +343,8 @@ document.addEventListener("DOMContentLoaded", () => {
     proceedBtn.disabled = true;
 
     try {
-      const orderRef = push(ref(db, 'orders'));
-      await set(orderRef, {
+      // --- FIRESTORE SAVE ---
+      await addDoc(collection(db, "orders"), {
         orderNo: String(Date.now()).slice(-6),
         createdAt: new Date().toISOString(),
         items: info.cart,
@@ -373,7 +364,7 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = "PaymentSuccesss.html";
     } catch (e) {
       console.error(e);
-      alert("Error processing order.");
+      alert("Error processing order: " + e.message);
       proceedBtn.textContent = "Submit";
       proceedBtn.disabled = false;
     }
