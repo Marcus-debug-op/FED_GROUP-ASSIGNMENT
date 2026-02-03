@@ -8,80 +8,6 @@
 </head>
 
 <body>
-  <!-- Top Nav -->
-  <header class="topbar">
-    <div class="container topbar-inner">
-      <img src="img/Dashboard button.png" alt="Dashboard" class="icon-btn" id="menu-btn" />
-
-      <div class="brand">
-        <a href="Home Guest.html">
-          <img src="img/Logo.png" alt="HawkerHub Logo" class="logo" />
-        </a>
-      </div>
-
-
-      <nav class="navlinks">
-        <!-- Shared -->
-        <a href="browsestalls.html" class="navlink" data-role="all">Browse</a>
-        <a href="history.html" class="navlink" data-role="all">History</a>
-
-        <!--Guest & Patron-->
-        <a href="cart.html" class="navlink" data-role="all">Cart</a>
-       
-        
-
-        <!-- Vendor only -->
-        <a href="orders.html" class="navlink" data-role="vendor">Orders</a>
-        <a href="inspection.html" class="navlink" data-role="vendor">Inspection</a>
-      </nav>
-
-
-      <a class="btn btn-signin" href="sign up.html" id="signinBtn">Sign in</a> <!-- id is from script.js-->
-
-      
-
-    </div>
-  </header>
-
-  <!-- Overlay -->
-  <div id="overlay" class="overlay hidden"></div>
-
-  <!-- Dashboard -->
-  <div id="dashboard" class="dashboard hidden">
-    <div class="dashboard-header">
-      <div class="dashboard-brand">
-        <img src="img/Logo.png" alt="HawkerHub" class="logo" />
-        <span>HawkerHub</span>
-      </div>
-      <button id="close-btn" type="button">✕</button>
-    </div>
-
-
-    
-    <a href="browsestalls.html" data-role="all">Browse</a>
-        <a href="history.html" data-role="all">History</a>
-
-        
-        <a href="cart.html" data-role="all">Cart</a>
-       
-        
-
-        <!-- Vendor only -->
-        <a href="orders.html" data-role="vendor">Orders</a>
-        <a href="inspection.html" data-role="vendor">Inspection</a>
-
-    
-
-
-    <div class="dashboard-footer">
-      <p>Hungry? Let's get started!</p>
-      <button id="dashboardAuthBtn" class="dashboard-auth-btn">
-        Sign in
-      </button>
-    </div>
-
-
-  </div>
 
   <!-- Hero -->
   <section class="hero">
@@ -144,6 +70,7 @@
     <small>© 2026 HawkerHub. All rights reserved.</small>
   </footer>
 
-<script type="module" src="script.js"></script>
+  <script type="module" src="loadNavbar.js"></script>
+  <script type="module" src="navbar-auth.js"></script>
 </body>
 </html>

@@ -1,4 +1,3 @@
-// script.js (module)
 import { auth, db } from "./firebase-init.js"; 
 // If your firebase-init.js is NOT in /js/, change to: "./firebase-init.js"
 
@@ -31,15 +30,15 @@ function closeMenu() {
 if (closeBtn) closeBtn.addEventListener("click", closeMenu);
 if (overlay) overlay.addEventListener("click", closeMenu);
 
-// ===============================
-// Firebase-driven UI state
-// ===============================
+
+// Firebase UI state
+
 const dashboardAuthBtn = document.getElementById("dashboardAuthBtn");
 const signinBtn = document.getElementById("signinBtn");
 
 // Call this to apply role-based visibility
 function applyRoleBasedNav(role) {
-  // header/normal nav links
+
   const navLinks = document.querySelectorAll(".navlink[data-role]");
   navLinks.forEach((link) => {
     const allowedRole = link.dataset.role; // all / patron / vendor
@@ -67,11 +66,11 @@ async function fetchUserProfile(uid) {
   return snap.exists() ? snap.val() : null;
 }
 
-// Listen to auth session
+// listen to auth session
 onAuthStateChanged(auth, async (user) => {
-  // ---------------------------
-  // Not logged in
-  // ---------------------------
+
+  // not logged in
+
   if (!user) {
     // Dashboard button
     if (dashboardAuthBtn) {
@@ -91,9 +90,9 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  // ---------------------------
-// Logged in
-// ---------------------------
+
+// log in
+
 let profile = null;
 try {
   profile = await fetchUserProfile(user.uid);
