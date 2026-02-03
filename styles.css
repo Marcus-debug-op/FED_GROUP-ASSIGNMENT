@@ -436,3 +436,19 @@ body{
     gap: 10px;
   }
 }
+
+/* ===== Cart red dot indicator ===== */
+.navlink.cart-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cart-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: red;
+  display: none; /* hidden until cart has items */
+}

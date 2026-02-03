@@ -16,76 +16,10 @@ body {
 .container {
     width: 1100px;
     margin: 0 auto;
-    /* Removed padding to match your correct code */
+
 }
 
-/* --- NAVBAR (Exact match to your Correct CSS) --- */
-.topbar {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: var(--bg);
-    border-bottom: 1px solid rgba(0,0,0,0.06);
-}
 
-.topbar-inner {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 12px 0;
-}
-
-.icon-btn {
-    height: 40px;
-    width: auto;
-    cursor: pointer;
-    padding: 8px 10px;
-    border-radius: 10px;
-}
-
-.icon-btn:hover {
-    background: rgba(0,0,0,0.06);
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.logo {
-    height: 130px; /* Restored to 130px as requested */
-    width: auto;
-}
-
-.navlinks {
-    margin-left: auto;
-    display: flex;
-    gap: 36px;
-}
-
-.navlink {
-    text-decoration: none;
-    color: var(--text);
-    font-weight: 700;
-    font-size: 20px;
-}
-
-.navlink:hover { opacity: 0.8; }
-
-.btn-signin {
-    text-decoration: none;
-    background: var(--accent);
-    color: #fff;
-    font-weight: 700;
-    font-size: 20px;
-    margin-left: 32px;
-    border-radius: 999px;
-    padding: 12px 24px;
-    display: inline-flex;
-    align-items: center;
-}
-/* --- END NAVBAR --- */
 
 
 /* --- Sub-header & Hero --- */
@@ -393,19 +327,16 @@ body {
 }
 
 /*Details page*/
-.details-page {
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    font-family: system-ui, -apple-system, sans-serif;
-    /* Full background cover with tint */
-    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
-                url('img/hawker_background1.avif');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+.details-page{
+  margin: 0;
+  min-height: 100vh;
+  background:linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('img/hawker_background1.avif');
+  background-size: cover;    
+  background-position: center; 
+  background-repeat: no-repeat; 
+
 }
+
 
 .details-wrapper {
     width: 100%;
@@ -414,6 +345,13 @@ body {
     display: flex;
     flex-direction: column;
 }
+
+.page-shell{
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
 
 .btn-go-back {
     color: white;
@@ -1159,17 +1097,17 @@ textarea:focus {
 }
 
 .info-box {
-    background: #F97316;
+    background: #F6A76B;
     border-radius: 16px;
     padding: 24px;
     margin-bottom: 20px;
-    margin-top: 50px;
+    margin-top: 20px;
     color: white;
     display: grid;
     grid-template-columns: max-content max-content;
     justify-content: center;
     align-items: center;
-    gap: 20px 60px;
+    gap: 20px 250px;
 }
 
 .info-item {
@@ -1180,6 +1118,15 @@ textarea:focus {
     align-items: center;
     gap: 10px;
 }
+
+/* Fix huge icons in the orange info box */
+.info-icon{
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex: 0 0 22px;   /* stops flex from stretching it */
+}
+
 
 /* --- 2. View Menu Button (Keep this so it stays orange!) --- */
 .btn-view-menu {
@@ -1204,13 +1151,12 @@ textarea:focus {
 
 /* --- Mobile Adjustment --- */
 @media (max-width: 440px) {
-    .info-box {
-        /* Stack to 1 column on small phones */
-        grid-template-columns: 1fr; 
-        justify-items: start;
-        gap: 15px;
-    }
+  .info-box {
+    grid-template-columns: 1fr;  /* stack */
+    row-gap: 16px;
+  }
 }
+
 
 .description-section h3 {
     margin-top: 0;

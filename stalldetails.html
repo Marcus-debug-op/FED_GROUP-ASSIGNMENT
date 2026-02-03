@@ -5,9 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Stall Details</title>
   <link rel="stylesheet" href="Menu.css">
+  <link rel="stylesheet" href="styles.css"> 
 </head>
 
 <body class="details-page">
+
+  <div class="page-shell">
   <div class="details-wrapper">
     <a href="browsestalls.html" class="btn-go-back">↩ Go Back</a>
 
@@ -20,10 +23,14 @@
       <div class="modal-content">
         <div class="content-header">
           <div class="header-text">
+            
             <div class="title-row">
               <h1 id="stall-name">Loading...</h1>
               <span class="hygiene-tag" id="stall-hygiene"></span>
+              
+              <span class="stall-id-text" id="stall-id-display"></span>
             </div>
+
             <p class="cuisine-type" id="stall-cuisine"></p>
           </div>
         </div>
@@ -48,16 +55,20 @@
 
         <div class="info-box">
           <div class="info-item">
-            <span>📍</span> <span id="stall-location">Loading...</span>
+            <img src="img/pin.png" alt="Location" class="info-icon">
+            <span id="stall-location">Loading...</span>
           </div>
           <div class="info-item">
-            <span>🕒</span> <span id="stall-hours">Loading...</span>
+            <img src="img/clock (2).png" alt="Hours" class="info-icon">
+            <span id="stall-hours">Loading...</span>
           </div>
           <div class="info-item">
-            <span>💲</span> <span id="stall-price">Loading...</span>
+            <img src="img/dollar-symbol.png" alt="Price" class="info-icon">
+            <span id="stall-price">Loading...</span>
           </div>
           <div class="info-item">
-            <span>📞</span> <span id="stall-phone">Loading...</span>
+            <img src="img/phone.png" alt="Phone" class="info-icon">
+            <span id="stall-phone">Loading...</span>
           </div>
         </div>
 
@@ -65,7 +76,9 @@
         </div>
     </div>
   </div>
-
+</div>
+  <script type="module" src="loadNavbar.js"></script>
+  <script type="module" src="navbar-auth.js"></script>
   <script type="module" src="stalldetails.js"></script>
 </body>
 </html>

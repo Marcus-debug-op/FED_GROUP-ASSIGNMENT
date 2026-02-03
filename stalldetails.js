@@ -38,6 +38,8 @@ async function loadDetails() {
   document.title = `${s.displayName || "Stall"} - Details`;
   document.getElementById("stall-name").textContent = s.name || stallId;
 
+  document.getElementById("stall-id-display").textContent = s.stallNo || ("#" + stallId.toUpperCase());
+
   // Image
   document.getElementById("stall-img").src = s.heroImage || "";
   document.getElementById("stall-img").alt = s.displayName || stallId;

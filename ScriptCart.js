@@ -5,8 +5,21 @@ const ECO_FEE = 0.20;
 const BROWSE_PAGE = "browsestalls.html";
 const CART_PAGE = "cart.html";
 
-// ✅ Dot should appear ONLY on this page
-const DOT_ALLOWED_PAGES = new Set(["AhSengMenu.html","Sataymenu.html","beancurdmenu.html","LaksaMenu.html","WokMasterMenu.html","MeeRebusMenu.html","SpringLeafMenu.html","NasiLemakMenu.html"]);
+/**
+ * ✅ IMPORTANT FIX #1:
+ * Add menus.html so the red dot can show on your new dynamic menu page.
+ */
+const DOT_ALLOWED_PAGES = new Set([
+  "menus.html", // ✅ ADDED
+  "AhSengMenu.html",
+  "Sataymenu.html",
+  "beancurdmenu.html",
+  "LaksaMenu.html",
+  "WokMasterMenu.html",
+  "MeeRebusMenu.html",
+  "SpringLeafMenu.html",
+  "NasiLemakMenu.html"
+]);
 
 function currentFileName() {
   const p = window.location.pathname;
@@ -30,6 +43,9 @@ function readCart() {
 
 function saveCart(cart) {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
+
+  // ✅ Safe event for other pages/scripts
+  window.dispatchEvent(new Event("cart-updated"));
 }
 
 /* ---------- Helpers ---------- */
@@ -82,17 +98,21 @@ function updateSummary(cart) {
   if (ecoAmt) ecoAmt.textContent = formatMoney(ECO_FEE);
 }
 
-/* ---------- Red dot beside Cart tab (ONLY on AhSengMenu.html) ---------- */
-function ensureCartDot() {
-  if (!isDotAllowedHere()) return;
-
-  const navCart =
+/* ---------- Red dot beside Cart tab ---------- */
+function findNavCartLink() {
+  return (
     document.querySelector('a.navlink[href="cart.html"]') ||
     Array.from(document.querySelectorAll("a.navlink")).find(
       (a) => a.textContent.trim().toLowerCase() === "cart"
-    );
+    )
+  );
+}
 
-  if (!navCart) return;
+function ensureCartDot() {
+  if (!isDotAllowedHere()) return false;
+
+  const navCart = findNavCartLink();
+  if (!navCart) return false;
 
   navCart.setAttribute("href", CART_PAGE);
 
@@ -102,27 +122,41 @@ function ensureCartDot() {
     dot.setAttribute("aria-hidden", "true");
     navCart.appendChild(dot);
   }
+
+  return true;
 }
 
 function updateCartDot() {
   if (!isDotAllowedHere()) return;
 
-  ensureCartDot();
+  const ok = ensureCartDot();
+  if (!ok) return; // navbar not ready yet
 
   const cart = readCart();
   const count = cartCount(cart);
 
-  const navCart =
-    document.querySelector('a.navlink[href="cart.html"]') ||
-    Array.from(document.querySelectorAll("a.navlink")).find(
-      (a) => a.textContent.trim().toLowerCase() === "cart"
-    );
+  const navCart = findNavCartLink();
   if (!navCart) return;
 
   const dot = navCart.querySelector(".cart-dot");
   if (!dot) return;
 
   dot.style.display = count > 0 ? "inline-block" : "none";
+}
+
+/**
+ * ✅ Helps when navbar is injected later (e.g., navbar-init.js)
+ * Tries a few times until the Cart link exists.
+ */
+function updateCartDotWithRetry() {
+  if (!isDotAllowedHere()) return;
+
+  let tries = 0;
+  const t = setInterval(() => {
+    tries++;
+    updateCartDot();
+    if (findNavCartLink() || tries >= 20) clearInterval(t);
+  }, 150);
 }
 
 /* ---------- Toast notification ---------- */
@@ -290,13 +324,11 @@ function bindNavigation() {
   const proceed = document.getElementById("proceedCheckout");
   if (proceed) {
     proceed.addEventListener("click", () => {
-      // ✅ ADDED VALIDATION (only change)
       const cart = readCart();
       if (!cart.length) {
         showToast("Your cart has no menu items");
         return;
       }
-
       window.location.href = "checkout.html";
     });
   }
@@ -321,6 +353,18 @@ function bindAddToCartButtons() {
     const btn = e.target.closest("[data-add-to-cart]");
     if (!btn) return;
 
+    /**
+     * ✅ IMPORTANT FIX #2 (PREVENT DOUBLE-ADD)
+     * If menu.js already added to cart, it tags the button as:
+     * data-skip-scriptcart="1"
+     * So ScriptCart will NOT add a second time.
+     */
+    if (btn.dataset.skipScriptcart === "1") {
+      // Still update the dot + show toast (optional)
+      updateCartDot();
+      return;
+    }
+
     const cart = readCart();
 
     const newItem = {
@@ -338,10 +382,8 @@ function bindAddToCartButtons() {
 
     saveCart(cart);
 
-    // ✅ toast everywhere
     showToast(`${newItem.name} added to cart`);
 
-    // ✅ dot only on AhSengMenu.html
     updateCartDot();
 
     // If on cart page, refresh UI
@@ -401,12 +443,14 @@ document.addEventListener("DOMContentLoaded", () => {
   bindAddToCartButtons();
   bindCartItemActions();
 
-  // Dot only on AhSengMenu.html
-  updateCartDot();
+  // ✅ Dot works even if navbar loads later
+  updateCartDotWithRetry();
 
-  // Cart page UI (only runs if elements exist)
   const cart = readCart();
   updateBannerCount(cartCount(cart));
   renderCart(cart);
   updateSummary(cart);
+
+  // Update dot if other scripts update cart
+  window.addEventListener("cart-updated", updateCartDot);
 });
