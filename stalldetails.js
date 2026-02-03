@@ -70,7 +70,7 @@ async function loadDetails() {
   document.getElementById("stall-phone").textContent = s.phone || "-";
 
   // Links
-  document.getElementById("menu-link").href = `menu.html?stall=${encodeURIComponent(stallId)}`;
+  document.getElementById("menu-link").href = `menus.html?stall=${encodeURIComponent(stallId)}`;
 
   // Optional: if you have per-stall feedback pages, set them here.
   // Otherwise, you can point all to the same feedback page and filter by stallId later.

@@ -52,28 +52,46 @@ function setHero(stallData) {
 }
 
 function renderMenuItemCard(itemId, item) {
-  // Adjust field names to match what you store in Firestore
   const name = item.name || itemId;
   const desc = item.desc || "";
   const price = money(item.price);
-  const img = item.image || ""; // optional
+  const img = item.image || "";
+
+  // Firestore field suggestion: likes: number
+  const likes = item.likes ?? 0;
 
   const div = document.createElement("div");
   div.className = "menu-card";
+
   div.innerHTML = `
-    ${img ? `<img class="menu-card-img" src="${img}" alt="${name}">` : ""}
-    <div class="menu-card-body">
-      <h3 class="menu-card-title">${name}</h3>
-      ${desc ? `<p class="menu-card-desc">${desc}</p>` : ""}
-      <div class="menu-card-footer">
-        <span class="menu-card-price">${price}</span>
-        <button class="btn add-to-cart" data-item="${itemId}">Add</button>
+    <div class="image-container">
+      ${img ? `<img src="${img}" alt="${name}" class="food-img">` : ""}
+    </div>
+
+    <div class="card-body">
+      <div class="card-header">
+        <h3>${name}</h3>
+
+        <div class="likes-container">
+          <img src="img/heart.png" class="heart-icon" alt="like" data-item="${itemId}" />
+          <span>${likes}</span>
+        </div>
+      </div>
+
+      ${desc ? `<p>${desc}</p>` : ""}
+
+      <div class="card-footer">
+        <span class="price">${price}</span>
+        <button class="add-to-cart" data-item="${itemId}">Add to cart</button>
       </div>
     </div>
   `;
 
+  
+
   return div;
 }
+
 
 async function loadMenuPage() {
   const stallId = getStallIdFromUrl();
@@ -116,16 +134,13 @@ async function loadMenuPage() {
     container.appendChild(card);
   });
 
-  // 3) Hook “Add” buttons into your existing cart logic
-  // If ScriptCart.js expects specific functions, tell me what it uses and I’ll wire it properly.
+  // 3) Link “Add” buttons into cart logic
   container.addEventListener("click", (e) => {
     const btn = e.target.closest(".add-to-cart");
     if (!btn) return;
 
     const itemId = btn.dataset.item;
 
-    // TODO: call your cart function here
-    // Example:
     // addToCart(stallId, itemId);
 
     console.log("Add to cart:", { stallId, itemId });
