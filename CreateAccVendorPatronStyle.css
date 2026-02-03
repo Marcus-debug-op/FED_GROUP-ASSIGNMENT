@@ -81,7 +81,7 @@
     }
 
     .logo img {
-      height: 150px;
+      height: 300px;
       width: auto;
       margin: 0;
       display: block;
@@ -96,7 +96,7 @@
     }
 
     .panel {
-      width: 380px;
+      width: 400px;
       max-width: 92vw;
       background: rgba(255, 255, 255, 0.92);
       border: 1px solid rgba(0,0,0,0.12);
@@ -225,91 +225,6 @@
       box-shadow: 0 0 0 3px rgba(243, 116, 0, 0.12);
       background: #e6e6e6;
     }
-
-    .panel-footer {
-      padding: 14px 18px 18px;
-      border-top: 1px solid rgba(0,0,0,0.08);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      background: rgba(255,255,255,0.55);
-    }
-
-    .divider {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #666;
-      font-size: 11px;
-      font-weight: 700;
-      opacity: 0.9;
-    }
-
-    .divider::before,
-    .divider::after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: rgba(0,0,0,0.18);
-    }
-
-    .google-btn {
-  width: 100%;
-  max-width: 320px;
-  height: 48px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-
-  background: #ffffff;
-  border: 1px solid #dadce0;
-  border-radius: 999px;
-
-  font-size: 14px;
-  font-weight: 500;
-  color: #3c4043;
-
-  cursor: pointer;
-  transition: background 0.15s ease, box-shadow 0.15s ease;
-}
-
-.google-btn:hover {
-  background: #f7f8f8;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-}
-
-.google-icon {
-  width: 18px;
-  height: 18px;
-}
-
-.google-spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid #dadce0;
-  border-top-color: #3c4043;
-  border-radius: 50%;
-  display: none;
-  animation: spin 0.8s linear infinite;
-}
-
-.google-btn.is-loading .google-spinner {
-  display: inline-block;
-}
-
-.google-btn.is-loading {
-  opacity: 0.85;
-  pointer-events: none;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
 
     .submit-btn {
   width: 100%;

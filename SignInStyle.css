@@ -93,7 +93,7 @@
     }
 
     .panel {
-      width: 380px;
+      width: 400px;
       max-width: 92vw;
       background: rgba(255, 255, 255, 0.92);
       border: 1px solid var(--card-border);
