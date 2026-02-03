@@ -437,7 +437,7 @@ body{
   }
 }
 
-/* ===== Cart red dot indicator ===== */
+/* Cart dot indicator */
 .navlink.cart-link {
   position: relative;
   display: inline-flex;
@@ -450,5 +450,6 @@ body{
   height: 10px;
   border-radius: 999px;
   background: red;
-  display: none; /* hidden until cart has items */
+  display: none; /* shown when cart has items */
+  margin-left: 6px;
 }
