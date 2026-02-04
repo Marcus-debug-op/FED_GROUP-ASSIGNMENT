@@ -4,61 +4,45 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HawkerHub – Rental Status</title>
-      <link rel="stylesheet" href="VendorAccountRentalStatus.css">
-
+  <link rel="stylesheet" href="VendorAccountRentalStatus.css">
 </head>
 <body>
 
-  <nav class="top-nav">
-    <div class="container nav-inner">
-      <div style="font-size: 24px; cursor: pointer;">☰</div>
-      <div class="brand"><img src="img/logo.png" alt="HawkerHub"></div>
-      <div class="nav-right">
-        <nav class="nav-links">
-          <a href="#">Browse</a>
-          <a href="#">History</a>
-          <a href="#">Orders <span class="dot"></span></a>
-          <a href="#">Inspection</a>
-        </nav>
-        <div class="user-pill">👤 XCLYMG <span class="dot" style="right:-5px; top:-5px;"></span></div>
-      </div>
-    </div>
-  </nav>
-
-  <header class="banner">
+  <section class="banner">
     <div class="container">
       <div class="banner-tabs">
-        <span>Profile <span class="dot" style="width:8px; height:8px; right:-12px; top:0;"></span></span>
+        <a href="Profile(Patron & Vendor).html">Profile</a>
         <span>|</span>
-        <span>Complaints</span>
+        <a href="#">Complaints</a>
         <span>|</span>
-        <span class="active">Stall</span>
+        <a href="Vender Account.html" class="active">Stall</a>
       </div>
-      <h1>My Stall</h1>
-      <p>Manage your Menu items and Rental Status</p>
+
+      <div class="banner-text">
+        <h1>My Stall</h1>
+        <p>Manage your Menu items and Rental Status</p>
+      </div>
     </div>
-  </header>
+  </section>
 
   <main class="container main-content">
+    
     <div class="toolbar">
-  <div class="dropdown-container">
-    <div class="dropdown-trigger">
-      Rental Status <span>⌵</span>
+      <div class="dropdown-container">
+        <div class="dropdown-trigger">
+          Rental Status <span>⌵</span>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="Vender Account.html">Menu</a></li>
+          <li><a href="Vender AccountRentalStatus.html">Rental Status</a></li>
+        </ul>
+      </div>
     </div>
-    <ul class="dropdown-menu">
-      <li><a href="Vender Account.html">Menu</a></li>
-      <li><a href="Vender AccountRentalStatus.html">Rental Status</a></li>
-    </ul>
-  </div>
-
-  <button class="plus-btn" style="visibility:hidden;">+</button>
-</div>
-
 
     <div class="rental-card">
       <div class="card-header-rental">
-        <h2>Stall #01-12</h2>
-        <p>Satay King</p>
+        <h2 id="displayStallNo">Loading...</h2>
+        <p id="displayStallName">Loading...</p>
       </div>
 
       <div class="info-grid">
@@ -66,61 +50,62 @@
           <div class="icon-box">📍</div>
           <div class="info-text">
             <label>Location</label>
-            <span>Block A, Level 1</span>
+            <span id="displayLocation">Loading...</span>
           </div>
         </div>
         <div class="info-item">
           <div class="icon-box">🍱</div>
           <div class="info-text">
             <label>Stall Type</label>
-            <span>Cooked Food</span>
+            <span id="displayType">Loading...</span>
           </div>
         </div>
         <div class="info-item">
           <div class="icon-box">💰</div>
           <div class="info-text">
             <label>Monthly Rent Amount</label>
-            <span>$1,200</span>
+            <span id="displayRent">Loading...</span>
           </div>
         </div>
         <div class="info-item">
           <div class="icon-box">📅</div>
           <div class="info-text">
             <label>Lease Period</label>
-            <span>01/01/2026 - 31/12/2026</span>
+            <span id="displayLease">Loading...</span>
           </div>
         </div>
       </div>
 
       <div class="section-title">Payment Information</div>
       <div class="payment-row">
-        <div class="info-text">
+        <div class="payment-item">
           <label>Next Payment Due</label>
-          <span>01/02/2026</span>
+          <span id="displayNextPay">Loading...</span>
         </div>
-        <div class="info-text">
+        <div class="payment-item right-align">
           <label>Last Payment Made</label>
-          <span>27/12/2025</span>
+          <span id="displayLastPay">Loading...</span>
         </div>
       </div>
 
       <div class="section-title">Remarks</div>
       <div class="remarks-footer">
-        <div class="info-text">
+        <div class="expiry-box">
           <label>Lease Expiry Date</label>
-          <span>31/12/2029</span>
+          <span id="displayExpiry">Loading...</span>
         </div>
-        <div>
-          <button class="btn-orange btn-disabled" style="margin-right: 10px;">Lease Renewal</button>
+        <div class="action-buttons">
+          <button class="btn-gray">Lease Renewal</button>
           <button class="btn-orange">View License</button>
         </div>
       </div>
     </div>
 
-    <div class="date-footer">
-      Friday, January 24, 2026
-    </div>
+    <div class="date-footer" id="currentDateDisplay"></div>
   </main>
+
+  <script type="module" src="loadNavbar.js"></script>
+  <script type="module" src="VendorRentalStatus.js"></script>
 
 </body>
 </html>
