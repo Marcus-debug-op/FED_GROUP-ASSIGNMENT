@@ -11,7 +11,6 @@
 </head>
 <body>
 
-
     <header class="profile-header">
         <div class="header-content">
             <h1>My Profile</h1>
@@ -27,13 +26,11 @@
         </div>
     </header>
 
-
     <main class="main-body">
         <div class="content-wrapper">
             
             <aside class="left-sidebar">
                 <div class="profile-card">
-                    
                     <div class="avatar-container">
                         <img src="/img/profile.jpg" alt="Profile Picture" class="avatar-img">
                     </div>
@@ -41,7 +38,6 @@
                     <div class="info-item">
                         <label>Name</label>
                         <p><i class="fa-regular fa-user"></i> <span id="profileName">-</span></p>
-
                     </div>
 
                     <div class="info-item">
@@ -53,107 +49,44 @@
                 </div>
             </aside>
 
-            
-
             <section class="discount-section">
                 <h2 class="section-title">
                     <i class="fa-solid fa-tag rotated-icon"></i> Available Discount Code
                 </h2>
                 
                 <div id="discount-container">
-                    
-                    <div class="voucher-card">
-                        <div class="vc-details">
-                            <span class="tag-badge">
-                                FIRSTORDER <i class="fa-solid fa-tag"></i>
-                            </span>
-                            <h3>First Order Discount</h3>
-                            <p class="offer">35% Off. No Limits!</p>
-                        </div>
-                        <div class="vc-actions">
-                            <span class="status-active">Active</span>
-                            <button class="redeem-btn">Redeem</button>
-                            <span class="validity">Valid until <strong>No Deadline</strong></span>
-                        </div>
-                    </div>
-
-                    <div class="voucher-card">
-                        <div class="vc-details">
-                            <span class="tag-badge">
-                                HAWKER20 <i class="fa-solid fa-tag"></i>
-                            </span>
-                            <h3>Support Local Hawkers</h3>
-                            <p class="offer">$5 off orders above $10</p>
-                        </div>
-                        <div class="vc-actions">
-                            <span class="status-active">Active</span>
-                            <button class="redeem-btn">Redeem</button>
-                            <span class="validity">Valid until <strong>15 Mar 2026</strong></span>
-                        </div>
-                    </div>
-
-                    <div class="voucher-card">
-                        <div class="vc-details">
-                            <span class="tag-badge">
-                                FREESHIP <i class="fa-solid fa-tag"></i>
-                            </span>
-                            <h3>Free Delivery</h3>
-                            <p class="offer">Free Delivery on all orders</p>
-                        </div>
-                        <div class="vc-actions">
-                            <span class="status-active">Active</span>
-                            <button class="redeem-btn">Redeem</button>
-                            <span class="validity">Valid until <strong>31 Jan 2026</strong></span>
-                        </div>
-                    </div>
-
-                    <div class="voucher-card">
-                        <div class="vc-details">
-                            <span class="tag-badge">
-                                WEEKDAY80 <i class="fa-solid fa-tag"></i>
-                            </span>
-                            <h3>Weekday Special</h3>
-                            <p class="offer">15% Off</p>
-                        </div>
-                        <div class="vc-actions">
-                            <span class="status-active">Active</span>
-                            <button class="redeem-btn">Redeem</button>
-                            <span class="validity">Valid until <strong>31 Dec 2026</strong></span>
-                        </div>
-                    </div>
-
+                    <p class="loading-text">Loading discounts...</p>
                 </div>
             </section>
 
-            <section data-role="patron" style="display:none;">
+            <section class="role-section" data-role="patron">
                 <h2 class="section-title">Patron Tools</h2>
 
                 <div class="voucher-card">
                     <div class="vc-details">
-                    <h3>My Orders</h3>
-                    <p class="offer">View your order history</p>
+                        <h3>My Orders</h3>
+                        <p class="offer">View your order history</p>
                     </div>
                     <div class="vc-actions">
-                    <a class="redeem-btn" href="history.html" style="text-decoration:none; display:inline-block;">Open</a>
+                        <a class="redeem-btn tool-link" href="history.html">Open</a>
                     </div>
                 </div>
 
                 <div class="voucher-card">
                     <div class="vc-details">
-                    <h3>My Cart</h3>
-                    <p class="offer">Continue your checkout</p>
+                        <h3>My Cart</h3>
+                        <p class="offer">Continue your checkout</p>
                     </div>
                     <div class="vc-actions">
-                    <a class="redeem-btn" href="cart.html" style="text-decoration:none; display:inline-block;">Open</a>
+                        <a class="redeem-btn tool-link" href="cart.html">Open</a>
                     </div>
                 </div>
-                </section>
-
-
+            </section>
         </div>
     </main>
+
     <script type="module" src="navbar-init.js"></script>
     <script src="script.js"></script>
-    <script src="Profile.js"></script>
+    <script type="module" src="Profile.js"></script>
 </body>
 </html>

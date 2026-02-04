@@ -285,7 +285,21 @@ body {
 .validity strong { text-decoration: underline; }
 
 
+.loading-text {
+    text-align: center;
+    color: #666;
+    padding: 20px;
+}
 
+.role-section {
+    display: none;
+}
+
+/* Replaces the inline styles on the "Open" links */
+.tool-link {
+    text-decoration: none;
+    display: inline-block;
+}
 
 /* Mobile Responsive */
 @media (max-width: 850px) {

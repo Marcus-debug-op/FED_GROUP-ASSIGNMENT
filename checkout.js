@@ -1,6 +1,7 @@
 // Import FIRESTORE SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -16,8 +17,8 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app); // CONNECT TO FIRESTORE
+const auth = getAuth(app);
 
-document.addEventListener("DOMContentLoaded", () => {
   // ===== Storage keys =====
   const CART_KEY = "hawkerhub_cart";
   const ECO_KEY = "hawkerhub_eco_packaging";
@@ -383,12 +384,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       await addDoc(collection(db, "orders"), {
+        userId: auth.currentUser ? auth.currentUser.uid : "guest",
         orderNo: String(Date.now()).slice(-6),
-        createdAt: new Date().toISOString(),
+        createdAt: serverTimestamp(),
         items: info.cart,
         subtotal: info.subtotal,
         ecoFee: info.ecoFee,
         discount: info.discount,
+        promoCode: info.promoCode,
         total: info.total,
         status: "Paid",
         payment: { method: pay, card: pay === "card" ? readCardDetails() : null },
@@ -408,4 +411,3 @@ document.addEventListener("DOMContentLoaded", () => {
       submitBtn.disabled = false;
     }
   });
-});
