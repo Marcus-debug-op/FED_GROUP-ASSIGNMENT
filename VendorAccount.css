@@ -29,14 +29,6 @@ body {
   color: var(--text);
 }
 
-<<<<<<< HEAD
-    /* FIXED TOP NAV */
-    .top-nav{
-      position: relative;
-      top: 0; left: 0; right: 0;
-      height: var(--nav-h);
-      z-index: 1000;
-=======
 /* =========================================
    2. LAYOUT CONTAINERS
    ========================================= */
@@ -47,7 +39,6 @@ body {
   height: calc(100vh - 250px); 
   overflow-y: auto; 
   padding-bottom: 50px; 
->>>>>>> 260d1bdc03c4245fa39da80d8f4cab6f68f498f5
 }
 
 /* =========================================
@@ -80,30 +71,6 @@ body {
 .banner-text h1 { margin: 0; font-size: 40px; font-weight: 900; }
 .banner-text p { margin: 5px 0 0; opacity: 0.9; font-size: 18px; }
 
-<<<<<<< HEAD
-    /* BANNER */
-    .banner {
-      position: relative;
-      top: var(--nav-h);      
-      left: 0;
-      right: 0;
-      height: 300px;
-      background: var(--orange-dark);
-      padding: 90px 0 60px 0;
-      color: white;
-      z-index: 900;
-    }
-
-
-    .banner-tabs {
-      display: flex;
-      justify-content: flex-end;
-      gap: 20px;
-      font-weight: 700;
-      font-size: 18px;
-      margin-bottom: 20px;
-    }
-=======
 /* =========================================
    4. NAVIGATION & TOOLBAR
    ========================================= */
@@ -128,7 +95,6 @@ body {
   z-index: 50;  
   pointer-events: auto;
 }
->>>>>>> 260d1bdc03c4245fa39da80d8f4cab6f68f498f5
 
 /* Dropdown */
 .dropdown-container { position: relative; display: inline-block; }
@@ -172,33 +138,6 @@ body {
 }
 .dropdown-menu li a:hover { background: var(--cream); color: var(--orange-dark); }
 
-<<<<<<< HEAD
-   .dropdown-menu {
-  position: absolute;
-  top: 110%;
-  left: 0;
-  background: white;
-  min-width: 200px;
-  border-radius: 12px;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-  list-style: none;
-  padding: 10px 0;
-  margin: 0;
-
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(10px);   /* FIX: was translateX(-50%) */
-  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
-  z-index: 50;
-}
-
-.dropdown-container:hover .dropdown-menu {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-=======
 /* The Plus Button */
 .plus-btn { 
   font-size: 40px; 
@@ -222,7 +161,6 @@ body {
   gap: 30px; 
   width: 100%;
 }
->>>>>>> 260d1bdc03c4245fa39da80d8f4cab6f68f498f5
 
 .loading-message {
   grid-column: 1 / -1;
