@@ -1,0 +1,353 @@
+:root {
+    --bg-color: #FFF7DC;       /* Cream background */
+    --orange: #F97316;         /* Main Orange */
+    --text-dark: #1f1f1f;      /* Black Text */
+    --blue-light: #E0F2FE;     /* Light Blue Box */
+    --blue-text: #0369A1;      /* Dark Blue Text */
+    --gray-light: #F3F4F6;     /* Light Gray Box */
+    --yellow-light: #FEF3C7;   /* Light Yellow Box */
+    --yellow-text: #B45309;    /* Dark Yellow Text */
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* --- 1. Navbar --- */
+.navbar {
+    background-color: var(--bg-color);
+    padding: 15px 0;
+}
+
+.navbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo { height: 50px; width: auto; }
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.brand-name {
+    font-weight: 800;
+    font-size: 20px;
+    color: var(--orange);
+    display: none; /* Hidden on desktop to match image, show if needed */
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 600;
+    font-size: 18px;
+    position: relative;
+}
+
+.nav-links a.active { font-weight: 900; }
+
+/* Red Notification Dot */
+.dot {
+    height: 8px; width: 8px;
+    background-color: red;
+    border-radius: 50%;
+    display: inline-block;
+    position: absolute;
+    top: 0; right: -5px;
+}
+
+.profile-btn {
+    background: var(--orange);
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+}
+
+.notification-dot {
+    height: 10px; width: 10px;
+    background-color: red;
+    border-radius: 50%;
+    position: absolute;
+    top: 5px; right: 5px;
+    border: 2px solid var(--orange);
+}
+
+.mobile-menu-btn { display: none; font-size: 24px; background: none; border: none; cursor: pointer; }
+
+
+/* --- 2. Hero Section --- */
+.hero-section {
+    background-color: var(--orange);
+    color: white;
+    padding: 60px 0 80px 0; /* Extra padding bottom to allow card overlap if desired */
+}
+
+.hero-section h1 {
+    font-size: 36px;
+    font-weight: 900;
+    margin-bottom: 10px;
+}
+
+.hero-section p {
+    font-size: 18px;
+    opacity: 0.9;
+}
+
+
+/* --- 3. Main Content (Card) --- */
+.main-content {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+    margin-top: -40px; /* Slight overlap effect */
+}
+
+.inspection-card {
+    background: white;
+    width: 100%;
+    max-width: 800px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 40px;
+    border: 1px solid #eee;
+}
+
+/* Card Header */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.header-left h2 {
+    font-size: 32px;
+    font-weight: 900;
+    margin-bottom: 5px;
+}
+
+.stall-id {
+    font-size: 16px;
+    color: #666;
+    font-weight: bold;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.hygiene-badge {
+    background: #E0F2FE;
+    color: #0284C7;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.score-box {
+    text-align: center;
+    line-height: 1;
+}
+
+.score-num {
+    display: block;
+    font-size: 32px;
+    font-weight: 900;
+    color: #2563EB; /* Blue Score Color */
+}
+
+.score-label {
+    font-size: 12px;
+    color: #666;
+}
+
+.divider {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 20px 0;
+}
+
+
+/* Dates Row */
+.dates-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.date-box {
+    flex: 1;
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.date-box.gray { background: var(--gray-light); }
+.date-box.yellow { background: var(--yellow-light); }
+
+.date-label {
+    display: block;
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.date-value {
+    display: block;
+    font-weight: 800;
+    font-size: 16px;
+}
+
+.date-box.yellow .date-label { color: var(--yellow-text); }
+
+
+/* Section Blocks */
+.section-block { margin-bottom: 30px; }
+.section-block h3 { margin-bottom: 15px; font-size: 18px; }
+
+.check-list {
+    list-style: none;
+    padding: 0;
+}
+
+.check-list li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 15px;
+}
+
+.check-list li::before {
+    content: "•";
+    color: black;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+}
+
+/* Remarks Box (Blue) */
+.remarks-box {
+    background-color: var(--blue-light);
+    color: var(--blue-text);
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.remarks-box h4 {
+    margin-bottom: 10px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.remarks-box ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.remarks-box li {
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+
+/* --- Mobile Responsive --- */
+@media (max-width: 768px) {
+    .nav-links { display: none; } /* Simplified mobile handling */
+    .mobile-menu-btn { display: block; }
+    
+    .navbar-inner { padding: 0 10px; }
+    
+    .hero-section { padding: 40px 0 60px 0; }
+    
+    .card-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .dates-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .inspection-card { padding: 25px; }
+}
+
+#login-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-color); /* Uses your existing cream color */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    text-align: center;
+}
+
+#login-overlay h2 {
+    color: var(--orange);
+    margin-bottom: 10px;
+}
+
+#login-overlay a {
+    color: var(--blue-text);
+    font-weight: bold;
+}
+
+/* Vendor Admin Controls Area */
+.admin-controls {
+    margin-top: 20px;
+    text-align: center;
+    border-top: 1px dashed #ccc;
+    padding-top: 20px;
+}
+
+.btn-history {
+    background: var(--orange);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-history:hover {
+    opacity: 0.9;
+}

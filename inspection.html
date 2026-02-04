@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inspection Report</title>
+  <link rel="stylesheet" href="Inspection.css">
+</head>
+
+<body>
+
+  <section class="hero-section">
+    <div class="container">
+      <h1>Inspection</h1>
+      <p>Current inspection report and future inspection</p>
+    </div>
+  </section>
+
+  <main class="main-content">
+    
+    <div class="inspection-card">
+      
+      <div class="card-header">
+        <div class="header-left">
+          <h2 id="stall-name">Loading...</h2>
+          <span class="stall-id" id="stall-id">...</span>
+        </div>
+        
+        <div class="header-right">
+          <span class="hygiene-badge" id="hygiene-badge">Loading...</span>
+          <div class="score-box">
+            <span class="score-num" id="inspection-score">--</span>
+            <span class="score-label">Score</span>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="dates-row">
+        <div class="date-box gray">
+          <span class="icon">📅</span>
+          <div>
+            <span class="date-label">Last Inspection</span>
+            <span class="date-value" id="last-inspection">-</span>
+          </div>
+        </div>
+
+        <div class="date-box yellow">
+          <span class="icon">📅</span>
+          <div>
+            <span class="date-label">Next Inspection</span>
+            <span class="date-value" id="next-inspection">-</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <h3>✅ Strengths</h3>
+        <ul class="check-list" id="strengths-list">
+          <li>Loading strengths...</li>
+        </ul>
+      </div>
+
+      <div class="remarks-box">
+        <h4>Inspector's Remarks</h4>
+        <ul id="remarks-list">
+          <li>Loading remarks...</li>
+        </ul>
+      </div>
+
+    </div>
+  </main>
+
+  <script type="module" src="inspection.js"></script>
+</body>
+</html>
