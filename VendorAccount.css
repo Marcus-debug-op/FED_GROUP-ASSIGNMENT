@@ -25,18 +25,12 @@
     }
 
     /* FIXED TOP NAV */
-    .top-nav {
-      height: 150px;
-      background: var(--cream);
-      display: flex;
-      align-items: center;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
+    .top-nav{
+      position: relative;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-h);
       z-index: 1000;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
+}
 
     .nav-inner {
       display: flex;
@@ -72,12 +66,17 @@
 
     /* BANNER */
     .banner {
-      margin-top: 92px;
+      position: relative;
+      top: var(--nav-h);      
+      left: 0;
+      right: 0;
       height: 300px;
       background: var(--orange-dark);
       padding: 90px 0 60px 0;
       color: white;
+      z-index: 900;
     }
+
 
     .banner-tabs {
       display: flex;
@@ -118,29 +117,31 @@
       cursor: pointer;
     }
 
-    .dropdown-menu {
-      position: absolute;
-      top: 110%;
-      left: 0%;
-      background: white;
-      min-width: 200px;
-      border-radius: 12px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-      list-style: none;
-      padding: 10px 0;
-      margin: 0;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateX(-50%);
-      transition: all 0.3s ease;
-      z-index: 50;
-    }
+   .dropdown-menu {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  background: white;
+  min-width: 200px;
+  border-radius: 12px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+  list-style: none;
+  padding: 10px 0;
+  margin: 0;
 
-    .dropdown-container:hover .dropdown-menu {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);   /* FIX: was translateX(-50%) */
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+  z-index: 50;
+}
+
+.dropdown-container:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
 
     .dropdown-menu li a {
       display: block; padding: 12px 20px; color: var(--text); text-decoration: none; font-weight: 600; font-size: 18px;
@@ -173,8 +174,372 @@
 
     .footer-spacer { height: 100px; background: transparent; }
 
-    @media (max-width: 992px) {
-      .hamburger { display: block; }
-      .nav-links { display: none; } /* Simplified for this view */
-      .banner-tabs { justify-content: flex-start; font-size: 14px; }
-    }
+    
+/* ===============================
+   RENTAL STATUS PAGE
+   =============================== */
+
+.main-content {
+  padding: 40px 0 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Rental card layout */
+.rental-card {
+  background: white;
+  width: 100%;
+  max-width: 900px;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+  padding: 40px;
+}
+
+.card-header-rental {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+}
+
+.card-header-rental h2 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 900;
+}
+
+.card-header-rental p {
+  margin: 5px 0 0;
+  color: #666;
+  font-size: 20px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.icon-box {
+  width: 50px;
+  height: 50px;
+  background: var(--cream);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.info-text label {
+  display: block;
+  font-size: 12px;
+  color: #888;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.info-text span {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.section-title {
+  margin-top: 40px;
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #444;
+  border-top: 1px solid #eee;
+  padding-top: 25px;
+}
+
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.remarks-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 40px;
+}
+
+.btn-orange {
+  background: var(--orange);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.btn-disabled {
+  background: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.date-footer {
+  text-align: center;
+  margin-top: 40px;
+  font-weight: 700;
+  color: #666;
+}
+
+/* ===== Modal Overlay (Menu Editor) ===== */
+.no-scroll { overflow: hidden; }
+
+.modal.hidden { display: none; }
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;  
+  justify-content: center; 
+}
+
+.modal-card {
+  position: relative;
+  width: min(560px, calc(100vw - 28px));
+  max-height: 90vh;       
+
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.25);
+  overflow: auto;        
+}
+
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 18px 12px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+.icon-btn {
+  border: 0;
+  background: transparent;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 16px 18px 18px;
+  display: grid;
+  gap: 12px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.field input,
+.field textarea {
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 12px;
+  padding: 10px 12px;
+  outline: none;
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: rgba(0,0,0,0.35);
+}
+
+.modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.modal-actions .spacer { flex: 1; }
+
+.primary-btn,
+.ghost-btn,
+.danger-btn {
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid rgba(0,0,0,0.15);
+  background: #fff;
+}
+
+.primary-btn {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+.ghost-btn { background: #fff; }
+
+.danger-btn {
+  background: #fff;
+  border-color: rgba(244, 60, 19, 0.45);
+  color: #f43c13;
+}
+
+
+
+/* =========================================
+   MOBILE NAV SYSTEM (shared across all pages)
+   ========================================= */
+
+/* Optional: smoother tap behavior */
+a, button { -webkit-tap-highlight-color: transparent; }
+
+/* ---- Tablet and below ---- */
+@media (max-width: 992px) {
+
+  /* Make the fixed navbar less tall on mobile */
+  .top-nav {
+    height: 96px;
+    padding: 0;
+  }
+
+  .brand img {
+    height: 96px;
+    margin-left: 8px;
+  }
+
+  .container {
+    padding: 0 16px;
+  }
+
+  /* Banner should always start below fixed nav */
+  .banner {
+  top: 96px;          
+  padding: 28px 0 22px;
+  height: auto;
+}
+
+
+  .banner h1 { font-size: 28px; }
+  .banner p { font-size: 14px; }
+
+  .nav-right { gap: 12px; }
+
+  /* Hamburger button (you must have an element with class="hamburger" in navbar.html) */
+  .hamburger {
+    display: inline-flex;   /* show it on mobile */
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(0,0,0,.12);
+    background: #fff;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+
+  /* Turn nav-links into a mobile dropdown panel instead of hiding permanently */
+  .nav-links {
+    display: none;          /* hidden by default */
+    position: absolute;
+    top: 96px;              /* sits under nav */
+    left: 0;
+    right: 0;
+    background: #fff;
+    padding: 14px 16px;
+    box-shadow: 0 20px 40px rgba(0,0,0,.12);
+    border-bottom-left-radius: 18px;
+    border-bottom-right-radius: 18px;
+    gap: 14px;
+    flex-direction: column;
+    font-size: 16px;
+    font-weight: 800;
+    z-index: 1200;
+  }
+
+  /* When nav is opened (JS toggles .nav-open on body) */
+  body.nav-open .nav-links {
+    display: flex;
+  }
+
+  /* Make links full-width tap targets */
+  .nav-links a {
+    padding: 12px 10px;
+    border-radius: 12px;
+  }
+  .nav-links a:active {
+    background: rgba(0,0,0,.05);
+  }
+
+  /* User pill fits */
+  .user-pill {
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 12px;
+  }
+
+  /* Banner tabs wrap nicely */
+  .banner-tabs {
+    justify-content: flex-start;
+    font-size: 14px;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  /* Grid becomes single column */
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .card img { height: 180px; }
+
+}
+
+/* ---- Small phones ---- */
+@media (max-width: 600px) {
+  .banner h1 { font-size: 24px; }
+  .card-body { padding: 16px; }
+  .price { font-size: 18px; }
+
+  /* Rental card spacing */
+  .rental-card { padding: 18px; }
+}
+
+/* =========================================
+   DROPDOWN FIX FOR TOUCH (works everywhere)
+   ========================================= */
+
+/* On mobile, hovering isn’t reliable. Use a click/tap toggle class instead. */
+@media (max-width: 992px) {
+  .dropdown-menu {
+    left: 0;
+    transform: none;         /* remove translateX(-50%) on mobile */
+    min-width: 220px;
+  }
+
+  /* Disable hover-open on mobile (so it doesn't flicker) */
+  .dropdown-container:hover .dropdown-menu {
+    opacity: 0;
+    visibility: hidden;
+    transform: none;
+  }
+
+  /* Enable open via .open class */
+  .dropdown-container.open .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+  }
+}
