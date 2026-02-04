@@ -1,82 +1,152 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Select inputs and elements
-    const searchInput = document.querySelector('.search-input');
-    const filterSelect = document.querySelector('.filter-select');
-    
-    // Select the new filter elements
-    const filterBtn = document.getElementById('filterBtn');
-    const filterMenu = document.getElementById('filterMenu');
-    const halalCheck = document.getElementById('halalCheck');
-    const vegCheck = document.getElementById('vegCheck');
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  orderBy,
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    const stallCards = document.querySelectorAll('.stall-card');
-    const countText = document.querySelector('.count-text');
+const firebaseConfig = {
+  apiKey: "AIzaSyDo8B0OLtAj-Upfz7yNFeGz4cx3KWLZLuQ",
+  authDomain: "hawkerhub-64e2d.firebaseapp.com",
+  databaseURL: "https://hawkerhub-64e2d-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "hawkerhub-64e2d",
+  storageBucket: "hawkerhub-64e2d.firebasestorage.app",
+  messagingSenderId: "722888051277",
+  appId: "1:722888051277:web:59926d0a54ae0e4fe36a04"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-    // 1. Logic to Toggle the Filter Menu
-    if (filterBtn && filterMenu) {
-        filterBtn.addEventListener('click', function(e) {
-            e.stopPropagation(); // Stops click from bubbling to document
-            filterMenu.classList.toggle('active');
-        });
+document.addEventListener("DOMContentLoaded", async () => {
+  const stallGrid = document.getElementById("stallGrid");
+  const filterBtn = document.getElementById("filterBtn");
+const filterMenu = document.getElementById("filterMenu");
 
-        // Close menu when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!filterMenu.contains(e.target) && !filterBtn.contains(e.target)) {
-                filterMenu.classList.remove('active');
-            }
-        });
+filterBtn?.addEventListener("click", (e) => {
+  e.stopPropagation();
+  filterMenu.classList.toggle("active");
+});
 
-        // Prevent menu from closing when clicking inside it
-        filterMenu.addEventListener('click', function(e) {
-            e.stopPropagation();
-        });
-    }
+// Close menu when clicking outside
+document.addEventListener("click", () => {
+  filterMenu.classList.remove("active");
+});
 
-    // 2. Main Filter Function
-    function filterStalls() {
-        const searchTerm = searchInput.value.toLowerCase().trim();
-        const selectedCuisine = filterSelect.value.toLowerCase();
-        const isHalalChecked = halalCheck.checked;
-        const isVegChecked = vegCheck.checked;
-        
-        let visibleCount = 0;
-
-        stallCards.forEach(card => {
-
-            const nameElement = card.querySelector('h3');
-            const stallName = nameElement ? nameElement.textContent.toLowerCase() : '';
-            
-
-            const category = card.dataset.category; 
-            const isHalal = card.dataset.halal === 'true';
-            const isVeg = card.dataset.vegetarian === 'true';
+filterMenu?.addEventListener("click", (e) => {
+  e.stopPropagation();
+});
 
 
-            const matchesSearch = stallName.includes(searchTerm);
-            
+  // Your existing controls
+  const searchInput = document.querySelector(".search-input");
+  const filterSelect = document.querySelector(".filter-select");
+  const halalCheck = document.getElementById("halalCheck");
+  const vegCheck = document.getElementById("vegCheck");
+  const countText = document.querySelector(".count-text");
 
-            const matchesCuisine = selectedCuisine === 'all' || category === selectedCuisine;
+  // 1) Load stalls
+  const stalls = await loadStalls();
+  renderStalls(stalls);
 
-            const matchesHalal = !isHalalChecked || isHalal;
+  // 2) Filter after render
+  filterStalls();
 
+  // Hook filters
+  searchInput?.addEventListener("input", filterStalls);
+  filterSelect?.addEventListener("change", filterStalls);
+  halalCheck?.addEventListener("change", filterStalls);
+  vegCheck?.addEventListener("change", filterStalls);
 
-            const matchesVeg = !isVegChecked || isVeg;
+  async function loadStalls() {
+    const q = query(collection(db, "stalls"), orderBy("name"));
+    const snap = await getDocs(q);
+    return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  }
 
-            if (matchesSearch && matchesCuisine && matchesHalal && matchesVeg) {
-                card.style.display = 'flex';
-                visibleCount++;
-            } else {
-                card.style.display = 'none';
-            }
-        });
+  function renderStalls(list) {
+    stallGrid.innerHTML = list
+      .map((s) => {
+        const cuisine = (s.cuisine || "all").toLowerCase();
+        const rating = Number(s.rating);
+        const reviews = Number(s.reviews);
 
-        if (countText) {
-            countText.textContent = visibleCount + ' stalls found';
-        }
-    }
+        const halal = !!s.halal;
+        const vegetarian = !!s.vegetarian;
 
-    if (searchInput) searchInput.addEventListener('input', filterStalls);
-    if (filterSelect) filterSelect.addEventListener('change', filterStalls);
-    if (halalCheck) halalCheck.addEventListener('change', filterStalls);
-    if (vegCheck) vegCheck.addEventListener('change', filterStalls);
+        // fallback values so page never breaks
+        const imageUrl = s.imageURL || "img/placeholder.jpg";
+        const shortDesc = s.shortDesc || "";
+
+        return `
+          <article class="stall-card"
+            data-name="${escapeAttr((s.name || "").toLowerCase())}"
+            data-category="${escapeAttr(cuisine)}"
+            data-halal="${halal}"
+            data-vegetarian="${vegetarian}"
+          >
+            <img src="${escapeAttr(imageUrl)}" alt="${escapeAttr(s.name || "Stall")}" class="stall-img" />
+            <div class="stall-body">
+              <h3>${escapeHtml(s.name || "Unnamed Stall")}</h3>
+              <div class="stall-meta">
+                ${escapeHtml(cap(cuisine))}  
+            <img src="img/star.png" class="rating-star" alt="rating" >
+            ${isFinite(rating) ? rating.toFixed(1) : "—"}
+
+               
+              </div>
+              <p class="stall-desc">${escapeHtml(shortDesc)}</p>
+
+              <a class="view-btn" href="stalldetails.html?stall=${encodeURIComponent(s.id)}">View</a>
+            </div>
+          </article>
+        `;
+      })
+      .join("");
+  }
+
+  function filterStalls() {
+    const searchTerm = (searchInput?.value || "").toLowerCase().trim();
+    const selectedCuisine = (filterSelect?.value || "all").toLowerCase();
+    const wantHalal = !!halalCheck?.checked;
+    const wantVeg = !!vegCheck?.checked;
+
+    const cards = stallGrid.querySelectorAll(".stall-card");
+    let visible = 0;
+
+    cards.forEach((card) => {
+      const name = card.dataset.name || "";
+      const category = card.dataset.category || "";
+      const isHalal = card.dataset.halal === "true";
+      const isVeg = card.dataset.vegetarian === "true";
+
+      const okSearch = name.includes(searchTerm);
+      const okCuisine = selectedCuisine === "all" || category === selectedCuisine;
+      const okHalal = !wantHalal || isHalal;
+      const okVeg = !wantVeg || isVeg;
+
+      const show = okSearch && okCuisine && okHalal && okVeg;
+      card.style.display = show ? "" : "none";
+      if (show) visible++;
+    });
+
+    if (countText) countText.textContent = `${visible} stalls found`;
+  }
+
+  function cap(s) {
+    return s ? s.charAt(0).toUpperCase() + s.slice(1) : "";
+  }
+
+  function escapeHtml(str = "") {
+    return String(str)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+  function escapeAttr(str = "") {
+    return escapeHtml(str);
+  }
 });

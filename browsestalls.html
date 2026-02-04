@@ -13,15 +13,17 @@
             <input type="text" placeholder="Search by stall name or food..." class="search-input">
             
             <select class="filter-select">
-                <option value="all">All Cuisines</option>
-                <option value="chinese">Chinese</option>
-                <option value="malay">Malay</option>
-                <option value="indian">Indian</option>
+                <option value="All">All Cuisines</option>
+                <option value="Chinese Cuisine">Chinese</option>
+                <option value="Malay Cuisine">Malay</option>
+                <option value="Indian Cuisine">Indian</option>
             </select>
 
-            <button class="filter-btn" id="filterBtn">
-                <span>▽</span> Filters
+            <button class="filter-btn" id="filterBtn" type="button">
+                <img src="img/down.png" class="filter-icon" alt="Filters">
+                <span>Filters</span>
             </button>
+
 
             <div class="filter-menu" id="filterMenu">
                 <div class="filter-title">Dietary Requirements</div>
@@ -40,91 +42,10 @@
         <div class="container">
             <div class="section-header">
                 <h2>Discover Hawker Stalls</h2>
-                <p class="count-text">8 stalls found</p>
+                <p class="count-text">0 stalls found</p>
             </div>
 
-            <div class="stall-grid">
-                
-                <article class="stall-card" data-category="malay" data-halal="true">
-                    <img src="img/grilling_action.jpg" alt="Satay King" class="stall-img">
-                    <div class="stall-body">
-                        <h3>Satay King</h3>
-                        <div class="stall-meta">Malay • ⭐ 4.9 (456 reviews)</div>
-                        <p class="stall-desc">Grilled chicken and mutton satay with authentic peanut sauce.</p>
-                        <a href="stalldetails.html?stall=satay_king" class="view-btn">View</a>
-                    </div>
-                </article>
-
-                <article class="stall-card" data-category="chinese">
-                    <img src="img/Ah Seng Chicken Rice.jpg" alt="Ah Seng" class="stall-img">
-                    <div class="stall-body">
-                        <h3>Ah Seng Chicken Rice</h3>
-                        <div class="stall-meta">Chinese • ⭐ 4.7 (302 reviews)</div>
-                        <p class="stall-desc">Famous Hainanese chicken rice with tender poached chicken.</p>
-                        <a href="stalldetails.html?stall=ahseng" class="view-btn">View</a>
-                    </div>
-                </article>
-
-                <article class="stall-card" data-category="malay" data-halal="true">
-                    <img src="img/Laksa Legend.jpg" alt="Laksa Legend" class="stall-img">
-                    <div class="stall-body">
-                        <h3>Laksa Legend</h3>
-                        <div class="stall-meta">Malay • ⭐ 4.7 (421 reviews)</div>
-                        <p class="stall-desc">Rich and creamy laksa with thick rice noodles.</p>
-                        <a href="stalldetails.html?stall=laksa" class="view-btn">View</a>
-                    </div>
-                </article>
-
-                <article class="stall-card" data-category="chinese">
-                    <img src="img/Wok Master Char Kway Teow.jpg" alt="Wok Master" class="stall-img">
-                    <div class="stall-body">
-                        <h3>Wok Master Char Kway Teow</h3>
-                        <div class="stall-meta">Chinese • ⭐ 4.7 (142 reviews)</div>
-                        <p class="stall-desc">Smoky stir-fried noodles with fresh cockles.</p>
-                        <a href="stalldetails.html?stall=wok_master" class="view-btn">View</a>
-                    </div>
-                </article>
-
-                <article class="stall-card" data-category="chinese" data-halal="true" data-vegetarian="true">
-                    <img src="img/Lao Ban Soya Beancurd.jpg" alt="Lao Ban" class="stall-img">
-                    <div class="stall-body">
-                        <h3>Lao Ban Soya Beancurd</h3>
-                        <div class="stall-meta">Chinese • ⭐ 4.7 (826 reviews)</div>
-                        <p class="stall-desc">Silky smooth chilled soya beancurd dessert.</p>
-                        <a href="stalldetails.html?stall=beancurd" class="view-btn">View</a>
-                    </div>
-                </article>
-
-                <article class="stall-card" data-category="malay" data-halal="true">
-                    <img src="img/Mee Reebus Master.jpg" alt="Mee Rebus" class="stall-img">
-                    <div class="stall-body">
-                        <h3>Mee Rebus Master</h3>
-                        <div class="stall-meta">Malay • ⭐ 4.5 (121 reviews)</div>
-                        <p class="stall-desc">Yellow noodles in thick, aromatic spicy-sweet gravy.</p>
-                        <a href="stalldetails.html?stall=mee_rebus" class="view-btn">View</a>
-                        
-                    </div>
-                </article>
-
-                <article class="stall-card" data-category="indian" data-halal="true" data-vegetarian="true">
-                    <img src="img/Spring Leaf Prata.jpg" alt="Spring Leaf" class="stall-img">
-                    <div class="stall-body">
-                        <h3>Spring Leaf Prata</h3>
-                        <div class="stall-meta">Indian • ⭐ 4.5 (231 reviews)</div>
-                        <p class="stall-desc">Crispy roti prata served with rich curry.</p>
-                        <a href="stalldetails.html?stall=springleaf" class="view-btn">View</a>
-                    </div>
-                </article>
-
-                <article class="stall-card" data-category="malay" data-halal="true">
-                    <img src="img/Nasi Lemak Galore.jpg" alt="Nasi Lemak" class="stall-img">
-                    <div class="stall-body">
-                        <h3>Nasi Lemak Galore</h3>
-                        <div class="stall-meta">Malay • ⭐ 4.5 (320 reviews)</div>
-                        <p class="stall-desc">Fragrant coconut rice with crispy ikan bilis and sambal.</p>
-                        <a href="stalldetails.html?stall=nasi_lemak" class="view-btn">View</a>
-                    </div>
-                </article>
+            <div class="stall-grid" id="stallGrid">
 
             </div>
         </div>
@@ -134,8 +55,9 @@
         <p>© 2026 HawkerHub. All rights reserved.</p>
     </footer>
 
+    <script type="module" src="browsestalls.js"></script>
     <script type="module" src="navbar-init.js"></script>
-    <script src="browsestalls.js"></script>
+    
     <script src="ScriptCart.js"></script>
 
 </body>

@@ -133,6 +133,13 @@ body {
     gap: 5px;
 }
 
+
+.filter-icon {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.2s ease;
+}
+
 /* Stall Grid Styles */
 .stall-section {
     padding: 50px 0; /* Increased padding slightly */
@@ -228,6 +235,14 @@ body {
     width: 100%;
     margin-top: auto; /* Pushes button to bottom of card */
 }
+
+.rating-star {
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+  margin: 0 4px;
+}
+
 
 .footer {
     background: var(--bg);
