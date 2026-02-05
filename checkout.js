@@ -379,6 +379,11 @@ const auth = getAuth(app);
       }
     }
 
+    // --- NEW LOGIC: EXTRACT STALL ID ---
+    const firstItem = info.cart[0] || {};
+    const rootStallId = firstItem.stallId || "";
+    const rootStallName = firstItem.stallName || "";
+
     submitBtn.textContent = "Processing...";
     submitBtn.disabled = true;
 
@@ -387,6 +392,12 @@ const auth = getAuth(app);
         userId: auth.currentUser ? auth.currentUser.uid : "guest",
         orderNo: String(Date.now()).slice(-6),
         createdAt: serverTimestamp(),
+        
+        // --- THIS FIXES THE VENDOR TRACKING ---
+        stallId: rootStallId,
+        stallName: rootStallName,
+        // --------------------------------------
+
         items: info.cart,
         subtotal: info.subtotal,
         ecoFee: info.ecoFee,
