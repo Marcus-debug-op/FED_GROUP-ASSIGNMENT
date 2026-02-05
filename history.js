@@ -1,7 +1,17 @@
 // Import FIRESTORE SDKs
 import { getApp, getApps, initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-import { getFirestore, collection, getDocs, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  limit,
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 // --- YOUR CONFIG (must match navbar-init.js) ---
 const firebaseConfig = {
@@ -21,6 +31,10 @@ const auth = getAuth(app);
 
 // ============== STATE ==============
 let allOrders = [];
+
+// Caches (reduce Firestore reads)
+const stallNameCache = new Map(); // stallId -> name (or "")
+const menuItemCache = new Map();  // itemId -> { stallId, stallName? } or null
 
 // ============== UTILS ==============
 function escapeHtml(s) {
@@ -46,6 +60,101 @@ function formatDate(createdAt) {
 
   if (!d || Number.isNaN(d.getTime())) return "";
   return d.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+}
+
+function uniqueNonEmpty(arr) {
+  return [...new Set((arr || []).map(v => String(v || "").trim()).filter(Boolean))];
+}
+
+// ======= Firestore lookups (ONLY stalls, since you deleted foodStalls) =======
+async function fetchStallName(stallId) {
+  const sid = String(stallId || "").trim();
+  if (!sid) return "";
+
+  if (stallNameCache.has(sid)) return stallNameCache.get(sid);
+
+  try {
+    const snap = await getDoc(doc(db, "stalls", sid));
+    if (snap.exists()) {
+      const data = snap.data();
+      const name = data.name || data.stallName || data.StallName || "";
+      stallNameCache.set(sid, name || "");
+      return name || "";
+    }
+  } catch (e) {
+    // ignore
+  }
+
+  stallNameCache.set(sid, "");
+  return "";
+}
+
+async function fetchMenuItemMeta(itemId) {
+  const iid = String(itemId || "").trim();
+  if (!iid) return null;
+
+  if (menuItemCache.has(iid)) return menuItemCache.get(iid);
+
+  try {
+    const snap = await getDoc(doc(db, "menu_items", iid));
+    if (snap.exists()) {
+      const data = snap.data();
+      const stallId = data.stallId || data.stallID || data.StallID || data.stall || "";
+      const stallName = data.stallName || data.StallName || "";
+      const meta = { stallId, stallName };
+      menuItemCache.set(iid, meta);
+      return meta;
+    }
+  } catch (e) {
+    // ignore
+  }
+
+  menuItemCache.set(iid, null);
+  return null;
+}
+
+// Build stall summary for ONE order
+async function buildStallSummary(order) {
+  // If your order already stored a summary, use it
+  if (order.stallSummary && String(order.stallSummary).trim()) return String(order.stallSummary).trim();
+
+  const items = Array.isArray(order.items) ? order.items : [];
+  if (!items.length) return "Unknown stall";
+
+  // 1) If items already have stallName
+  const directNames = uniqueNonEmpty(items.map(i => i.stallName || i.StallName || ""));
+  if (directNames.length) return directNames.join(", ");
+
+  // 2) If items already have stallId
+  const directIds = uniqueNonEmpty(items.map(i => i.stallId || i.stallID || i.StallID || i.stall || ""));
+  if (directIds.length) {
+    const names = await Promise.all(directIds.map(fetchStallName));
+    const cleaned = uniqueNonEmpty(names);
+    if (cleaned.length) return cleaned.join(", ");
+    // fallback: show IDs if no names found
+    return directIds.join(", ");
+  }
+
+  // 3) Otherwise, derive stallId from menu_items using itemId
+  const itemIds = uniqueNonEmpty(items.map(i => i.itemId || i.itemID || i.item || i.id || ""));
+  if (!itemIds.length) return "Unknown stall";
+
+  const metas = await Promise.all(itemIds.map(fetchMenuItemMeta));
+
+  // 3a) If menu items store stallName directly
+  const metaNames = uniqueNonEmpty((metas || []).map(m => m && m.stallName));
+  if (metaNames.length) return metaNames.join(", ");
+
+  // 3b) Otherwise, fetch stall names via stallId from metas
+  const metaIds = uniqueNonEmpty((metas || []).map(m => m && m.stallId));
+  if (metaIds.length) {
+    const names = await Promise.all(metaIds.map(fetchStallName));
+    const cleaned = uniqueNonEmpty(names);
+    if (cleaned.length) return cleaned.join(", ");
+    return metaIds.join(", ");
+  }
+
+  return "Unknown stall";
 }
 
 // ============== UI NAV (MATCHES YOUR HTML IDS) ==============
@@ -160,9 +269,14 @@ async function loadHistory(uid) {
     const snapshot = await getDocs(q);
 
     allOrders = [];
-    snapshot.forEach((doc) => {
-      allOrders.push({ id: doc.id, ...doc.data() });
+    snapshot.forEach((d) => {
+      allOrders.push({ id: d.id, ...d.data() });
     });
+
+    // ✅ Compute stall summary for each order
+    await Promise.all(allOrders.map(async (o) => {
+      o._stallSummaryComputed = await buildStallSummary(o);
+    }));
 
     if (loadingEl) loadingEl.style.display = "none";
 
@@ -177,7 +291,7 @@ async function loadHistory(uid) {
     if (!listEl) return;
 
     listEl.innerHTML = allOrders.map((o) => {
-      const stall = escapeHtml(o.stallSummary || "Multiple stalls");
+      const stall = escapeHtml(o.stallSummary || o._stallSummaryComputed || "Unknown stall");
       const date = escapeHtml(formatDate(o.createdAt));
       const total = escapeHtml(formatMoney(o.total));
       const orderNo = escapeHtml(o.orderNo || "---");
