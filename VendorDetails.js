@@ -1,271 +1,131 @@
-import { auth, fs } from "./firebase-init.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-import { collection, query, where, getDocs, addDoc, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-console.log("VendorAccount.js loaded");
+// --- PASTE YOUR FIREBASE CONFIG HERE ---
+const firebaseConfig = {
+    apiKey: "AIzaSyDo8B0OLtAj-Upfz7yNFeGz4cx3KWLZLuQ",
+    authDomain: "hawkerhub-64e2d.firebaseapp.com",
+    projectId: "hawkerhub-64e2d",
+    storageBucket: "hawkerhub-64e2d.firebasestorage.app",
+    messagingSenderId: "722888051277",
+    appId: "1:722888051277:web:59926d0a54ae0e4fe36a04"
+};
 
-document.addEventListener("DOMContentLoaded", () => {
-    
-    // 1. SELECT ELEMENTS
-    const menuGrid = document.getElementById("menuGrid");
-    const modal = document.getElementById("itemModal");
-    const openModalBtn = document.getElementById("openModalBtn");
-    
-    // Form Elements
-    const imagePreview = document.getElementById("imagePreview");
-    const fileInput = document.getElementById("fileInput");
-    const uploadBox = document.getElementById("uploadBox");
-    const addItemForm = document.getElementById("addItemForm");
-    const modalTitle = document.querySelector(".modal-header h2");
-    const submitBtn = document.querySelector(".add-btn");
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-    // 2. STATE VARIABLES
-    let currentStallId = "";
-    let editingItemId = null; // If null, we are adding. If set, we are editing.
-    let currentMenuData = {}; // Cache to store item details
+// DOM Elements
+const stallSelect = document.getElementById("stallSelect");
+const addStallBtn = document.getElementById("addStallBtn");
+const clearBtn = document.getElementById("clearBtn");
+const selectedChips = document.getElementById("selectedChips");
+const notListedCheck = document.getElementById("notListedCheck");
+const requestBox = document.getElementById("requestBox");
+const saveBtn = document.getElementById("saveVendorSetupBtn");
 
-    // 3. EVENT DELEGATION (THE FIX FOR CLICKS)
-    // This listens for clicks on the entire grid and catches the buttons
-    if (menuGrid) {
-        menuGrid.addEventListener("click", (e) => {
-            // Check if Edit Button (or icon inside) was clicked
-            const editBtn = e.target.closest(".edit-btn");
-            if (editBtn) {
-                const id = editBtn.getAttribute("data-id");
-                openEditModal(id);
-                return;
-            }
+let selectedStalls = []; // Stores objects: { id, name }
 
-            // Check if Delete Button (or icon inside) was clicked
-            const deleteBtn = e.target.closest(".delete-btn");
-            if (deleteBtn) {
-                const id = deleteBtn.getAttribute("data-id");
-                deleteItem(id);
-                return;
-            }
-        });
-    }
-
-    // 4. LOGIC: OPEN EDIT MODAL
-    function openEditModal(id) {
-        const item = currentMenuData[id];
-        if (!item) return;
-
-        console.log("Editing item:", item.name);
-        editingItemId = id; // Set ID so save logic knows to Update
-
-        // Fill the form
-        document.getElementById("itemName").value = item.name;
-        document.getElementById("itemPrice").value = item.price;
-        document.getElementById("itemDesc").value = item.description || "";
-
-        // Show Preview
-        if (item.image) {
-            imagePreview.src = item.image;
-            imagePreview.style.display = "block";
-            // Hide placeholder UI
-            if (uploadBox) {
-                uploadBox.querySelector(".camera-icon").style.visibility = "hidden";
-                uploadBox.querySelector("p").style.visibility = "hidden";
-            }
-        }
-
-        // Change Text
-        if (modalTitle) modalTitle.textContent = "Edit Menu Item";
-        if (submitBtn) submitBtn.textContent = "Update Item";
-
-        if (modal) modal.style.display = "flex";
-    }
-
-    // 5. LOGIC: DELETE ITEM
-    async function deleteItem(id) {
-        if (confirm("Are you sure you want to delete this item?")) {
-            try {
-                const itemRef = doc(fs, "stalls", currentStallId, "menu", id);
-                await deleteDoc(itemRef);
-                loadMenu(currentStallId); // Refresh grid
-            } catch (error) {
-                console.error("Error deleting:", error);
-                alert("Failed to delete item.");
-            }
-        }
-    }
-
-    // 6. OPEN MODAL (ADD NEW)
-    if (openModalBtn) {
-        openModalBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            resetModal();
-            if (modal) modal.style.display = "flex";
-        });
-    }
-
-    function resetModal() {
-        if (addItemForm) addItemForm.reset();
-        editingItemId = null; // Switch back to Add mode
+// 1. Fetch Stalls on Load
+async function loadStalls() {
+    console.log("Loading stalls...");
+    try {
+        const querySnapshot = await getDocs(collection(db, "stalls"));
         
-        if (modalTitle) modalTitle.textContent = "Add New Menu Item";
-        if (submitBtn) submitBtn.textContent = "Add Item";
+        // Reset the dropdown
+        stallSelect.innerHTML = '<option value="">-- Select a Stall --</option>';
         
-        if (imagePreview) {
-            imagePreview.src = "";
-            imagePreview.style.display = "none";
+        if (querySnapshot.empty) {
+            console.warn("No stalls found in Firestore 'stalls' collection.");
         }
-        if (uploadBox) {
-            uploadBox.querySelector(".camera-icon").style.visibility = "visible";
-            uploadBox.querySelector("p").style.visibility = "visible";
+
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            // Use 'name' or 'stallName' or 'title' depending on your DB structure
+            const stallName = data.name || data.stallName || "Unnamed Stall";
+            
+            const option = document.createElement("option");
+            option.value = doc.id;
+            option.textContent = stallName;
+            stallSelect.appendChild(option);
+        });
+        console.log("Stalls loaded successfully.");
+    } catch (error) {
+        console.error("Error loading stalls:", error);
+        stallSelect.innerHTML = '<option value="">Error loading stalls (See Console)</option>';
+    }
+}
+
+// 2. Add Stall Logic
+if (addStallBtn) {
+    addStallBtn.addEventListener("click", () => {
+        const stallId = stallSelect.value;
+        const stallName = stallSelect.options[stallSelect.selectedIndex].text;
+
+        if (!stallId) return alert("Please select a stall first.");
+
+        // Check if already added
+        if (selectedStalls.some(s => s.id === stallId)) {
+            return alert("Stall already added.");
         }
-    }
 
-    // 7. CLOSE MODAL HELPERS
-    function closeModal() {
-        if (modal) modal.style.display = "none";
-        resetModal();
-    }
-    const closeBtn = document.getElementById("closeModal");
-    const cancelBtn = document.getElementById("cancelBtn");
-    if (closeBtn) closeBtn.onclick = closeModal;
-    if (cancelBtn) cancelBtn.onclick = closeModal;
+        // Add to array
+        selectedStalls.push({ id: stallId, name: stallName });
+        renderChips();
+        stallSelect.value = ""; // Reset dropdown
+    });
+}
 
-    // 8. IMAGE PREVIEW
-    if (uploadBox && fileInput) {
-        uploadBox.onclick = () => fileInput.click();
-        fileInput.onchange = (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const tempUrl = URL.createObjectURL(file);
-                imagePreview.src = tempUrl;
-                imagePreview.style.display = "block";
-                uploadBox.querySelector(".camera-icon").style.visibility = "hidden";
-                uploadBox.querySelector("p").style.visibility = "hidden";
-            }
-        };
-    }
+// 3. Render Chips
+function renderChips() {
+    selectedChips.innerHTML = "";
+    selectedStalls.forEach((stall, index) => {
+        const chip = document.createElement("div");
+        chip.style.cssText = "background:#e0e0e0; padding:5px 12px; border-radius:16px; display:inline-flex; align-items:center; gap:8px; margin:4px; font-size:0.9rem;";
+        
+        chip.innerHTML = `
+            <span>${stall.name}</span>
+            <span class="remove-chip" style="cursor:pointer; font-weight:bold; color:#d32f2f;">&times;</span>
+        `;
+        
+        chip.querySelector(".remove-chip").addEventListener("click", () => {
+            selectedStalls.splice(index, 1);
+            renderChips();
+        });
+        
+        selectedChips.appendChild(chip);
+    });
+}
 
-    // 9. AUTH & LOADING
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            await findAndLoadStall(user.uid);
-        } else {
-            window.location.href = "sign up.html";
+// 4. Clear Selection
+if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+        selectedStalls = [];
+        renderChips();
+    });
+}
+
+// 5. Toggle Request Box
+if (notListedCheck) {
+    notListedCheck.addEventListener("change", (e) => {
+        if (requestBox) {
+            requestBox.style.display = e.target.checked ? "block" : "none";
         }
     });
+}
 
-    async function findAndLoadStall(uid) {
-        try {
-            const stallsRef = collection(fs, "stalls");
-            const q = query(stallsRef, where("vendorId", "==", uid));
-            const querySnapshot = await getDocs(q);
-
-            if (!querySnapshot.empty) {
-                const stallDoc = querySnapshot.docs[0];
-                currentStallId = stallDoc.id;
-                const display = document.getElementById("stallNameDisplay");
-                if (display) display.textContent = stallDoc.data().name;
-                loadMenu(currentStallId);
-            } else {
-                if (menuGrid) menuGrid.innerHTML = "<p class='loading-message'>No stall found.</p>";
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    async function loadMenu(stallId) {
-        const menuRef = collection(fs, "stalls", stallId, "menu");
-        const menuSnap = await getDocs(menuRef);
-        let html = "";
-        currentMenuData = {}; // Clear cache
-
-        if (menuSnap.empty) {
-            if (menuGrid) menuGrid.innerHTML = "<p class='loading-message'>Menu is empty.</p>";
-            return;
+// 6. Save & Continue
+if (saveBtn) {
+    saveBtn.addEventListener("click", () => {
+        if (selectedStalls.length === 0 && (!notListedCheck || !notListedCheck.checked)) {
+            return alert("Please select at least one stall OR request a new one.");
         }
 
-        menuSnap.forEach((doc) => {
-            const item = doc.data();
-            const id = doc.id;
-            currentMenuData[id] = item; // Store for editing
-            const imgSrc = item.image ? item.image : 'img/Ah Seng Chicken Rice.jpg';
+        localStorage.setItem("vendor_selected_stalls", JSON.stringify(selectedStalls));
+        
+        // Redirect to Sign In (or wherever you want them to go next)
+        window.location.href = "Home Guest.html"; 
+    });
+}
 
-            html += `
-                <article class="card">
-                    <img src="${imgSrc}" alt="${item.name}">
-                    <div class="card-body">
-                        <div class="card-header">
-                            <h3 class="card-title">${item.name}</h3>
-                            <div class="likes-stack">
-                                <div class="heart-icon">♡</div>
-                                <span class="likes-count">${item.likes || 0} likes</span>
-                            </div>
-                        </div>
-                        <p class="card-desc">${item.description || ''}</p>
-                        <div class="card-footer">
-                            <span class="price">$${parseFloat(item.price).toFixed(2)}</span>
-                            
-                            <div class="card-actions">
-                                <button class="action-btn edit-btn" data-id="${id}" title="Edit">
-                                    <i class="fa-solid fa-pen"></i>
-                                </button>
-                                <button class="action-btn delete-btn" data-id="${id}" title="Delete">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </article>`;
-        });
-        if (menuGrid) menuGrid.innerHTML = html;
-    }
-
-    // 10. SAVE / UPDATE SUBMISSION
-    if (addItemForm) {
-        addItemForm.onsubmit = async (e) => {
-            e.preventDefault();
-            if (!currentStallId) return;
-
-            const name = document.getElementById("itemName").value;
-            const price = document.getElementById("itemPrice").value;
-            const desc = document.getElementById("itemDesc").value;
-            
-            // Handle Image: If editing and no new image, keep old one
-            let finalImage = imagePreview.src;
-            if (editingItemId && currentMenuData[editingItemId] && imagePreview.src.startsWith("blob:")) {
-                // New local file selected
-                finalImage = imagePreview.src; 
-            } else if (editingItemId && currentMenuData[editingItemId]) {
-                 // Existing item, no new file
-                finalImage = currentMenuData[editingItemId].image;
-            } else {
-                // New Item
-                finalImage = imagePreview.src || "";
-            }
-
-            const itemData = {
-                name: name,
-                price: price,
-                description: desc,
-                image: finalImage
-            };
-
-            try {
-                if (editingItemId) {
-                    // UPDATE
-                    const docRef = doc(fs, "stalls", currentStallId, "menu", editingItemId);
-                    await updateDoc(docRef, itemData);
-                    alert("Updated successfully!");
-                } else {
-                    // ADD
-                    itemData.likes = 0;
-                    const colRef = collection(fs, "stalls", currentStallId, "menu");
-                    await addDoc(colRef, itemData);
-                    alert("Added successfully!");
-                }
-                closeModal();
-                loadMenu(currentStallId);
-            } catch (err) {
-                console.error("Error saving:", err);
-            }
-        };
-    }
-});
+// Run initialization
+loadStalls();

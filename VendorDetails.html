@@ -6,7 +6,6 @@
   <title>HawkerHub – Vendor Details</title>
 
   <link rel="stylesheet" href="CreateAccVendorPatronStyle.css">
-
   <script type="module" src="VendorDetails.js"></script>
 </head>
 
@@ -15,7 +14,7 @@
     <button class="back-btn" type="button" onclick="history.back()">← Go Back</button>
 
     <div class="logo">
-      <img src="img/logo.png" alt="HawkerHub Logo" />
+      <img src="img/Logo.png" alt="HawkerHub Logo" />
     </div>
 
     <div class="panel-wrap">
@@ -44,11 +43,11 @@
 
             <p class="hint">You can add more than one stall. You must select at least one.</p>
 
-            <hr style="margin:14px 0; border:none; border-top:1px solid rgba(0,0,0,0.12);" />
+            <hr class="separator" />
 
-            <label>
+            <label class="checkbox-label">
               <input type="checkbox" id="notListedCheck" />
-              My stall isn’t listed (request to add)
+              <span>My stall isn’t listed (request to add)</span>
             </label>
 
             <div id="requestBox" class="hidden">
