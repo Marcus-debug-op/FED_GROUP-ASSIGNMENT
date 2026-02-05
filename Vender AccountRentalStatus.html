@@ -4,12 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HawkerHub – Rental Status</title>
-  <link rel="stylesheet" href="VendorAccountRentalStatus.css">
-</head>
-<body class="page-rental">
+  <link rel="stylesheet" href="VendorAccount.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <section class="banner">
+</head>
+<body>
+
+   <section class="banner">
     <div class="container">
+
       <div class="banner-tabs">
         <a href="Profile(Patron & Vendor).html">Profile</a>
         <span>|</span>
@@ -19,92 +23,124 @@
       </div>
 
       <div class="banner-text">
-        <h1>My Stall</h1>
-        <p>Manage your Menu items and Rental Status</p>
+        <h1 id="stallNameDisplay">Rental Status</h1>
+        <p>Manage your Rental Status</p>
       </div>
     </div>
   </section>
 
-  <main class="container main-content">
-    
+  <main>
     <div class="toolbar">
       <div class="dropdown-container">
         <div class="dropdown-trigger">
-          Rental Status <span>⌵</span>
+          Menu <span>⌵</span>
         </div>
         <ul class="dropdown-menu">
           <li><a href="Vender Account.html">Menu</a></li>
           <li><a href="Vender AccountRentalStatus.html">Rental Status</a></li>
         </ul>
+      </div></main>
+  <div class="rental-wrap">
+    
+  <section class="rental-dashboard">
+    <header class="rental-head">
+      <div>
+        <h2 class="rental-title">Satay King</h2>
+        <p class="rental-sub">Manage your rental details and payments</p>
       </div>
-    </div>
 
-    <div class="rental-card">
-      <div class="card-header-rental">
-        <h2 id="displayStallNo">Loading...</h2>
-        <p id="displayStallName">Loading...</p>
-      </div>
+      <div class="status-pill" id="paymentStatus">Loading...</div>
 
-      <div class="info-grid">
-        <div class="info-item">
-          <div class="icon-box">📍</div>
-          <div class="info-text">
-            <label>Location</label>
-            <span id="displayLocation">Loading...</span>
-          </div>
-        </div>
-        <div class="info-item">
-          <div class="icon-box">🍱</div>
-          <div class="info-text">
-            <label>Stall Type</label>
-            <span id="displayType">Loading...</span>
-          </div>
-        </div>
-        <div class="info-item">
-          <div class="icon-box">💰</div>
-          <div class="info-text">
-            <label>Monthly Rent Amount</label>
-            <span id="displayRent">Loading...</span>
-          </div>
-        </div>
-        <div class="info-item">
-          <div class="icon-box">📅</div>
-          <div class="info-text">
-            <label>Lease Period</label>
-            <span id="displayLease">Loading...</span>
-          </div>
+
+    </header>
+
+    <div class="rental-grid">
+      <div class="rental-tile">
+        <div class="tile-icon">📍</div>
+        <div class="tile-meta">
+          <div class="tile-label">Location</div>
+          <div class="tile-value">Tekka Centre</div>
         </div>
       </div>
 
-      <div class="section-title">Payment Information</div>
-      <div class="payment-row">
-        <div class="payment-item">
-          <label>Next Payment Due</label>
-          <span id="displayNextPay">Loading...</span>
-        </div>
-        <div class="payment-item right-align">
-          <label>Last Payment Made</label>
-          <span id="displayLastPay">Loading...</span>
+      <div class="rental-tile">
+        <div class="tile-icon">🍱</div>
+        <div class="tile-meta">
+          <div class="tile-label">Stall Type</div>
+          <div class="tile-value">Malay Cuisine</div>
         </div>
       </div>
 
-      <div class="section-title">Remarks</div>
-      <div class="remarks-footer">
-        <div class="expiry-box">
-          <label>Lease Expiry Date</label>
-          <span id="displayExpiry">Loading...</span>
+      <div class="rental-tile">
+        <div class="tile-icon">💰</div>
+        <div class="tile-meta">
+          <div class="tile-label">Monthly Rent</div>
+          <div class="tile-value">$1,200</div>
         </div>
-        <div class="action-buttons">
-          <button class="btn-gray">Lease Renewal</button>
-          <button class="btn-orange">View License</button>
+      </div>
+
+      <div class="rental-tile">
+        <div class="tile-icon">📅</div>
+        <div class="tile-meta">
+          <div class="tile-label">Lease Period</div>
+          <div class="tile-value">01/01/2026 – 31/12/2026</div>
         </div>
       </div>
     </div>
 
-    <div class="date-footer" id="currentDateDisplay"></div>
-  </main>
+    <div class="rental-sep"></div>
 
-  <script type="module" src="loadNavbar.js"></script>
+    <div class="two-col">
+      <section class="panel">
+        <h3 class="panel-title">Payment Information</h3>
+
+        <div class="kv">
+          <span class="k">Next Payment Due</span>
+          <span class="v">01/02/2026</span>
+        </div>
+
+        <div class="kv">
+          <span class="k">Last Payment Made</span>
+          <span class="v">27/12/2025</span>
+        </div>
+
+        <div class="kv">
+          <span class="k">Amount</span>
+          <span class="v">$1,200</span>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h3 class="panel-title">Remarks</h3>
+
+        <div class="kv">
+          <span class="k">Lease Expiry Date</span>
+          <span class="v">31/12/2026</span>
+        </div>
+
+        <div class="kv">
+          <span class="k">Notes</span>
+          <span class="v muted">No remarks</span>
+        </div>
+
+        <div class="actions">
+          <button class="btn-primary" type="button">Lease Renewal</button>
+          <button class="btn-ghost" type="button">View License</button>
+        </div>
+      </section>
+    </div>
+
+    <footer class="dash-footer">
+      <span class="muted">Friday, February 6, 2026</span>
+    </footer>
+
+  </section>
+</div>
+
+  </div>
+</div>
+
+  <script type="module" src="navbar-init.js"></script>
   <script type="module" src="VendorRentalStatus.js"></script>
 
 </body>
