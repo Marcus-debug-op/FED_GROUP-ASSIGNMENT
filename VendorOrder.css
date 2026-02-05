@@ -1,0 +1,210 @@
+/* --- 1. GENERAL RESET --- */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #FFF8E7; /* Cream background */
+    color: #333;
+}
+
+/* --- 2. BANNER --- */
+.banner {
+    background-color: #F37021;
+    color: white;
+    padding: 30px 0;
+    width: 100%;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.banner-text h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.banner-text p {
+    margin: 5px 0 0 0;
+    font-size: 1rem;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+/* --- 3. ORDERS LIST --- */
+.orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-top: 40px;
+    padding-bottom: 60px;
+}
+
+/* --- 4. ORDER CARD (Fixed Layout) --- */
+.order-card {
+    display: flex;
+    background-color: white;
+    border: 1px solid #F37021;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    min-height: 140px;
+}
+
+/* Queue Section (Updated for 6-digit numbers) */
+.queue-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 140px; /* Increased width */
+    background-color: white;
+    border-right: 1px solid #eee;
+    padding: 20px;
+    flex-shrink: 0;
+}
+
+.queue-label {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.queue-number {
+    font-size: 2rem; /* Reduced slightly to fit 6 digits */
+    font-weight: 800; /* Extra bold */
+    color: #000;
+    line-height: 1;
+    word-break: break-all;
+    text-align: center;
+}
+
+/* Details Section */
+.details-section {
+    flex-grow: 1;
+    padding: 20px 30px; /* More side padding */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 1px solid #eee;
+}
+
+.customer-badge {
+    background-color: #F06565;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    align-self: flex-start;
+    margin-bottom: 12px;
+}
+
+.items-list {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.item-row {
+    display: flex;
+    gap: 15px;
+}
+
+.order-meta {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 0.85rem;
+    color: #888;
+    border-top: 1px solid #f0f0f0;
+    padding-top: 12px;
+    margin-top: auto;
+}
+
+.divider { color: #ccc; }
+
+.total-price {
+    color: #D32F2F;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* Collection Section */
+.collection-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 140px;
+    padding: 20px;
+    border-right: 1px solid #eee;
+    flex-shrink: 0;
+}
+
+.section-label {
+    font-weight: bold;
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+    color: #444;
+}
+
+.status-text {
+    font-weight: bold;
+    font-size: 1rem;
+}
+.status-text.pickup { color: #F37021; }
+.status-text.delivery { color: #F06565; }
+
+/* Payment Section */
+.payment-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 160px;
+    padding: 20px;
+    flex-shrink: 0;
+}
+
+.payment-method {
+    font-weight: bold;
+    font-size: 1.1rem; /* Larger for readability */
+    color: #D32F2F;
+    margin-bottom: 15px;
+    text-transform: capitalize; /* This forces capitalization via CSS too */
+}
+
+.action-btn {
+    padding: 8px 24px;
+    border-radius: 20px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+    width: 100%;
+}
+
+.action-btn.claimed { background-color: #F37021; }
+.action-btn.claimed:hover { background-color: #d95e16; }
+
+.action-btn.unclaimed { background-color: #9E9E9E; }
+.action-btn.unclaimed:hover { background-color: #888; }
+
+.loading-text {
+    text-align: center;
+    padding: 60px;
+    background: white;
+    border-radius: 12px;
+    color: #888;
+    border: 1px dashed #ccc;
+    font-size: 1.2rem;
+}

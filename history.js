@@ -1,7 +1,18 @@
 // Import FIRESTORE SDKs
 import { getApp, getApps, initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-import { getFirestore, collection, getDocs, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  limit,
+  doc,
+  getDoc,
+  deleteDoc
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 // --- YOUR CONFIG (must match navbar-init.js) ---
 const firebaseConfig = {
@@ -21,6 +32,10 @@ const auth = getAuth(app);
 
 // ============== STATE ==============
 let allOrders = [];
+
+// Caches to reduce reads
+const stallNameCache = new Map(); // stallId -> name or ""
+const menuItemCache = new Map();  // itemId -> { stallId, stallName } or null
 
 // ============== UTILS ==============
 function escapeHtml(s) {
@@ -46,6 +61,126 @@ function formatDate(createdAt) {
 
   if (!d || Number.isNaN(d.getTime())) return "";
   return d.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+}
+
+function uniqNonEmpty(arr) {
+  return [...new Set((arr || []).map(v => String(v || "").trim()).filter(Boolean))];
+}
+
+// ============== STALL NAME LOOKUP (stalls only) ==============
+async function fetchStallName(stallId) {
+  const sid = String(stallId || "").trim();
+  if (!sid) return "";
+
+  if (stallNameCache.has(sid)) return stallNameCache.get(sid);
+
+  try {
+    const snap = await getDoc(doc(db, "stalls", sid));
+    if (snap.exists()) {
+      const data = snap.data();
+      const name = data.name || data.stallName || data.StallName || "";
+      stallNameCache.set(sid, name || "");
+      return name || "";
+    }
+  } catch (e) {
+    // ignore
+  }
+
+  stallNameCache.set(sid, "");
+  return "";
+}
+
+async function fetchMenuItemMeta(itemId) {
+  const iid = String(itemId || "").trim();
+  if (!iid) return null;
+
+  if (menuItemCache.has(iid)) return menuItemCache.get(iid);
+
+  try {
+    const snap = await getDoc(doc(db, "menu_items", iid));
+    if (snap.exists()) {
+      const data = snap.data();
+      const stallId = data.stallId || data.stallID || data.StallID || data.stall || "";
+      const stallName = data.stallName || data.StallName || "";
+      const meta = { stallId, stallName };
+      menuItemCache.set(iid, meta);
+      return meta;
+    }
+  } catch (e) {
+    // ignore
+  }
+
+  menuItemCache.set(iid, null);
+  return null;
+}
+
+async function buildStallSummary(order) {
+  if (order.stallSummary && String(order.stallSummary).trim()) {
+    return String(order.stallSummary).trim();
+  }
+
+  const items = Array.isArray(order.items) ? order.items : [];
+  if (!items.length) return "Unknown stall";
+
+  // 1) If item already has stallName
+  const directNames = uniqNonEmpty(items.map(i => i.stallName || i.StallName || ""));
+  if (directNames.length) return directNames.join(", ");
+
+  // 2) If item already has stallId
+  const directIds = uniqNonEmpty(items.map(i => i.stallId || i.stallID || i.StallID || i.stall || ""));
+  if (directIds.length) {
+    const names = await Promise.all(directIds.map(fetchStallName));
+    const cleaned = uniqNonEmpty(names);
+    if (cleaned.length) return cleaned.join(", ");
+    return directIds.join(", ");
+  }
+
+  // 3) Derive stallId from menu_items using itemId
+  const itemIds = uniqNonEmpty(items.map(i => i.itemId || i.itemID || i.item || i.id || ""));
+  if (!itemIds.length) return "Unknown stall";
+
+  const metas = await Promise.all(itemIds.map(fetchMenuItemMeta));
+
+  const metaNames = uniqNonEmpty((metas || []).map(m => m && m.stallName));
+  if (metaNames.length) return metaNames.join(", ");
+
+  const metaIds = uniqNonEmpty((metas || []).map(m => m && m.stallId));
+  if (metaIds.length) {
+    const names = await Promise.all(metaIds.map(fetchStallName));
+    const cleaned = uniqNonEmpty(names);
+    if (cleaned.length) return cleaned.join(", ");
+    return metaIds.join(", ");
+  }
+
+  return "Unknown stall";
+}
+
+// ============== DELETE FEATURE ==============
+async function deleteOrder(orderId) {
+  if (!orderId) return;
+
+  const ok = confirm("Delete this order history? This cannot be undone.");
+  if (!ok) return;
+
+  try {
+    await deleteDoc(doc(db, "orders", orderId));
+
+    // Remove from local state
+    allOrders = allOrders.filter(o => o.id !== orderId);
+
+    // If currently on details view, go back to list
+    const detailView = document.getElementById("detailView");
+    if (detailView && !detailView.classList.contains("hidden")) {
+      showList();
+    }
+
+    // Refresh list
+    await loadHistory(auth.currentUser ? auth.currentUser.uid : null);
+
+  } catch (e) {
+    console.error("Delete failed:", e);
+    alert("Delete failed. Check console / Firestore rules.");
+  }
 }
 
 // ============== UI NAV (MATCHES YOUR HTML IDS) ==============
@@ -92,7 +227,7 @@ function showDetail(orderId) {
     : "";
 
   detailEl.innerHTML = `
-    <div class="detail-header">
+    <div class="detail-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
       <div>
         <h2>Order #${escapeHtml(order.orderNo || "---")}</h2>
         <div class="detail-meta">
@@ -100,6 +235,10 @@ function showDetail(orderId) {
           <span class="pill">${escapeHtml(order.status || "Paid")}</span>
         </div>
       </div>
+
+      <button id="deleteThisOrderBtn" type="button" style="cursor:pointer;">
+        Delete Order
+      </button>
     </div>
 
     <div class="detail-items">
@@ -132,6 +271,10 @@ function showDetail(orderId) {
       </div>
     </div>
   `;
+
+  document.getElementById("deleteThisOrderBtn")?.addEventListener("click", () => {
+    deleteOrder(orderId);
+  });
 }
 
 // ================= RENDER LIST (Fetch from FIRESTORE) =================
@@ -160,9 +303,14 @@ async function loadHistory(uid) {
     const snapshot = await getDocs(q);
 
     allOrders = [];
-    snapshot.forEach((doc) => {
-      allOrders.push({ id: doc.id, ...doc.data() });
+    snapshot.forEach((d) => {
+      allOrders.push({ id: d.id, ...d.data() });
     });
+
+    // compute stall names (no more hardcoded "Multiple stalls")
+    await Promise.all(allOrders.map(async (o) => {
+      o._stallSummaryComputed = await buildStallSummary(o);
+    }));
 
     if (loadingEl) loadingEl.style.display = "none";
 
@@ -177,7 +325,7 @@ async function loadHistory(uid) {
     if (!listEl) return;
 
     listEl.innerHTML = allOrders.map((o) => {
-      const stall = escapeHtml(o.stallSummary || "Multiple stalls");
+      const stall = escapeHtml(o.stallSummary || o._stallSummaryComputed || "Unknown stall");
       const date = escapeHtml(formatDate(o.createdAt));
       const total = escapeHtml(formatMoney(o.total));
       const orderNo = escapeHtml(o.orderNo || "---");
@@ -196,15 +344,25 @@ async function loadHistory(uid) {
             <div class="history-total">Total: ${total}</div>
           </div>
 
-          <button class="history-view-btn view-btn" data-id="${o.id}" type="button">
-            View Details
-          </button>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <button class="history-view-btn view-btn" data-id="${o.id}" type="button">
+              View Details
+            </button>
+
+            <button class="history-del-btn del-btn" data-id="${o.id}" type="button">
+              Delete
+            </button>
+          </div>
         </div>
       `;
     }).join("");
 
     document.querySelectorAll(".view-btn").forEach(btn => {
       btn.addEventListener("click", (e) => showDetail(e.currentTarget.dataset.id));
+    });
+
+    document.querySelectorAll(".del-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => deleteOrder(e.currentTarget.dataset.id));
     });
 
   } catch (error) {
