@@ -1,3 +1,5 @@
+// checkout.js (FULL CODE WITH CHANGES MADE)
+
 // Import FIRESTORE SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
@@ -8,8 +10,8 @@ import {
   serverTimestamp,
   getDocs,
   doc,
-  query,
-  where
+  runTransaction,
+  increment
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 // Firebase configuration
@@ -34,6 +36,9 @@ const ECO_KEY = "hawkerhub_eco_packaging";
 const COUPON_KEY = "hawkerhub_coupon";
 const CARD_DETAILS_KEY = "hawkerhub_card_details";
 const ECO_FEE = 0.20;
+
+// ✅ NEW: last order number key (for PaymentSuccesss.html)
+const LAST_ORDER_NO_KEY = "hawkerhub_last_order_no";
 
 // ✅ Promo cache loaded from Firestore (no hardcoding)
 let PROMOS = {}; // key = CODE (uppercase)
@@ -123,6 +128,33 @@ function isExpired(expiryStr) {
 }
 
 // =========================
+// ✅ ORDER NUMBER COUNTER (Firestore, starts 1,2,3...)
+// IMPORTANT: Create in Firestore:
+// counters / orders  { next: 1 }
+// =========================
+async function getNextOrderNo() {
+  const counterRef = doc(db, "counters", "orders");
+
+  const nextNo = await runTransaction(db, async (tx) => {
+    const snap = await tx.get(counterRef);
+
+    if (!snap.exists()) {
+      // If missing, initialize safely
+      tx.set(counterRef, { next: 2 });
+      return 1;
+    }
+
+    const data = snap.data() || {};
+    const current = Number(data.next || 1);
+
+    tx.update(counterRef, { next: increment(1) });
+    return current;
+  });
+
+  return nextNo; // 1,2,3,...
+}
+
+// =========================
 // ✅ Load promo codes from Firestore (DEBUG + GUARANTEED)
 // =========================
 async function loadPromosFromFirestore() {
@@ -135,7 +167,6 @@ async function loadPromosFromFirestore() {
   selectEl.innerHTML = `<option value="">No promo</option>`;
 
   try {
-    // 1) Read without filter first (confirms permissions)
     const snap = await getDocs(collection(db, "promocodes"));
     console.log("promocodes docs count:", snap.size);
 
@@ -146,15 +177,12 @@ async function loadPromosFromFirestore() {
       const data = docSnap.data() || {};
       console.log("promo raw doc:", docSnap.id, data);
 
-      // accept either data.code or doc id as code
       const code = String(data.code || docSnap.id || "").trim().toUpperCase();
       if (!code) return;
 
-      // Only include Active
       const status = String(data.status || "").trim();
       if (status !== "Active") return;
 
-      // Ignore expired promos
       if (isExpired(data.expiry)) return;
 
       const offerParsed = parseOffer(data.offer);
@@ -176,9 +204,8 @@ async function loadPromosFromFirestore() {
       PROMO_LIST.push(promoObj);
     });
 
-    console.log("filtered active promos:", PROMO_LIST.map(p => p.code));
+    console.log("filtered active promos:", PROMO_LIST.map((p) => p.code));
 
-    // Fill dropdown
     PROMO_LIST.forEach((p) => {
       const opt = document.createElement("option");
       opt.value = p.code;
@@ -186,11 +213,9 @@ async function loadPromosFromFirestore() {
       selectEl.appendChild(opt);
     });
 
-    // If user previously applied one, select it
     const saved = (localStorage.getItem(COUPON_KEY) || "").trim().toUpperCase();
     if (saved && PROMOS[saved]) selectEl.value = saved;
     else selectEl.value = "";
-
   } catch (e) {
     console.error("PROMO LOAD FAILED:", e);
   }
@@ -297,7 +322,7 @@ const paymentOptions = document.querySelectorAll(".pay-option");
 let lastPayValue = document.querySelector('input[name="pay"]:checked')?.value || "card";
 
 function updateRedBorder() {
-  paymentOptions.forEach(option => {
+  paymentOptions.forEach((option) => {
     const radio = option.querySelector("input[type='radio']");
     if (radio && radio.checked) option.classList.add("is-selected");
     else option.classList.remove("is-selected");
@@ -305,7 +330,7 @@ function updateRedBorder() {
 }
 
 const paymentRadios = document.querySelectorAll('input[name="pay"]');
-paymentRadios.forEach(radio => {
+paymentRadios.forEach((radio) => {
   radio.addEventListener("change", (e) => {
     if (!radio.checked) return;
     updateRedBorder();
@@ -318,7 +343,7 @@ paymentRadios.forEach(radio => {
   });
 });
 
-paymentOptions.forEach(option => {
+paymentOptions.forEach((option) => {
   option.addEventListener("click", () => {
     const radio = option.querySelector("input[type='radio']");
     if (radio) {
@@ -389,9 +414,26 @@ function handleRevert() {
   }
 }
 
-document.getElementById("cardCancelBtn")?.addEventListener("click", () => { closeModals(); handleRevert(); });
-if (cardOverlay) cardOverlay.addEventListener("click", (e) => { if (e.target === cardOverlay) { closeModals(); handleRevert(); } });
-if (paynowOverlay) paynowOverlay.addEventListener("click", (e) => { if (e.target === paynowOverlay) { closeModals(); handleRevert(); } });
+document.getElementById("cardCancelBtn")?.addEventListener("click", () => {
+  closeModals();
+  handleRevert();
+});
+
+if (cardOverlay)
+  cardOverlay.addEventListener("click", (e) => {
+    if (e.target === cardOverlay) {
+      closeModals();
+      handleRevert();
+    }
+  });
+
+if (paynowOverlay)
+  paynowOverlay.addEventListener("click", (e) => {
+    if (e.target === paynowOverlay) {
+      closeModals();
+      handleRevert();
+    }
+  });
 
 document.getElementById("cardAddBtn")?.addEventListener("click", () => {
   const name = String(cardName?.value || "").trim();
@@ -408,7 +450,7 @@ document.getElementById("cardAddBtn")?.addEventListener("click", () => {
     name,
     numberMasked: `**** **** **** ${digitsOnly(number).slice(-4)}`,
     expiry,
-    savedAt: new Date().toISOString(),
+    savedAt: new Date().toISOString()
   });
 
   lastPayValue = "card";
@@ -447,7 +489,7 @@ function computeDiscount(subtotal, code) {
 
 function updateCheckoutSummary() {
   const cart = readCart();
-  const subtotal = cart.reduce((sum, i) => sum + (i.qty * i.price), 0);
+  const subtotal = cart.reduce((sum, i) => sum + i.qty * i.price, 0);
   const ecoFee = readEco() ? ECO_FEE : 0;
 
   const code = (localStorage.getItem(COUPON_KEY) || "").trim().toUpperCase();
@@ -531,9 +573,12 @@ submitBtn?.addEventListener("click", async () => {
   submitBtn.disabled = true;
 
   try {
+    // ✅ Get sequential order number from Firestore counter (1,2,3...)
+    const nextOrderNo = await getNextOrderNo();
+
     await addDoc(collection(db, "orders"), {
       userId: auth.currentUser ? auth.currentUser.uid : "guest",
-      orderNo: String(Date.now()).slice(-6),
+      orderNo: nextOrderNo, // ✅ sequential
       createdAt: serverTimestamp(),
 
       stallId: rootStallId,
@@ -550,6 +595,9 @@ submitBtn?.addEventListener("click", async () => {
       contact: { fullName: form.fullName, phone: form.phone },
       collection: { method: form.method }
     });
+
+    // ✅ NEW: save last order no so PaymentSuccesss.html can show it
+    localStorage.setItem(LAST_ORDER_NO_KEY, String(nextOrderNo));
 
     localStorage.removeItem(CART_KEY);
     localStorage.removeItem(ECO_KEY);

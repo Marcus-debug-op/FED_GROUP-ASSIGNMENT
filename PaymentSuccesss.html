@@ -61,7 +61,7 @@
         <div class="success-text">
           <div class="line">
             <strong>Order Queue Number:</strong>
-            <span id="queueNumber" class="queue-number">01</span>
+            <span id="queueNumber" class="queue-number">--</span>
           </div>
 
           <div class="line bold">Payment Successful</div>
@@ -74,20 +74,39 @@
       </section>
     </main>
 
-    <!-- ✅ Queue number from order history (NO RANDOM) -->
+    <!-- ✅ Queue number from localStorage (set during checkout) -->
     <script>
-      const HISTORY_KEY = "hawkerhub_order_history";
       const queueEl = document.getElementById("queueNumber");
 
-      try {
-        const history = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+      const LAST_ORDER_NO_KEY = "hawkerhub_last_order_no";
+      const HISTORY_KEY = "hawkerhub_order_history";
 
-        if (queueEl && history.length > 0) {
-          const latestOrder = history[history.length - 1];
-          queueEl.textContent = latestOrder.orderNo;
+      function formatQueueNo(n) {
+        const num = Number(n);
+        if (!Number.isFinite(num)) return "--";
+        return String(num).padStart(2, "0"); // 01, 02, 03...
+      }
+
+      function setQueueNo(n) {
+        if (!queueEl) return;
+        queueEl.textContent = formatQueueNo(n);
+      }
+
+      // 1) Best source: last order no saved by checkout.js
+      const lastNo = localStorage.getItem(LAST_ORDER_NO_KEY);
+      if (lastNo != null && String(lastNo).trim() !== "") {
+        setQueueNo(lastNo);
+      } else {
+        // 2) Fallback: old local history
+        try {
+          const history = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+          if (Array.isArray(history) && history.length > 0) {
+            const latest = history[history.length - 1];
+            if (latest && latest.orderNo != null) setQueueNo(latest.orderNo);
+          }
+        } catch (e) {
+          setQueueNo("--");
         }
-      } catch (e) {
-        if (queueEl) queueEl.textContent = "01";
       }
     </script>
   </body>
