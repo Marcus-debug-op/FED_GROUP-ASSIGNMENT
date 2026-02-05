@@ -16,16 +16,13 @@
 }
 
 html, body {
-  margin: 0;
-  padding: 0;
-  min-height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
+  height: 100%;
+  overflow: hidden; 
 }
 
 
 body {
-  background: url("img/bg.png") no-repeat center top;
+  background: #f5f5f5;
   background-size: cover;
   background-attachment: fixed;
   color: var(--text);
@@ -35,15 +32,18 @@ body {
    2. LAYOUT CONTAINERS
    ========================================= */
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 40px;
+  max-width: 1600px;
 }
-main.container {
-  padding-top: 20px;
+main.container{
+  position: fixed;
+  top: 350px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  padding-top: 20px; 
   padding-bottom: 50px;
 }
-
 
 
 /* =========================================
@@ -51,13 +51,14 @@ main.container {
    ========================================= */
 /* BANNER */
 .banner {
-  position: relative;          
-  margin-top: 150px;          
+  position: fixed;          
+  margin-top: 0;          
   width: 100%;
   background: var(--orange-dark);
   padding: 40px 0;
   color: white;
   z-index: 5;
+  overflow: hidden;
 }
 
 
@@ -85,9 +86,9 @@ main.container {
   background: var(--cream);
   display: flex;
   align-items: center;
-  position: relative;
+  position: fixed;
   top: 0; left: 0; right: 0;
-  z-index: 1000;
+  z-index: 2000;
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
