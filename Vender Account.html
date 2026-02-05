@@ -6,7 +6,6 @@
   <title>HawkerHub – My Stall</title> 
   <link rel="stylesheet" href="VendorAccount.css">
   <link rel="stylesheet" href="styles.css">
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -27,54 +26,6 @@
       </div>
     </div>
   </section>
-<!-- Menu Item Editor Modal -->
-<div id="menuModal" class="modal hidden" aria-hidden="true">
-  <div class="modal-backdrop" data-close="true"></div>
-
-  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="menuModalTitle">
-    <div class="modal-header">
-      <h2 id="menuModalTitle">Edit menu item</h2>
-      <button class="icon-btn" id="closeMenuModalBtn" type="button" aria-label="Close">✕</button>
-    </div>
-
-    <form id="menuForm" class="modal-body">
-      <input type="hidden" id="itemId" />
-
-      <label class="field">
-        <span>Name</span>
-        <input id="itemName" type="text" placeholder="e.g. Chicken Satay (10PC)" required />
-      </label>
-
-      <label class="field">
-        <span>Description</span>
-        <textarea id="itemDesc" rows="3" placeholder="Short description" required></textarea>
-      </label>
-
-      <label class="field">
-        <span>Price (SGD)</span>
-        <input id="itemPrice" type="number" step="0.01" min="0" placeholder="9.00" required />
-      </label>
-
-      <label class="field">
-        <span>Image URL (optional)</span>
-        <input id="itemImg" type="text" placeholder="img/chicken satay.jpg or https://..." />
-      </label>
-
-      <label class="field">
-        <span>Image URL (optional)</span>
-        <input id="itemImg" type="text" placeholder="img/... or https://..." />
-      </label>
-
-
-      <div class="modal-actions">
-        <button class="danger-btn" id="deleteBtn" type="button">Delete</button>
-        <div class="spacer"></div>
-        <button class="ghost-btn" id="cancelBtn" type="button">Cancel</button>
-        <button class="primary-btn" type="submit">Save</button>
-      </div>
-    </form>
-  </div>
-</div>
 
   <main class="container">
     <div class="toolbar">
@@ -141,10 +92,6 @@
 
   <footer class="footer-spacer"></footer>
 
-
- <script type="module" src="navbar-init.js"></script>
- <script type="module" src="VendorMenuEditor.js"></script>
   <script type="module" src="VendorAccount.js"></script>
-
 </body>
 </html>
