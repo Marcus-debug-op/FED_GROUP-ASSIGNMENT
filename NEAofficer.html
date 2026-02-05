@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEA Officer Portal - Hawker Hub</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="operator.css">
+</head>
+<body>
+
+    <div class="container">
+        
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon" style="background:#2563eb;"></div> 
+                <div class="brand-info">
+                    <div class="brand-title">NEA Officer Portal</div>
+                    <div class="brand-subtitle">Zone: Tiong Bahru</div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-item active" onclick="switchPage('overview', this)">
+                    Dashboard
+                </div>
+                
+                <div class="nav-item" onclick="switchPage('stalls', this)">
+                    Stall Directory
+                </div>
+                
+                <div class="nav-item" onclick="switchPage('schedule', this)">
+                    Schedule
+                </div>
+                
+                <div class="nav-item" onclick="switchPage('violations', this)">
+                    Violation Log
+                </div>
+                
+                <div class="nav-item" onclick="switchPage('settings', this)">
+                    Settings
+                </div>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            
+            <div id="page-overview">
+                <header class="header">
+                    <div>
+                        <h1>Officer Dashboard</h1>
+                        <p class="subtitle">Overview of hygiene standards and inspection progress</p>
+                    </div>
+                </header>
+
+                <div class="stats-grid">
+                    <div class="card stat-card">
+                        <div class="stat-header">
+                            <span>Stalls Inspected</span>
+                        </div>
+                        <div class="stat-value" id="total-stalls">0</div>
+                        <div class="stat-trend positive">
+                            <span>Live Data</span> from Firestore
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="stat-header">
+                            <span>Critical Violations</span>
+                        </div>
+                        <div class="stat-value" id="critical-violations" style="color: #dc2626;">0</div>
+                        <div class="stat-subtext">Grade C or below</div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="stat-header">
+                            <span>Avg Hygiene Score</span>
+                        </div>
+                        <div class="stat-value" id="avg-zone-score">0.0</div>
+                        <div class="stat-subtext">Zone Average</div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top:20px;">
+                    <h3>Recent Inspections</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Stall Name</th>
+                                <th>Date</th>
+                                <th>Grade</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-inspections-body">
+                            <tr><td colspan="4">Loading data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="page-stalls" class="hidden">
+                <header class="header">
+                    <h1>Stall Directory</h1>
+                    <p class="subtitle">List of all registered stalls in this zone</p>
+                </header>
+                <div class="card">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Stall Name</th>
+                                <th>Owner</th>
+                                <th>Last Grade</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="page-schedule" class="hidden">
+                <header class="header">
+                    <h1>Inspection Schedule</h1>
+                    <p class="subtitle">Today's planned visits</p>
+                </header>
+                <div class="card">
+                    <div class="item-row" style="padding: 15px 0; border-bottom:1px solid #eee;">
+                        <div class="item-icon" style="font-size:0.9rem; font-weight:bold;">10:00 AM</div>
+                        <div>
+                            <strong>Daily Juice Bar (#TB-05)</strong>
+                            <div style="font-size:0.8rem; color:#666;">Routine Hygiene Check</div>
+                        </div>
+                        <button class="btn-primary" style="margin-left:auto; font-size:0.8rem;">Start</button>
+                    </div>
+                    <div class="item-row" style="padding: 15px 0;">
+                        <div class="item-icon" style="font-size:0.9rem; font-weight:bold;">02:00 PM</div>
+                        <div>
+                            <strong>Uncle Lim Kopi (#TB-08)</strong>
+                            <div style="font-size:0.8rem; color:#666;">Follow-up on pest control</div>
+                        </div>
+                        <button class="btn-primary" style="margin-left:auto; font-size:0.8rem;">Start</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-violations" class="hidden">
+                <header class="header">
+                    <h1>Violation Log</h1>
+                    <p class="subtitle">Record of non-compliance issues</p>
+                </header>
+                <div class="card">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Case ID</th>
+                                <th>Stall</th>
+                                <th>Violation</th>
+                                <th>Fine</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#VIO-291</td>
+                                <td>Mala Hotpot</td>
+                                <td>Improper waste disposal</td>
+                                <td>$300</td>
+                                <td><span class="badge badge-danger">Unpaid</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="page-settings" class="hidden">
+                <header class="header"><h1>Officer Settings</h1></header>
+                <div class="card">
+                    <p>Officer Name: <strong>Officer James</strong></p>
+                    <p>Badge ID: <strong>NEA-8821</strong></p>
+                    <button class="btn-secondary">Log Out</button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script type="module" src="NEAofficer.js"></script>
+</body>
+</html>
