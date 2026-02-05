@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lease Renewal</title>
+  <link rel="stylesheet" href="VendorAccount.css">
+</head>
+<body>
+
+<div class="renewal-container">
+  <div class="renewal-card">
+
+    <h2>Lease Renewal</h2>
+    <p class="muted">Update your lease end date</p>
+
+    <div class="renewal-field">
+      <label>Current Lease End</label>
+      <div id="currentLease">Loading...</div>
+    </div>
+
+    <div class="renewal-field">
+      <label>New Lease End Date</label>
+      <input type="date" id="newLeaseEnd">
+    </div>
+
+    <div class="renewal-actions">
+      <button id="saveRenewal" class="btn-primary">Update Lease</button>
+      <button onclick="window.location='Vender AccountRentalStatus.html'" class="btn-ghost">
+        Cancel
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script type="module" src="VendorLeaseRenewal.js"></script>
+</body>
+</html>

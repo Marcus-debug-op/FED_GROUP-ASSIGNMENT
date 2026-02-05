@@ -7,9 +7,8 @@
 
   <link rel="stylesheet" href="CreateAccVendorPatronStyle.css">
 
-  <script type="module" src="VendorDetails.js"></script>
+  <script type="module" src="VendorStallDetails.js"></script>
 </head>
-
 <body data-auth-role="vendor">
   <div class="app">
     <button class="back-btn" type="button" onclick="history.back()">← Go Back</button>
@@ -30,7 +29,7 @@
           <div class="subtitle">Select the stall(s) you manage</div>
 
           <div class="form-scroll">
-            <label for="stallSelect">Choose a stall (precreated)</label>
+            <label for="stallSelect">Choose a stall</label>
             <select id="stallSelect">
               <option value="">Loading stalls...</option>
             </select>
@@ -46,25 +45,6 @@
 
             <hr style="margin:14px 0; border:none; border-top:1px solid rgba(0,0,0,0.12);" />
 
-            <label>
-              <input type="checkbox" id="notListedCheck" />
-              My stall isn’t listed (request to add)
-            </label>
-
-            <div id="requestBox" class="hidden">
-              <label for="reqStallName">Stall name</label>
-              <input id="reqStallName" type="text" />
-
-              <label for="reqHawkerCentre">Hawker centre</label>
-              <input id="reqHawkerCentre" type="text" />
-
-              <label for="reqUnitNo">Unit / Stall number</label>
-              <input id="reqUnitNo" type="text" />
-
-              <label for="reqNotes">Notes (optional)</label>
-              <textarea id="reqNotes" rows="3"></textarea>
-
-              <button class="secondary-btn" id="submitRequestBtn" type="button">Submit Request</button>
             </div>
 
             <button class="submit-btn" id="saveVendorSetupBtn" type="button">Save & Continue to Sign In</button>

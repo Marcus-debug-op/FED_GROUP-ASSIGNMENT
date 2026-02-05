@@ -523,6 +523,52 @@ position: relative;
   padding: 12px 6px 0;
 }
 
+/* Lease Renewal Page */
+
+.renewal-container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.renewal-card {
+  background: white;
+  padding: 35px;
+  border-radius: 18px;
+  width: 420px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+
+.renewal-field {
+  margin-top: 18px;
+}
+
+.renewal-field label {
+  font-weight: 800;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.renewal-actions {
+  margin-top: 25px;
+  display: flex;
+  gap: 10px;
+}
+
+/* Admin requests */
+
+.admin-list { margin-top: 14px; display: grid; gap: 12px; }
+.req-card {
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 14px;
+  padding: 14px;
+  display: grid;
+  gap: 8px;
+}
+.req-row { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+.req-actions { display:flex; gap:10px; justify-content:flex-end; }
+
 
 
 /* =========================================
