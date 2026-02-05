@@ -10,7 +10,8 @@ import {
   orderBy,
   limit,
   doc,
-  getDoc
+  getDoc,
+  deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 // --- YOUR CONFIG (must match navbar-init.js) ---
@@ -32,9 +33,9 @@ const auth = getAuth(app);
 // ============== STATE ==============
 let allOrders = [];
 
-// Caches (reduce Firestore reads)
-const stallNameCache = new Map(); // stallId -> name (or "")
-const menuItemCache = new Map();  // itemId -> { stallId, stallName? } or null
+// Caches to reduce reads
+const stallNameCache = new Map(); // stallId -> name or ""
+const menuItemCache = new Map();  // itemId -> { stallId, stallName } or null
 
 // ============== UTILS ==============
 function escapeHtml(s) {
@@ -62,11 +63,11 @@ function formatDate(createdAt) {
   return d.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
 }
 
-function uniqueNonEmpty(arr) {
+function uniqNonEmpty(arr) {
   return [...new Set((arr || []).map(v => String(v || "").trim()).filter(Boolean))];
 }
 
-// ======= Firestore lookups (ONLY stalls, since you deleted foodStalls) =======
+// ============== STALL NAME LOOKUP (stalls only) ==============
 async function fetchStallName(stallId) {
   const sid = String(stallId || "").trim();
   if (!sid) return "";
@@ -113,48 +114,73 @@ async function fetchMenuItemMeta(itemId) {
   return null;
 }
 
-// Build stall summary for ONE order
 async function buildStallSummary(order) {
-  // If your order already stored a summary, use it
-  if (order.stallSummary && String(order.stallSummary).trim()) return String(order.stallSummary).trim();
+  if (order.stallSummary && String(order.stallSummary).trim()) {
+    return String(order.stallSummary).trim();
+  }
 
   const items = Array.isArray(order.items) ? order.items : [];
   if (!items.length) return "Unknown stall";
 
-  // 1) If items already have stallName
-  const directNames = uniqueNonEmpty(items.map(i => i.stallName || i.StallName || ""));
+  // 1) If item already has stallName
+  const directNames = uniqNonEmpty(items.map(i => i.stallName || i.StallName || ""));
   if (directNames.length) return directNames.join(", ");
 
-  // 2) If items already have stallId
-  const directIds = uniqueNonEmpty(items.map(i => i.stallId || i.stallID || i.StallID || i.stall || ""));
+  // 2) If item already has stallId
+  const directIds = uniqNonEmpty(items.map(i => i.stallId || i.stallID || i.StallID || i.stall || ""));
   if (directIds.length) {
     const names = await Promise.all(directIds.map(fetchStallName));
-    const cleaned = uniqueNonEmpty(names);
+    const cleaned = uniqNonEmpty(names);
     if (cleaned.length) return cleaned.join(", ");
-    // fallback: show IDs if no names found
     return directIds.join(", ");
   }
 
-  // 3) Otherwise, derive stallId from menu_items using itemId
-  const itemIds = uniqueNonEmpty(items.map(i => i.itemId || i.itemID || i.item || i.id || ""));
+  // 3) Derive stallId from menu_items using itemId
+  const itemIds = uniqNonEmpty(items.map(i => i.itemId || i.itemID || i.item || i.id || ""));
   if (!itemIds.length) return "Unknown stall";
 
   const metas = await Promise.all(itemIds.map(fetchMenuItemMeta));
 
-  // 3a) If menu items store stallName directly
-  const metaNames = uniqueNonEmpty((metas || []).map(m => m && m.stallName));
+  const metaNames = uniqNonEmpty((metas || []).map(m => m && m.stallName));
   if (metaNames.length) return metaNames.join(", ");
 
-  // 3b) Otherwise, fetch stall names via stallId from metas
-  const metaIds = uniqueNonEmpty((metas || []).map(m => m && m.stallId));
+  const metaIds = uniqNonEmpty((metas || []).map(m => m && m.stallId));
   if (metaIds.length) {
     const names = await Promise.all(metaIds.map(fetchStallName));
-    const cleaned = uniqueNonEmpty(names);
+    const cleaned = uniqNonEmpty(names);
     if (cleaned.length) return cleaned.join(", ");
     return metaIds.join(", ");
   }
 
   return "Unknown stall";
+}
+
+// ============== DELETE FEATURE ==============
+async function deleteOrder(orderId) {
+  if (!orderId) return;
+
+  const ok = confirm("Delete this order history? This cannot be undone.");
+  if (!ok) return;
+
+  try {
+    await deleteDoc(doc(db, "orders", orderId));
+
+    // Remove from local state
+    allOrders = allOrders.filter(o => o.id !== orderId);
+
+    // If currently on details view, go back to list
+    const detailView = document.getElementById("detailView");
+    if (detailView && !detailView.classList.contains("hidden")) {
+      showList();
+    }
+
+    // Refresh list
+    await loadHistory(auth.currentUser ? auth.currentUser.uid : null);
+
+  } catch (e) {
+    console.error("Delete failed:", e);
+    alert("Delete failed. Check console / Firestore rules.");
+  }
 }
 
 // ============== UI NAV (MATCHES YOUR HTML IDS) ==============
@@ -201,7 +227,7 @@ function showDetail(orderId) {
     : "";
 
   detailEl.innerHTML = `
-    <div class="detail-header">
+    <div class="detail-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
       <div>
         <h2>Order #${escapeHtml(order.orderNo || "---")}</h2>
         <div class="detail-meta">
@@ -209,6 +235,10 @@ function showDetail(orderId) {
           <span class="pill">${escapeHtml(order.status || "Paid")}</span>
         </div>
       </div>
+
+      <button id="deleteThisOrderBtn" type="button" style="cursor:pointer;">
+        Delete Order
+      </button>
     </div>
 
     <div class="detail-items">
@@ -241,6 +271,10 @@ function showDetail(orderId) {
       </div>
     </div>
   `;
+
+  document.getElementById("deleteThisOrderBtn")?.addEventListener("click", () => {
+    deleteOrder(orderId);
+  });
 }
 
 // ================= RENDER LIST (Fetch from FIRESTORE) =================
@@ -273,7 +307,7 @@ async function loadHistory(uid) {
       allOrders.push({ id: d.id, ...d.data() });
     });
 
-    // ✅ Compute stall summary for each order
+    // compute stall names (no more hardcoded "Multiple stalls")
     await Promise.all(allOrders.map(async (o) => {
       o._stallSummaryComputed = await buildStallSummary(o);
     }));
@@ -310,15 +344,25 @@ async function loadHistory(uid) {
             <div class="history-total">Total: ${total}</div>
           </div>
 
-          <button class="history-view-btn view-btn" data-id="${o.id}" type="button">
-            View Details
-          </button>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <button class="history-view-btn view-btn" data-id="${o.id}" type="button">
+              View Details
+            </button>
+
+            <button class="history-del-btn del-btn" data-id="${o.id}" type="button">
+              Delete
+            </button>
+          </div>
         </div>
       `;
     }).join("");
 
     document.querySelectorAll(".view-btn").forEach(btn => {
       btn.addEventListener("click", (e) => showDetail(e.currentTarget.dataset.id));
+    });
+
+    document.querySelectorAll(".del-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => deleteOrder(e.currentTarget.dataset.id));
     });
 
   } catch (error) {
