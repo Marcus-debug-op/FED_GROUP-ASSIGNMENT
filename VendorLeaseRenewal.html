@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Lease Renewal</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HawkerHub - Lease Renewal</title>
   <link rel="stylesheet" href="VendorAccount.css">
+  <link rel="stylesheet" href="auto-renewal-styles.css">
 </head>
 <body>
 
@@ -10,7 +13,7 @@
   <div class="renewal-card">
 
     <h2>Lease Renewal</h2>
-    <p class="muted">Update your lease end date</p>
+    <p class="muted">Extend your lease period (Maximum 3 months)</p>
 
     <div class="renewal-field">
       <label>Current Lease End</label>
@@ -20,10 +23,14 @@
     <div class="renewal-field">
       <label>New Lease End Date</label>
       <input type="date" id="newLeaseEnd">
+      <small class="hint">Select a date up to 3 months from current end date</small>
     </div>
+
+    <div id="paymentInfo" class="payment-info"></div>
 
     <div class="renewal-actions">
       <button id="saveRenewal" class="btn-primary">Update Lease</button>
+      <button id="resetLeaseBtn" class="btn-warning">Reset to Today</button>
       <button onclick="window.location='Vender AccountRentalStatus.html'" class="btn-ghost">
         Cancel
       </button>
