@@ -14,7 +14,7 @@
         
         <aside class="sidebar">
             <div class="brand">
-                <div class="brand-icon" style="background:#2563eb;"></div> 
+                <div class="brand-icon"></div> 
                 <div class="brand-info">
                     <div class="brand-title">NEA Officer Portal</div>
                     <div class="brand-subtitle">Zone: Tiong Bahru</div>
@@ -32,10 +32,6 @@
                 
                 <div class="nav-item" onclick="switchPage('schedule', this)">
                     Schedule
-                </div>
-                
-                <div class="nav-item" onclick="switchPage('violations', this)">
-                    Violation Log
                 </div>
                 
                 <div class="nav-item" onclick="switchPage('settings', this)">
@@ -69,7 +65,7 @@
                         <div class="stat-header">
                             <span>Critical Violations</span>
                         </div>
-                        <div class="stat-value" id="critical-violations" style="color: #dc2626;">0</div>
+                        <div class="stat-value critical-text" id="critical-violations">0</div>
                         <div class="stat-subtext">Grade C or below</div>
                     </div>
 
@@ -82,7 +78,7 @@
                     </div>
                 </div>
 
-                <div class="card" style="margin-top:20px;">
+                <div class="card dashboard-table-container">
                     <h3>Recent Inspections</h3>
                     <table class="data-table">
                         <thead>
@@ -94,7 +90,7 @@
                             </tr>
                         </thead>
                         <tbody id="recent-inspections-body">
-                            <tr><td colspan="4">Loading data...</td></tr>
+                            <tr><td colspan="4" class="text-muted-center">Loading data...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -116,7 +112,7 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="stall-directory-body">
                             </tbody>
                     </table>
                 </div>
@@ -127,52 +123,8 @@
                     <h1>Inspection Schedule</h1>
                     <p class="subtitle">Today's planned visits</p>
                 </header>
-                <div class="card">
-                    <div class="item-row" style="padding: 15px 0; border-bottom:1px solid #eee;">
-                        <div class="item-icon" style="font-size:0.9rem; font-weight:bold;">10:00 AM</div>
-                        <div>
-                            <strong>Daily Juice Bar (#TB-05)</strong>
-                            <div style="font-size:0.8rem; color:#666;">Routine Hygiene Check</div>
-                        </div>
-                        <button class="btn-primary" style="margin-left:auto; font-size:0.8rem;">Start</button>
-                    </div>
-                    <div class="item-row" style="padding: 15px 0;">
-                        <div class="item-icon" style="font-size:0.9rem; font-weight:bold;">02:00 PM</div>
-                        <div>
-                            <strong>Uncle Lim Kopi (#TB-08)</strong>
-                            <div style="font-size:0.8rem; color:#666;">Follow-up on pest control</div>
-                        </div>
-                        <button class="btn-primary" style="margin-left:auto; font-size:0.8rem;">Start</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="page-violations" class="hidden">
-                <header class="header">
-                    <h1>Violation Log</h1>
-                    <p class="subtitle">Record of non-compliance issues</p>
-                </header>
-                <div class="card">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Case ID</th>
-                                <th>Stall</th>
-                                <th>Violation</th>
-                                <th>Fine</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>#VIO-291</td>
-                                <td>Mala Hotpot</td>
-                                <td>Improper waste disposal</td>
-                                <td>$300</td>
-                                <td><span class="badge badge-danger">Unpaid</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="schedule-container" id="schedule-list">
+                    <p class="text-muted-center">Loading schedule...</p>
                 </div>
             </div>
 
@@ -186,6 +138,79 @@
             </div>
 
         </main>
+    </div>
+
+    <div id="modal-schedule" class="hidden modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">Schedule Visit</div>
+            
+            <input type="hidden" id="schedule-stall-id">
+            <input type="hidden" id="schedule-stall-name">
+
+            <label class="form-label">Date</label>
+            <input type="date" id="input-date" class="form-input-box" onchange="checkAvailability()">
+
+            <label class="form-label">Time</label>
+            <select id="input-time" class="form-input-box">
+                <option value="08:00">08:00 AM</option>
+                <option value="08:30">08:30 AM</option>
+                <option value="09:00">09:00 AM</option>
+                <option value="09:30">09:30 AM</option>
+                <option value="10:00" selected>10:00 AM</option>
+                <option value="10:30">10:30 AM</option>
+                <option value="11:00">11:00 AM</option>
+                <option value="11:30">11:30 AM</option>
+                <option value="12:00">12:00 PM</option>
+                <option value="12:30">12:30 PM</option>
+                <option value="13:00">01:00 PM</option>
+                <option value="13:30">01:30 PM</option>
+                <option value="14:00">02:00 PM</option>
+                <option value="14:30">02:30 PM</option>
+                <option value="15:00">03:00 PM</option>
+                <option value="15:30">03:30 PM</option>
+                <option value="16:00">04:00 PM</option>
+                <option value="16:30">04:30 PM</option>
+                <option value="17:00">05:00 PM</option>
+            </select>
+
+            <label class="form-label">Notes</label>
+            <textarea id="input-note" class="form-input-box" rows="2" placeholder="e.g. Routine check"></textarea>
+
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('modal-schedule')">Cancel</button>
+                <button class="btn-primary" onclick="confirmSchedule()">Confirm Schedule</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-inspect" class="hidden modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">Complete Inspection</div>
+            
+            <input type="hidden" id="inspect-schedule-id">
+            <input type="hidden" id="inspect-stall-id">
+            <input type="hidden" id="inspect-stall-name">
+
+            <div style="margin-bottom: 15px;">
+                <strong>Stall:</strong> <span id="display-stall-name" style="font-size: 1.1rem;">Loading...</span>
+            </div>
+
+            <label class="form-label">Hygiene Score (0-100)</label>
+            <input type="number" id="input-score" class="form-input-box" placeholder="85" oninput="calculateLiveGrade(this.value)">
+            
+            <div id="grade-preview" class="grade-feedback"></div>
+
+            <label class="form-label">Strengths (Observed Positives)</label>
+            <textarea id="input-strengths" class="form-input-box" rows="2" placeholder="e.g. Clean grill area, staff wears masks"></textarea>
+
+            <label class="form-label">Remarks / Violations</label>
+            <textarea id="input-remarks" class="form-input-box" rows="2" placeholder="e.g. Floor wet, improper storage..."></textarea>
+
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('modal-inspect')">Cancel</button>
+                <button class="btn-primary" onclick="submitInspection()">Submit Report</button>
+            </div>
+        </div>
     </div>
 
     <script type="module" src="NEAofficer.js"></script>
