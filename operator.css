@@ -189,3 +189,14 @@ h3 { margin: 0 0 8px 0; font-size: 1.1rem; font-weight: 600; color: #1a1a1a; }
 .text-grade-b { color: #2563eb; }
 .text-grade-c { color: #d97706; }
 .text-grade-d { color: #dc2626; }
+
+.date-picker-group {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+/* Adjust widths: Day (small), Month (medium), Year (small) */
+#picker-day { flex: 1; }
+#picker-month { flex: 2; }
+#picker-year { flex: 1; }
