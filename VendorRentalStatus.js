@@ -99,7 +99,7 @@ function updateUI(mainData, rentalData) {
   // Update banner if it exists
   const bannerTitle = document.getElementById('stallNameDisplay');
   if (bannerTitle) {
-    bannerTitle.textContent = `${stallName}`;
+    bannerTitle.textContent = `${stallName} - Rental Status`;
   }
 
   // Grid Tiles - using class selectors based on position
@@ -134,22 +134,31 @@ function updateUI(mainData, rentalData) {
   }
   
   if (paymentKVs[1]) { // Last Payment Made
-    const lastMadeText = formatAnyDate(rentalData.lastPaymentMade) || "Not set";
+    // If lastPaymentMade is not set but we have a lease, show current date
+    let lastMadeText;
+    if (rentalData.lastPaymentMade) {
+      lastMadeText = formatAnyDate(rentalData.lastPaymentMade);
+    } else if (rentalData.leaseEnd || mainData.leaseEnd) {
+      // Default to current date if lease exists but no payment recorded
+      lastMadeText = formatDate(new Date());
+    } else {
+      lastMadeText = "Not set";
+    }
     paymentKVs[1].textContent = lastMadeText;
   }
   
   if (paymentKVs[2]) { // Amount (same as rent)
-    const rentVal = rentalData.rent || mainData.rent || 0;
+    const rentVal = rentalData.rent || mainData.rent || 1000; // Default to $1000
     const rentText = rentVal ? `$${parseInt(rentVal).toLocaleString()}` : "$0.00";
     paymentKVs[2].textContent = rentText;
   }
 
-  // Remarks Panel
-  const remarksKVs = document.querySelectorAll('.panel:nth-of-type(2) .kv .v');
+  // Lease Actions Panel (formerly Remarks)
+  const actionsKVs = document.querySelectorAll('.panel:nth-of-type(2) .kv .v');
   
-  if (remarksKVs[0]) { // Lease Expiry Date
+  if (actionsKVs[0]) { // Lease Expiry Date
     const expiryDate = formatAnyDate(rentalData.leaseEnd) || formatAnyDate(mainData.leaseEnd) || "N/A";
-    remarksKVs[0].textContent = expiryDate;
+    actionsKVs[0].textContent = expiryDate;
   }
 
   // Update status pill

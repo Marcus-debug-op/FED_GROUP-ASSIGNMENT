@@ -241,13 +241,22 @@ saveBtn.addEventListener("click", async () => {
     // Calculate next payment due (first upcoming payment)
     const today = new Date();
     const nextPayment = paymentDetails.payments.find(p => p.dueDate >= today);
-    const lastPaidPayment = paymentDetails.payments.filter(p => p.dueDate < today).pop();
+    const paidPayments = paymentDetails.payments.filter(p => p.dueDate < today);
+    
+    // Last payment: use most recent paid payment, or current date if no paid payments
+    let lastPaymentDate;
+    if (paidPayments.length > 0) {
+      lastPaymentDate = paidPayments[paidPayments.length - 1].dueDate;
+    } else {
+      // No paid payments yet, use current date
+      lastPaymentDate = today;
+    }
 
     // Update lease with payment information
     await updateDoc(currentRentalRef, {
       leaseEnd: Timestamp.fromDate(newLeaseEnd),
       nextPaymentDue: nextPayment ? Timestamp.fromDate(nextPayment.dueDate) : "",
-      lastPaymentMade: lastPaidPayment ? Timestamp.fromDate(lastPaidPayment.dueDate) : "",
+      lastPaymentMade: Timestamp.fromDate(lastPaymentDate),
       rent: MONTHLY_RENT,
       updatedAt: serverTimestamp(),
       updatedBy: currentUser.uid
