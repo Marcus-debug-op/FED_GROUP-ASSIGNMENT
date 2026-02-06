@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Operator Portal - Ah Seng's Stall</title>
+    <title>Centre Manager Portal - Hawker Hub</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <link rel="stylesheet" href="operator.css">
@@ -17,253 +16,92 @@
         
         <aside class="sidebar">
             <div class="brand">
-                <img src="img/Logo.png" alt="Stall Logo" class="brand-logo">
-                <div class="brand-info">
-                    <div class="brand-title">Operator Portal</div>
-                    <div class="brand-subtitle">Hawker Hub</div>
+                <div class="brand-icon" style="background:#7c3aed;">🏢</div> <div class="brand-info">
+                    <div class="brand-title">Centre Manager</div>
+                    <div class="brand-subtitle">Tiong Bahru Hub</div>
                 </div>
             </div>
 
             <nav class="nav-menu">
-                <div class="nav-item active" onclick="switchPage('overview', this)">
-                Overview
-                </div>
-                
-                <div class="nav-item" onclick="switchPage('orders', this)">
-                Orders
-                </div>
-                
-                <div class="nav-item" onclick="switchPage('menu', this)">
-                Menu Management
-                </div>
-                
-                <div class="nav-item" onclick="switchPage('reviews', this)">
-                Reviews
-                </div>
-                
-                <div class="nav-item" onclick="switchPage('settings', this)">
-                Settings
-                </div>
+                <div class="nav-item active">Overview</div>
+                <div class="nav-item">Stall Management</div>
+                <div class="nav-item">Reports</div>
+                <div class="nav-item">Settings</div>
             </nav>
         </aside>
 
         <main class="main-content">
             
-            <div id="page-overview">
-                <header class="header">
-                    <div>
-                        <h1>Dashboard Overview</h1>
-                        <p class="subtitle">Track your stall performance and key metrics</p>
-                    </div>
-                </header>
+            <header class="header">
+                <div>
+                    <h1>Centre Overview</h1>
+                    <p class="subtitle">Real-time performance of the entire hawker centre</p>
+                </div>
+            </header>
 
-                <div class="stats-grid">
-                    <div class="card stat-card">
-                        <div class="stat-header">
-                            <span>Total Revenue</span>
-                            <span class="icon">$</span>
-                        </div>
-                        <div class="stat-value" id="total-revenue">$0,000</div>
-                        <div class="stat-trend positive">
-                            <span id="revenue-trend">+0%</span> from last month
-                        </div>
+            <div class="stats-grid">
+                <div class="card stat-card">
+                    <div class="stat-header">
+                        <span>Total Centre Revenue</span>
+                        <span class="icon">$</span>
                     </div>
-
-                    <div class="card stat-card">
-                        <div class="stat-header">
-                            <span>Orders Today</span>
-                            <span class="icon">📦</span>
-                        </div>
-                        <div class="stat-value" id="orders-today">0</div>
-                        <div class="stat-trend positive">
-                            <span id="orders-trend">+0%</span> from yesterday
-                        </div>
-                    </div>
-
-                    <div class="card stat-card">
-                        <div class="stat-header">
-                            <span>Average Rating</span>
-                            <span class="icon">⭐</span>
-                        </div>
-                        <div class="stat-value" id="avg-rating">0.0</div>
-                        <div class="stat-subtext">Based on <span id="review-count">0</span> reviews</div>
-                    </div>
-
-                    <div class="card stat-card">
-                        <div class="stat-header">
-                            <span>Hygiene Grade</span>
-                            <span class="icon">🛡️</span>
-                        </div>
-                        <div class="flex-align">
-                            <div class="grade-badge" id="hygiene-grade">-</div>
-                            <span class="grade-score"><span id="hygiene-score">0</span>/100</span>
-                        </div>
-                        <div class="stat-subtext">Last inspected: <span id="last-inspection">-</span></div>
+                    <div class="stat-value" id="centre-revenue">$0</div>
+                    <div class="stat-trend positive">
+                        <span>Live</span> across all stalls
                     </div>
                 </div>
 
-                <div class="charts-grid">
-                    <div class="card chart-container">
-                        <h3>Sales Trend</h3>
-                        <p class="subtitle">Monthly sales performance</p>
-                        <div class="canvas-wrapper">
-                            <canvas id="salesChart"></canvas>
-                        </div>
+                <div class="card stat-card">
+                    <div class="stat-header">
+                        <span>Occupied Stalls</span>
+                        <span class="icon">🏪</span>
                     </div>
+                    <div class="stat-value" id="active-stalls">0</div>
+                    <div class="stat-subtext">Total Registered Vendors</div>
+                </div>
 
-                    <div class="card chart-container">
-                        <h3>Order Types</h3>
-                        <p class="subtitle">Distribution by order type</p>
-                        <div class="canvas-wrapper">
-                            <canvas id="orderTypeChart"></canvas>
-                        </div>
+                <div class="card stat-card">
+                    <div class="stat-header">
+                        <span>Total Footfall</span>
+                        <span class="icon">👣</span>
                     </div>
+                    <div class="stat-value" id="total-traffic">0</div>
+                    <div class="stat-trend positive"><span>+12%</span> vs last month</div>
+                </div>
+
+                <div class="card stat-card">
+                    <div class="stat-header">
+                        <span>Centre Rating</span>
+                        <span class="icon">⭐</span>
+                    </div>
+                    <div class="stat-value" id="centre-rating">0.0</div>
+                    <div class="stat-subtext">Average of all reviews</div>
                 </div>
             </div>
 
-            <div id="page-orders" class="hidden">
-                <header class="header">
-                    <h1>Incoming Orders</h1>
-                    <p class="subtitle">Manage and update order statuses</p>
-                </header>
+            <div class="charts-grid">
+                <div class="card chart-container">
+                    <h3>Centre Revenue Trend</h3>
+                    <p class="subtitle">Aggregated sales performance</p>
+                    <div class="canvas-wrapper">
+                        <canvas id="centreRevenueChart"></canvas>
+                    </div>
+                </div>
 
-                <div class="card">
+                <div class="card chart-container" style="overflow-y: auto;">
+                    <h3>Top Performing Stalls</h3>
+                    <p class="subtitle">By total revenue</p>
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Order ID</th>
-                                <th>Items</th>
-                                <th>Total</th>
-                                <th>Status</th>
-                                <th>Actions</th>
+                                <th>Stall Name</th>
+                                <th>Revenue</th>
+                                <th>Grade</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>#ORD-001</td>
-                                <td>1x Chicken Rice, 1x Coke</td>
-                                <td>$6.50</td>
-                                <td><span class="badge badge-pending">Pending</span></td>
-                                <td>
-                                    <button class="btn-action btn-accept">Accept</button>
-                                    <button class="btn-action btn-reject">Reject</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>#ORD-002</td>
-                                <td>2x Char Siew Rice</td>
-                                <td>$10.00</td>
-                                <td><span class="badge badge-ready">Ready</span></td>
-                                <td>
-                                    <button class="btn-action btn-complete">Mark Collected</button>
-                                </td>
-                            </tr>
-                        </tbody>
+                        <tbody id="top-stalls-body">
+                            </tbody>
                     </table>
-                </div>
-            </div>
-
-            <div id="page-menu" class="hidden">
-                <div class="header-flex">
-                    <div>
-                        <h1>Menu Management</h1>
-                        <p class="subtitle">Update items, prices, and availability</p>
-                    </div>
-                    <button class="btn-primary">+ Add New Item</button>
-                </div>
-
-                <div class="card">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Item Name</th>
-                                <th>Price</th>
-                                <th>Category</th>
-                                <th>Availability</th>
-                                <th>Edit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="item-row">
-                                        <span>Chicken Rice Set</span>
-                                    </div>
-                                </td>
-                                <td>$4.50</td>
-                                <td>Main</td>
-                                <td><span class="badge badge-success">Available</span></td>
-                                <td><button class="btn-text">Edit</button></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="item-row">
-                                        <span>Iced Lemon Tea</span>
-                                    </div>
-                                </td>
-                                <td>$1.50</td>
-                                <td>Drink</td>
-                                <td><span class="badge badge-danger">Sold Out</span></td>
-                                <td><button class="btn-text">Edit</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="page-reviews" class="hidden">
-                <header class="header">
-                    <h1>Customer Reviews</h1>
-                    <p class="subtitle">Recent feedback from your customers</p>
-                </header>
-
-                <div class="reviews-list">
-                    <div class="card review-card">
-                        <div class="review-header">
-                            <span class="reviewer-name">John Doe</span>
-                            <span class="review-date">2 hours ago</span>
-                        </div>
-                        <div class="star-rating">star rating here</div>
-                        <p class="review-text">The chicken was incredibly tender and the chili sauce is perfect! Will come again.</p>
-                    </div>
-
-                    <div class="card review-card">
-                        <div class="review-header">
-                            <span class="reviewer-name">Sarah Tan</span>
-                            <span class="review-date">1 day ago</span>
-                        </div>
-                        <div class="star-rating">star rating here</div>
-                        <p class="review-text">Rice was fragrant but soup was a bit cold. Otherwise great value.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="page-settings" class="hidden">
-                <header class="header">
-                    <h1>Stall Settings</h1>
-                    <p class="subtitle">Manage your account and stall information</p>
-                </header>
-
-                <div class="card" style="max-width: 600px;">
-                    <form class="settings-form">
-                        <div class="form-group">
-                            <label>Stall Name</label>
-                            <input type="text" value="Ah Seng's Stall" class="form-input">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Operating Hours</label>
-                            <input type="text" value="10:00 AM - 8:00 PM" class="form-input">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Contact Number</label>
-                            <input type="text" value="+65 9123 4567" class="form-input">
-                        </div>
-
-                        <button type="button" class="btn-primary" style="width: 100%;">Save Changes</button>
-                        <button type="button" class="btn-secondary" style="width: 100%; margin-top: 10px;">Log Out</button>
-                    </form>
                 </div>
             </div>
 
