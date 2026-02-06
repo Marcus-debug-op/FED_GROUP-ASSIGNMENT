@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HawkerHub – Vendor Complaints</title> 
+  
+  <link rel="stylesheet" href="VendorAccount.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="VendorComplaints.css"> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <section class="banner">
+    <div class="container">
+      <div class="banner-tabs">
+        <a href="Profile(Patron & Vendor).html">Profile</a>
+        <span>|</span>
+        <a href="VendorComplaints.html" class="active">Complaints</a>
+        <span>|</span>
+        <a href="Vender Account.html">Stall</a>
+      </div>
+
+      <div class="banner-text">
+        <h1 id="stallNameDisplay">Loading Stall...</h1>
+        <p>View and Respond to Complaints from Patrons</p>
+      </div>
+    </div>
+  </section>
+
+  <main class="container complaint-layout">
+    
+    <div class="vendor-profile-card">
+        <h3 id="vendorName">Vendor</h3>
+        <p id="vendorEmail" class="email-text">Loading...</p>
+        <button id="logoutBtn" class="logout-btn">Logout</button>
+    </div>
+
+    <div class="complaints-section">
+        <h2 class="section-title">Complaints Form</h2>
+        
+        <div id="complaints-list" class="complaints-list">
+            <p class="loading-text">Checking for complaints...</p>
+        </div>
+    </div>
+
+  </main>
+
+  <div id="detailModal" class="modal-overlay">
+    <div class="modal-content complaint-modal">
+      <div class="modal-header">
+        <h2>Complaint Details</h2>
+        <span class="close-btn" id="closeDetailModal">&times;</span>
+      </div>
+      
+      <div class="modal-body">
+         <p><strong>From:</strong> <span id="modalUser">...</span></p>
+         <p><strong>Date:</strong> <span id="modalDate">...</span></p>
+         <hr class="modal-divider">
+         <p class="label">Complaint:</p>
+         <p id="modalComplaint" class="text-content">...</p>
+         
+         <p class="label">Suggested Improvement:</p>
+         <p id="modalImprovement" class="text-content">...</p>
+         
+         <div class="modal-evidence">
+             <p class="label">Evidence Image:</p>
+             <img id="modalImage" src="" alt="Evidence">
+             <p id="noImageText">No image provided.</p>
+         </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="cancel-btn" id="closeBtnSecondary">Close</button>
+        <button type="button" class="resolve-btn" id="resolveBtn">Resolve & Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="navbar-init.js"></script>
+  <script type="module" src="VendorComplaints.js"></script>
+</body>
+</html>

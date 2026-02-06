@@ -1,4 +1,3 @@
-// menu.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
   getFirestore,
@@ -22,8 +21,8 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 /** =============================
- *  CART STORAGE (matches checkout.js)
- *  ============================= */
+ * CART STORAGE (matches checkout.js)
+ * ============================= */
 const CART_KEY = "hawkerhub_cart";
 
 function readCart() {
@@ -82,11 +81,12 @@ function addToCart({ stallId, stallName, itemId, name, price, image }) {
 }
 
 /** =============================
- *  PAGE HELPERS
- *  ============================= */
+ * PAGE HELPERS
+ * ============================= */
 function getStallIdFromUrl() {
   const params = new URLSearchParams(window.location.search);
-  return (params.get("stall") || "").trim();
+  // --- THE FIX: Check for 'id' OR 'stall' ---
+  return (params.get("id") || params.get("stall") || "").trim();
 }
 
 function money(n) {
@@ -177,8 +177,8 @@ function renderMenuItemCard(stallId, stallName, itemId, item) {
 }
 
 /** =============================
- *  MAIN LOAD
- *  ============================= */
+ * MAIN LOAD
+ * ============================= */
 async function loadMenuPage() {
   // Ensure dot is correct on page load
   updateCartDot();
@@ -188,7 +188,7 @@ async function loadMenuPage() {
   if (!stallId) {
     document.getElementById("stall-name").textContent = "No stall selected";
     document.getElementById("menu-container").innerHTML =
-      `<p>Please open this page like: <b>menus.html?stall=ahseng</b></p>`;
+      `<p>Please open this page like: <b>menus.html?id=ahseng</b></p>`;
     return;
   }
 

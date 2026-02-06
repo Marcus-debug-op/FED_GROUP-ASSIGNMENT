@@ -1,58 +1,53 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { fs } from "./firebase-init.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDo8B0OLtAj-Upfz7yNFeGz4cx3KWLZLuQ",
-  authDomain: "hawkerhub-64e2d.firebaseapp.com",
-  databaseURL: "https://hawkerhub-64e2d-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "hawkerhub-64e2d",
-  storageBucket: "hawkerhub-64e2d.firebasestorage.app",
-  messagingSenderId: "722888051277",
-  appId: "1:722888051277:web:59926d0a54ae0e4fe36a04"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
+// Helper to get ID from URL (Checks for both "id" and "stall")
 function getStallId() {
-  const params = new URLSearchParams(window.location.search);
-  return (params.get("stall") || "").trim(); // uses same ?stall=... as your stalldetails
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id") || params.get("stall"); // This fixes your error
+    return id ? id.trim() : null;
 }
 
 async function init() {
-  const stallId = getStallId();
-  if (!stallId) {
-    alert("Missing stall id in URL");
-    return;
-  }
+    const stallId = getStallId();
+    
+    if (!stallId) {
+        // If we still can't find an ID, show error but don't crash
+        console.error("Missing stall id in URL");
+        alert("Error: No stall selected.");
+        return;
+    }
 
-  // Load stall data from Firestore
-  const snap = await getDoc(doc(db, "stalls", stallId));
-  if (!snap.exists()) {
-    alert("Stall not found");
-    return;
-  }
+    // Load stall data from Firestore using 'fs' (from firebase-init.js)
+    const snap = await getDoc(doc(fs, "stalls", stallId));
+    
+    if (!snap.exists()) {
+        alert("Stall not found in database");
+        return;
+    }
 
-  const s = snap.data();
-  const stallDisplayName = s.name || s.displayName || stallId;
+    const s = snap.data();
+    const stallDisplayName = s.name || s.displayName || stallId;
 
-  // Fill UI
-  const nameEl = document.getElementById("stallNameText");
-  if (nameEl) nameEl.textContent = stallDisplayName;
+    // Fill UI
+    const nameEl = document.getElementById("stallNameText");
+    if (nameEl) nameEl.textContent = stallDisplayName;
 
-  const imgEl = document.getElementById("stallHeroImg");
-  if (imgEl) imgEl.src = s.heroImage || "";
+    const imgEl = document.getElementById("stallHeroImg");
+    if (imgEl) imgEl.src = s.heroImage || "";
 
-  // Make Add Feedback go to feedback.html (submission page)
-  // IMPORTANT: keep stall as DISPLAY NAME because your localStorage reviews use stall name string
-  const returnUrl = `stallFeedback.html?stall=${encodeURIComponent(stallId)}`;
-  const addLink = document.getElementById("addFeedbackLink");
-  if (addLink) {
-    addLink.href = `feedback.html?stall=${encodeURIComponent(stallDisplayName)}&return=${encodeURIComponent(returnUrl)}`;
-  }
+    // Make "Add Feedback" button work
+    // We send the user to 'feedback.html' with the stall name
+    // And tell it to return here (stallFeedback.html?id=...) after they are done
+    const returnUrl = `stallFeedback.html?id=${encodeURIComponent(stallId)}`;
+    const addLink = document.getElementById("addFeedbackLink");
+    
+    if (addLink) {
+        addLink.href = `feedback.html?stall=${encodeURIComponent(stallDisplayName)}&return=${encodeURIComponent(returnUrl)}`;
+    }
 
-  // Also update the page title
-  document.title = `${stallDisplayName} - Feedback`;
+    // Update the page title
+    document.title = `${stallDisplayName} - Feedback`;
 }
 
 init().catch(console.error);

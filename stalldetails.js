@@ -1,83 +1,98 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+// 1. Import from your shared file (CLEANER)
+import { fs } from "./firebase-init.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDo8B0OLtAj-Upfz7yNFeGz4cx3KWLZLuQ",
-  authDomain: "hawkerhub-64e2d.firebaseapp.com",
-  databaseURL: "https://hawkerhub-64e2d-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "hawkerhub-64e2d",
-  storageBucket: "hawkerhub-64e2d.firebasestorage.app",
-  messagingSenderId: "722888051277",
-  appId: "1:722888051277:web:59926d0a54ae0e4fe36a04"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
+// 2. Helper to get ID from URL (Checks for both "id" and "stall")
 function getStallId() {
-  const params = new URLSearchParams(window.location.search);
-  return (params.get("stall")).trim();
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id") || params.get("stall"); // Support both ?id= and ?stall=
+    return id ? id.trim() : null;
 }
 
 async function loadDetails() {
-  const stallId = getStallId();
-  if (!stallId) {
-    document.getElementById("stall-name").textContent = "No stall selected";
-    return;
-  }
+    const stallId = getStallId();
+    
+    // --- HANDLE MISSING ID ---
+    if (!stallId) {
+        document.getElementById("stall-name").textContent = "No stall selected";
+        console.error("No Stall ID found in URL");
+        return;
+    }
 
-  const snap = await getDoc(doc(db, "stalls", stallId));
-  if (!snap.exists()) {
-    document.getElementById("stall-name").textContent = "Stall not found";
-    return;
-  }
+    console.log("Loading details for:", stallId); // Debugging
 
-  const s = snap.data();
+    // --- FETCH DATA FROM FIRESTORE ---
+    // Note: We use 'fs' here, which is the database imported from firebase-init.js
+    const snap = await getDoc(doc(fs, "stalls", stallId));
 
-  // Title
-  document.title = `${s.displayName || "Stall"} - Details`;
-  document.getElementById("stall-name").textContent = s.name || stallId;
+    if (!snap.exists()) {
+        document.getElementById("stall-name").textContent = "Stall not found";
+        return;
+    }
 
-  document.getElementById("stall-id-display").textContent = s.stallNo || ("#" + stallId.toUpperCase());
+    const s = snap.data();
 
-  // Image
-  document.getElementById("stall-img").src = s.heroImage || "";
-  document.getElementById("stall-img").alt = s.displayName || stallId;
+    // --- FILL IN THE HTML ---
+    document.title = `${s.displayName || "Stall"} - Details`;
+    document.getElementById("stall-name").textContent = s.name || stallId;
+    document.getElementById("stall-id-display").textContent = s.stallNo || ("#" + stallId.toUpperCase());
 
-  // Badge
-  const badge = document.getElementById("stall-badge");
-  if (s.badge) {
-    badge.style.display = "block";
-    badge.textContent = s.badge;
-  }
+    // Image
+    const imgElement = document.getElementById("stall-img");
+    if (imgElement) {
+        imgElement.src = s.heroImage || "";
+        imgElement.alt = s.displayName || stallId;
+    }
 
-  // Hygiene + cuisine
-  document.getElementById("stall-hygiene").textContent = s.hygiene ? `Hygiene ${s.hygiene}` : "";
-  document.getElementById("stall-cuisine").textContent = s.cuisine || "";
+    // Badge
+    const badge = document.getElementById("stall-badge");
+    if (s.badge && badge) {
+        badge.style.display = "block";
+        badge.textContent = s.badge;
+    }
 
-  // Rating
-  const ratingText =
-    (s.rating != null && s.reviews != null)
-      ? `${s.rating} (${s.reviews} reviews)`
-      : (s.rating != null ? `${s.rating}` : "");
-  document.getElementById("stall-rating").textContent = ratingText;
+    // Hygiene + Cuisine
+    document.getElementById("stall-hygiene").textContent = s.hygiene ? `Hygiene ${s.hygiene}` : "";
+    document.getElementById("stall-cuisine").textContent = s.cuisine || "";
 
-  // Description
-  document.getElementById("stall-desc").textContent = s.description || "";
+    // Rating
+    const ratingText = (s.rating != null && s.reviews != null)
+        ? `${s.rating} (${s.reviews} reviews)`
+        : (s.rating != null ? `${s.rating}` : "");
+    document.getElementById("stall-rating").textContent = ratingText;
 
-  // Grid buttons
-  document.getElementById("stall-location").textContent = s.location || "-";
-  document.getElementById("stall-hours").textContent = s.hours || "-";
-  document.getElementById("stall-price").textContent = s.priceRange || "-";
-  document.getElementById("stall-phone").textContent = s.phone || "-";
+    // Description
+    document.getElementById("stall-desc").textContent = s.description || "";
 
-  // Links
-  document.getElementById("menu-link").href = `menus.html?stall=${encodeURIComponent(stallId)}`;
+    // Info Grid
+    document.getElementById("stall-location").textContent = s.location || "-";
+    document.getElementById("stall-hours").textContent = s.hours || "-";
+    document.getElementById("stall-price").textContent = s.priceRange || "-";
+    document.getElementById("stall-phone").textContent = s.phone || "-";
 
-  // Optional: if you have per-stall feedback pages, set them here.
-  // Otherwise, you can point all to the same feedback page and filter by stallId later.
-  document.getElementById("feedback-link").href = `stallFeedback.html?stall=${encodeURIComponent(stallId)}`;
+    // --- UPDATE BUTTON LINKS (THE IMPORTANT PART) ---
 
+    // 1. Update Menu Link
+    const menuLink = document.getElementById("menu-link");
+    if (menuLink) {
+        menuLink.href = `menus.html?id=${encodeURIComponent(stallId)}`;
+    }
+
+    // 2. Update Feedback Link
+    const feedbackLink = document.getElementById("feedback-link");
+    if (feedbackLink) {
+        feedbackLink.href = `stallFeedback.html?id=${encodeURIComponent(stallId)}`;
+    }
+
+    // 3. Update "Add Complaint" Link (Finds it automatically)
+    // We look for the link that points to "complaint.html" OR has the ID "add-complaint-btn"
+    const complaintBtn = document.getElementById("add-complaint-btn") || document.querySelector('a[href*="complaint.html"]');
+    
+    if (complaintBtn) {
+        // This ensures the link becomes "complaint.html?id=ahseng"
+        complaintBtn.href = `complaint.html?id=${encodeURIComponent(stallId)}`;
+    }
 }
 
+// Run the function
 loadDetails().catch(console.error);

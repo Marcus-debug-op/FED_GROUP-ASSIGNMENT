@@ -1179,3 +1179,105 @@ textarea:focus {
 .menu-section {
     padding: 60px 0;
 }
+
+#stall-name-display {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+#image-preview {
+    display: none;
+}
+
+#clear-img-btn {
+    display: none;
+}
+
+#real-file-input {
+    display: none;
+}
+
+.complaint-page .sub-header {
+    text-align: center;
+    padding-top: 20px;
+}
+
+/* Style the "For: Ah Seng..." text */
+.complaint-page #stall-name-display {
+    color: rgba(255, 255, 255, 0.9) !important; /* Make it whitish */
+    font-size: 16px !important;
+    font-weight: 600;
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+}
+
+.complaint-page h1#page-title {
+    color: white;
+    font-size: 32px;
+    margin: 0;
+}
+
+/* 2. Fix the Orange Header Box height */
+/* Currently it is 250px which is too tall for just text. 
+   We make it auto-height with padding so it looks balanced. */
+.complaint-page .form-header-img {
+    height: auto !important; /* Override fixed height */
+    min-height: 140px;
+    padding: 30px 20px;
+    background: #F97316; /* Orange background */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 3. Push the Form Inputs to the Middle */
+/* We define a max-width and use margin auto to center the inner content */
+.complaint-page .form-body {
+    max-width: 500px; /* Constrain width so it looks neat */
+    margin: 0 auto;   /* Center it */
+    padding: 40px 20px; /* Add breathing room */
+}
+
+/* 4. Polish the Input Fields */
+.complaint-page textarea {
+    background-color: #fafafa;
+    border: 2px solid #eee;
+    border-radius: 16px;
+    padding: 16px;
+    font-size: 15px;
+    transition: all 0.2s ease;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.complaint-page textarea:focus {
+    background-color: #fff;
+    border-color: #F97316;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15);
+}
+
+/* 5. Improve "Import Media" Button Alignment */
+.complaint-page .label-row {
+    margin-bottom: 12px;
+}
+
+.complaint-page .btn-import-media {
+    background: #fff;
+    color: #F97316;
+    border: 2px solid #F97316;
+    padding: 6px 16px;
+}
+
+.complaint-page .btn-import-media:hover {
+    background: #fff5eb;
+}
+
+/* 6. Make Image Preview look good if they upload one */
+.complaint-page #image-preview {
+    display: none; /* Hidden by default */
+    margin-top: 20px;
+    max-height: 200px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    border: 2px solid white;
+}

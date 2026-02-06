@@ -1,0 +1,230 @@
+/* Layout Wrapper */
+.complaint-layout {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    padding-top: 30px;
+}
+
+/* --- Left Profile Card (Updated Size) --- */
+.vendor-profile-card {
+    background: white;
+    width: 350px; /* Increased from 280px to 350px */
+    padding: 50px 40px; /* Increased padding for more space */
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    text-align: center;
+    flex-shrink: 0;
+    min-height: 250px; /* Ensures it's not too short */
+}
+
+.vendor-profile-card h3 {
+    margin: 0;
+    font-size: 1.6rem; /* Slightly larger text */
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.email-text {
+    color: #666;
+    font-size: 1rem;
+    margin-bottom: 40px; /* More space before button */
+}
+
+.logout-btn {
+    background: #FF4500;
+    color: white;
+    border: none;
+    padding: 15px 30px; /* Bigger button */
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.2s;
+}
+
+.logout-btn:hover {
+    background: #e03e00;
+}
+
+/* --- Right Complaints Section --- */
+.complaints-section {
+    flex-grow: 1;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 900;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #333;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+.complaints-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Individual Complaint Card */
+.complaint-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border-left: 5px solid #F97316; /* Orange Accent */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-badge {
+    background: #e14e4e; 
+    color: white;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.date-text {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+.reason-text {
+    font-size: 1.1rem;
+    color: #333;
+    margin: 5px 0;
+}
+
+.view-details-btn {
+    align-self: flex-end;
+    background: #F97316;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.view-details-btn:hover {
+    background: #d85d08;
+}
+
+/* --- Modal Styles (Updated Size) --- */
+.complaint-modal {
+    max-width: 650px; /* Increased from 500px to 650px */
+    width: 90%;       /* Responsive width */
+    border-radius: 16px;
+    overflow: hidden;
+    background: white;
+}
+
+.modal-body {
+    padding: 30px; /* More internal spacing */
+}
+
+.modal-footer {
+    padding: 20px 30px;
+    background: #f8f8f8;
+    display: flex;
+    justify-content: flex-end; /* Align buttons to right */
+    gap: 15px; /* Space between buttons */
+    border-top: 1px solid #eee;
+}
+
+.modal-divider {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 15px 0;
+}
+
+.text-content {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+.resolve-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.resolve-btn:hover {
+    background: #218838;
+}
+
+.cancel-btn {
+    background: #ccc;
+    color: #333;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.cancel-btn:hover {
+    background: #bbb;
+}
+
+/* --- Evidence Image Styling --- */
+#modalImage {
+    display: none;
+    max-width: 100%;
+    border-radius: 8px;
+    margin-top: 10px;
+    border: 1px solid #eee;
+}
+
+#noImageText {
+    color: #888;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+/* --- JS Helper Classes --- */
+.show { display: block !important; }
+.hide { display: none !important; }
+.flex-show { display: flex !important; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .complaint-layout {
+        flex-direction: column;
+    }
+    .vendor-profile-card {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px;
+        min-height: auto;
+    }
+    .logout-btn {
+        width: auto;
+    }
+}

@@ -6,7 +6,7 @@
     <title>Add Complaint</title>
     <link rel="stylesheet" href="Menu.css">
 </head>
-<body class="complaint-page" data-stall="General Stall" data-return="browsestalls.html">
+<body class="complaint-page">
 
     <div class="page-wrapper">
         <a href="javascript:history.back()" class="btn-go-back"> ↩ Go Back</a>
@@ -15,12 +15,13 @@
             <div class="form-header-img">
                 
                 <div class="sub-header" id="default-header">
-                     <h1>Complaint Form</h1>
+                     <h1 id="page-title">Complaint Form</h1>
+                     <p id="stall-name-display">Loading stall info...</p>
                 </div>
 
                 <img id="image-preview" src="" alt="Uploaded Evidence">
                 
-                <button class="close-modal-btn">×</button>
+                <button class="close-modal-btn" id="clear-img-btn">×</button>
             </div>
 
             <div class="form-body">
@@ -35,16 +36,16 @@
                             <span class="icon">🖼️</span> Import Media
                         </button>
                     </div>
-                    <textarea class="main-complaint" placeholder="Reason:&#10;Content:"></textarea>
+                    <textarea id="complaint-text" class="main-complaint" placeholder="Reason:&#10;Content:"></textarea>
                 </div>
 
                 <div class="input-group">
                     <label>Suggested Improvements</label>
-                    <textarea class="improvement-input" placeholder="How can we do better?"></textarea>
+                    <textarea id="improvement-text" class="improvement-input" placeholder="How can we do better?"></textarea>
                 </div>
 
                 <div class="submit-container">
-                    <button class="btn-submit">Submit</button>
+                    <button id="submit-btn" class="btn-submit">Submit</button>
                 </div>
             </div>
         </div>
@@ -53,7 +54,7 @@
     <script type="module" src="loadNavbar.js"></script>
     <script type="module" src="navbar-auth.js"></script>
     <script src="ImagePreview.js"></script>
-    <script src="GlobalSubmit.js"></script>
+    <script type="module" src="Complaint.js"></script>
 
 </body>
 </html>
