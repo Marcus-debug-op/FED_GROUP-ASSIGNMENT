@@ -76,7 +76,8 @@ async function loadDetails() {
 
   // Optional: if you have per-stall feedback pages, set them here.
   // Otherwise, you can point all to the same feedback page and filter by stallId later.
-  document.getElementById("feedback-link").href = `feedback.html?stall=${encodeURIComponent(stallId)}`;
+  document.getElementById("feedback-link").href = `stallFeedback.html?stall=${encodeURIComponent(stallId)}`;
+
 }
 
 loadDetails().catch(console.error);

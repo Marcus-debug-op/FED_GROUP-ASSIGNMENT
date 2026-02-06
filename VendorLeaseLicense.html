@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HawkerHub - Lease License</title>
+  <link rel="stylesheet" href="VendorAccount.css">
+  <link rel="stylesheet" href="auto-renewal-styles.css">
+  <style>
+    .license-container {
+      min-height: 100vh;
+      padding: 40px 20px;
+      background: #f5f5f5;
+    }
+    
+    .license-document {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border: 2px solid #333;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    
+    .license-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 32px;
+      text-align: center;
+      border-bottom: 4px solid #333;
+    }
+    
+    .license-header h1 {
+      margin: 0 0 8px 0;
+      font-size: 32px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    
+    .license-header p {
+      margin: 0;
+      opacity: 0.9;
+      font-size: 14px;
+    }
+    
+    .license-body {
+      padding: 40px;
+    }
+    
+    .license-section {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .license-section:last-child {
+      border-bottom: none;
+    }
+    
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #333;
+      margin: 0 0 16px 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+    }
+    
+    .detail-item {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .detail-label {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    
+    .detail-value {
+      font-size: 16px;
+      color: #333;
+      font-weight: 500;
+    }
+    
+    .license-footer {
+      background: #f9f9f9;
+      padding: 24px 40px;
+      border-top: 2px solid #e0e0e0;
+      text-align: center;
+    }
+    
+    .footer-text {
+      color: #666;
+      font-size: 12px;
+      margin: 0;
+    }
+    
+    .license-actions {
+      text-align: center;
+      padding: 24px;
+      background: #f9f9f9;
+      border-top: 2px solid #e0e0e0;
+    }
+    
+    .license-actions button {
+      margin: 0 8px;
+    }
+    
+    .official-seal {
+      text-align: center;
+      margin-top: 32px;
+      padding: 16px;
+      background: #fff9e6;
+      border: 2px dashed #ffc107;
+      border-radius: 8px;
+    }
+    
+    .seal-text {
+      font-size: 14px;
+      color: #856404;
+      margin: 0;
+      font-weight: 600;
+    }
+    
+    @media print {
+      .license-actions {
+        display: none;
+      }
+      .license-container {
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="license-container">
+  <div class="license-document">
+    
+    <div class="license-header">
+      <h1>📜 Hawker Stall Lease License</h1>
+      <p>Official License Document</p>
+    </div>
+
+    <div class="license-body">
+      
+      <!-- Stall Information -->
+      <div class="license-section">
+        <h2 class="section-title">🏪 Stall Information</h2>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <div class="detail-label">Stall Name</div>
+            <div class="detail-value" id="licenseStallName">Loading...</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Stall Number</div>
+            <div class="detail-value" id="licenseStallNo">Loading...</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Stall ID</div>
+            <div class="detail-value" id="licenseStallId">Loading...</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Location</div>
+            <div class="detail-value" id="licenseLocation">Loading...</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Cuisine Type</div>
+            <div class="detail-value" id="licenseCuisine">Loading...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Owner Information -->
+      <div class="license-section">
+        <h2 class="section-title">👤 License Holder</h2>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <div class="detail-label">Owner Name</div>
+            <div class="detail-value" id="licenseOwnerName">Loading...</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Email</div>
+            <div class="detail-value" id="licenseEmail">Loading...</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Vendor ID</div>
+            <div class="detail-value" id="licenseVendorId">Loading...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lease Terms -->
+      <div class="license-section">
+        <h2 class="section-title">📋 Lease Terms</h2>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <div class="detail-label">Lease Start Date</div>
+            <div class="detail-value" id="licenseLeaseStart">Loading...</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Lease End Date</div>
+            <div class="detail-value" id="licenseLeaseEnd">Loading...</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Monthly Rent</div>
+            <div class="detail-value" id="licenseRent">Loading...</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Lease Status</div>
+            <div class="detail-value" id="licenseStatus">Loading...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Information -->
+      <div class="license-section">
+        <h2 class="section-title">💰 Payment Information</h2>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <div class="detail-label">Next Payment Due</div>
+            <div class="detail-value" id="licenseNextPayment">Loading...</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Last Payment Made</div>
+            <div class="detail-value" id="licenseLastPayment">Loading...</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Payment Status</div>
+            <div class="detail-value" id="licensePaymentStatus">Loading...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Official Seal -->
+      <div class="official-seal">
+        <p class="seal-text">✓ OFFICIAL HAWKERHUB LICENSE</p>
+        <p class="seal-text" id="licenseIssueDate">Issued: Loading...</p>
+      </div>
+
+    </div>
+
+    <div class="license-footer">
+      <p class="footer-text">
+        This is an official license issued by HawkerHub Management.<br>
+        License ID: <span id="licenseDocId">Loading...</span><br>
+        Generated on: <span id="licenseGeneratedDate">Loading...</span>
+      </p>
+    </div>
+
+    <div class="license-actions">
+      <button class="btn-primary" onclick="window.print()">🖨️ Print License</button>
+      <button class="btn-ghost" onclick="window.location='Vender AccountRentalStatus.html'">← Back to Rental Status</button>
+    </div>
+
+  </div>
+</div>
+
+<script type="module" src="VendorLeaseLicense.js"></script>
+</body>
+</html>

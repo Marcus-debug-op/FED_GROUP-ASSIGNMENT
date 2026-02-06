@@ -122,28 +122,149 @@
             </div>
 
             <div id="page-orders" class="hidden">
-                <header class="header"><h1>Orders</h1></header>
-                <div class="card"><p>Order content goes here...</p></div>
+                <header class="header">
+                    <h1>Incoming Orders</h1>
+                    <p class="subtitle">Manage and update order statuses</p>
+                </header>
+
+                <div class="card">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Items</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#ORD-001</td>
+                                <td>1x Chicken Rice, 1x Coke</td>
+                                <td>$6.50</td>
+                                <td><span class="badge badge-pending">Pending</span></td>
+                                <td>
+                                    <button class="btn-action btn-accept">Accept</button>
+                                    <button class="btn-action btn-reject">Reject</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#ORD-002</td>
+                                <td>2x Char Siew Rice</td>
+                                <td>$10.00</td>
+                                <td><span class="badge badge-ready">Ready</span></td>
+                                <td>
+                                    <button class="btn-action btn-complete">Mark Collected</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <div id="page-menu" class="hidden">
-                <header class="header"><h1>Menu Management</h1></header>
-                <div class="card"><p>Menu content goes here...</p></div>
+                <div class="header-flex">
+                    <div>
+                        <h1>Menu Management</h1>
+                        <p class="subtitle">Update items, prices, and availability</p>
+                    </div>
+                    <button class="btn-primary">+ Add New Item</button>
+                </div>
+
+                <div class="card">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Item Name</th>
+                                <th>Price</th>
+                                <th>Category</th>
+                                <th>Availability</th>
+                                <th>Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="item-row">
+                                        <span>Chicken Rice Set</span>
+                                    </div>
+                                </td>
+                                <td>$4.50</td>
+                                <td>Main</td>
+                                <td><span class="badge badge-success">Available</span></td>
+                                <td><button class="btn-text">Edit</button></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="item-row">
+                                        <span>Iced Lemon Tea</span>
+                                    </div>
+                                </td>
+                                <td>$1.50</td>
+                                <td>Drink</td>
+                                <td><span class="badge badge-danger">Sold Out</span></td>
+                                <td><button class="btn-text">Edit</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <div id="page-reviews" class="hidden">
-                <header class="header"><h1>Reviews</h1></header>
-                <div class="card"><p>Reviews content goes here...</p></div>
-            </div>
+                <header class="header">
+                    <h1>Customer Reviews</h1>
+                    <p class="subtitle">Recent feedback from your customers</p>
+                </header>
 
-            <div id="page-inspections" class="hidden">
-                <header class="header"><h1>Inspections</h1></header>
-                <div class="card"><p>Inspections content goes here...</p></div>
+                <div class="reviews-list">
+                    <div class="card review-card">
+                        <div class="review-header">
+                            <span class="reviewer-name">John Doe</span>
+                            <span class="review-date">2 hours ago</span>
+                        </div>
+                        <div class="star-rating">star rating here</div>
+                        <p class="review-text">The chicken was incredibly tender and the chili sauce is perfect! Will come again.</p>
+                    </div>
+
+                    <div class="card review-card">
+                        <div class="review-header">
+                            <span class="reviewer-name">Sarah Tan</span>
+                            <span class="review-date">1 day ago</span>
+                        </div>
+                        <div class="star-rating">star rating here</div>
+                        <p class="review-text">Rice was fragrant but soup was a bit cold. Otherwise great value.</p>
+                    </div>
+                </div>
             </div>
 
             <div id="page-settings" class="hidden">
-                <header class="header"><h1>Settings</h1></header>
-                <div class="card"><p>Settings content goes here...</p></div>
+                <header class="header">
+                    <h1>Stall Settings</h1>
+                    <p class="subtitle">Manage your account and stall information</p>
+                </header>
+
+                <div class="card" style="max-width: 600px;">
+                    <form class="settings-form">
+                        <div class="form-group">
+                            <label>Stall Name</label>
+                            <input type="text" value="Ah Seng's Stall" class="form-input">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Operating Hours</label>
+                            <input type="text" value="10:00 AM - 8:00 PM" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Contact Number</label>
+                            <input type="text" value="+65 9123 4567" class="form-input">
+                        </div>
+
+                        <button type="button" class="btn-primary" style="width: 100%;">Save Changes</button>
+                        <button type="button" class="btn-secondary" style="width: 100%; margin-top: 10px;">Log Out</button>
+                    </form>
+                </div>
             </div>
 
         </main>
