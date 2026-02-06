@@ -1,22 +1,14 @@
 import { fs } from "./firebase-init.js";
-import {
-  doc,
-  getDoc,
-  collection,
-  getDocs,
-  query,
-  orderBy
-} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { doc, getDoc, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-// Helper to get stall id from URL (?id=... or ?stall=...)
 function getStallId() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id") || params.get("stall");
   return id ? id.trim() : null;
 }
 
-// Create "real" stars (SVG) based on rating (rounded to nearest whole star)
 function createStars(container, rating) {
+  if (!container) return;
   container.innerHTML = "";
   const rounded = Math.round(Number(rating || 0));
 
@@ -28,14 +20,11 @@ function createStars(container, rating) {
   }
 }
 
-
-// For each review rating (can be 4.7), decide which bar bucket it belongs to
 function ratingBucket(rating) {
   const rounded = Math.round(Number(rating || 0));
   return Math.max(1, Math.min(5, rounded));
 }
 
-// Format Firestore Timestamp
 function fmtDate(value) {
   try {
     if (!value) return "";
@@ -63,31 +52,49 @@ function renderReviews(reviews) {
     const card = document.createElement("div");
     card.className = "review-post dynamic-review";
 
+    const hasPhoto = r.photo && typeof r.photo === "string" && r.photo.trim().length > 0;
+
     card.innerHTML = `
       <div class="user-meta">
         <div class="user-avatar">
           <img class="avatar-img" />
         </div>
+
         <div class="user-title">
           <strong>${r.name || "Guest Patron"}</strong>
           <div class="stars-gold-small"></div>
         </div>
+
         <span class="post-date">${fmtDate(r.createdAt)}</span>
       </div>
-      <p class="post-text">${r.comment || ""}</p>
+
+      <div class="review-content-row">
+        <p class="post-text">${r.comment || ""}</p>
+
+        ${hasPhoto ? `
+          <div class="review-photo-wrap">
+            <img class="review-photo" src="${r.photo}" alt="Review Photo">
+          </div>
+        ` : ""}
+      </div>
     `;
 
     list.appendChild(card);
 
-    // avatar (Firestore > fallback)
     const avatarImg = card.querySelector(".avatar-img");
-    avatarImg.src = r.avatar || "img/avatars/default.jpg";
+    avatarImg.src = (r.avatar && r.avatar.trim()) ? r.avatar : "img/avatars/default.png";
+    avatarImg.onerror = () => (avatarImg.src = "img/avatars/default.png");
 
-    // stars from Firestore rating
     createStars(card.querySelector(".stars-gold-small"), r.rating);
+
+    const reviewPhoto = card.querySelector(".review-photo");
+    if (reviewPhoto) {
+      reviewPhoto.onerror = () => {
+        reviewPhoto.closest(".review-photo-wrap")?.remove();
+      };
+    }
   }
 }
-
 
 function updateStats(reviews) {
   const total = reviews.length;
@@ -112,7 +119,6 @@ function updateStats(reviews) {
   if (avgRatingEl) avgRatingEl.textContent = avg.toFixed(1);
   if (totalEl) totalEl.textContent = String(total);
 
-  // render avg stars (SVG)
   createStars(avgStarsEl, avg);
 
   for (let i = 1; i <= 5; i++) {
@@ -129,7 +135,6 @@ function updateStats(reviews) {
 
 async function loadStallInfo(stallId) {
   const snap = await getDoc(doc(fs, "stalls", stallId));
-
   if (!snap.exists()) {
     alert("Stall not found in database");
     return null;
@@ -172,11 +177,8 @@ async function loadFeedback(stallId) {
   }
 
   const reviews = [];
-  snaps.forEach((d) => {
-    reviews.push({ id: d.id, ...d.data() });
-  });
+  snaps.forEach((d) => reviews.push({ id: d.id, ...d.data() }));
 
-  // extra safe sort
   reviews.sort((a, b) => {
     const at = a.createdAt?.toMillis?.() ?? 0;
     const bt = b.createdAt?.toMillis?.() ?? 0;
@@ -189,9 +191,7 @@ async function loadFeedback(stallId) {
 
 async function init() {
   const stallId = getStallId();
-
   if (!stallId) {
-    console.error("Missing stall id in URL");
     alert("Error: No stall selected.");
     return;
   }
