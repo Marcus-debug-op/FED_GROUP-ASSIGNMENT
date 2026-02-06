@@ -1,110 +1,126 @@
-document.addEventListener('DOMContentLoaded', () => {
+import { fs } from "./firebase-init.js";
+import {
+  addDoc,
+  collection,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-    // --- 1. READ URL DATA ---
-    const params = new URLSearchParams(window.location.search);
-    const urlStall = params.get('stall'); 
-    const urlReturn = params.get('return');
+document.addEventListener("DOMContentLoaded", () => {
 
-    if (urlStall) {
-        const header = document.querySelector('.sub-header h1');
-        if (header) header.textContent = "Review: " + urlStall;
-    }
+  const params = new URLSearchParams(window.location.search);
 
-    // --- 2. SETUP ELEMENTS ---
-    const submitBtn = document.querySelector('.btn-submit');
-    const ratingInput = document.getElementById('rating-value');
-    const textArea = document.querySelector('textarea');
-    const imagePreview = document.getElementById('image-preview'); 
-    const stars = document.querySelectorAll('.star');
-    const isReviewPage = stars.length > 0; 
+  const urlStallName = params.get("stall");
+  const urlStallId = (params.get("id") || params.get("stallId") || "").trim();
+  const urlReturn = params.get("return");
 
-    if (submitBtn) {
-        submitBtn.addEventListener('click', function(e) {
-            e.preventDefault(); 
+  if (urlStallName) {
+    const header = document.querySelector(".sub-header h1");
+    if (header) header.textContent = "Review: " + urlStallName;
+  }
 
-            // --- 3. VALIDATION ---
-            if (isReviewPage) {
-                const currentRating = ratingInput ? ratingInput.value : 0;
-                if (currentRating === "0" || currentRating === 0) {
-                    alert("Please select a star rating first!");
-                    return; 
-                }
-            } else if (textArea && textArea.value.trim() === "") {
-                alert("Please fill in the text field.");
-                return;
-            }
 
-            // --- 4. PREPARE SAVE DATA ---
-            const finalStallName = urlStall || "General Feedback";
-            const finalReturnPage = urlReturn || "browsestalls.html";
+  const submitBtn = document.querySelector(".btn-submit");
+  const ratingInput = document.getElementById("rating-value");
+  const textArea = document.querySelector("textarea");
+  const imagePreview = document.getElementById("image-preview");
+  const stars = document.querySelectorAll(".star");
+  const isReviewPage = stars.length > 0;
 
-            if (isReviewPage) {
-                // Get User Info
-                let userName = "Guest Patron";
-                const storedUser = localStorage.getItem('hawkerHubCurrentUser');
-                if (storedUser) {
-                    try {
-                        const parsedUser = JSON.parse(storedUser);
-                        if (parsedUser.fullname) userName = parsedUser.fullname;
-                    } catch (err) {}
-                }
+  if (!submitBtn) return;
 
-                const today = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  submitBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
 
-                let imageData = "";
-                if (imagePreview && imagePreview.style.display === 'block') {
-                    imageData = imagePreview.src;
-                }
 
-                const newReview = {
-                    stall: finalStallName,
-                    user: userName,
-                    date: today,
-                    rating: ratingInput.value,
-                    text: textArea ? textArea.value : "",
-                    image: imageData
-                };
-
-                // --- 5. ROBUST SAVING (The Fix) ---
-                try {
-                    let reviews = JSON.parse(localStorage.getItem('hawkerReviews'));
-                    
-                    
-                    if (!Array.isArray(reviews)) {
-                        console.log("Data corrupted or empty. Resetting review list.");
-                        reviews = [];
-                    }
-
-                    reviews.unshift(newReview); 
-                    localStorage.setItem('hawkerReviews', JSON.stringify(reviews));
-                    
-                } catch (err) {
-                    console.error("Save error:", err);
-                    localStorage.setItem('hawkerReviews', "[]");
-                }
-            }
-
-            // --- 6. REDIRECT ---
-            const type = isReviewPage ? 'feedback' : 'complaint';
-            const successUrl = `Success.html?type=${type}&stall=${encodeURIComponent(finalStallName)}&return=${encodeURIComponent(finalReturnPage)}`;
-            
-            console.log("Saved and Redirecting to:", successUrl);
-            window.location.href = successUrl;
-        });
-    }
-
-    // --- 7. STAR CLICK LOGIC ---
     if (isReviewPage) {
-        stars.forEach(star => {
-            star.addEventListener('click', function() {
-                const val = this.getAttribute('data-value');
-                if(ratingInput) ratingInput.value = val;
-                
-                stars.forEach(s => {
-                    s.classList.remove('active');
-                    if(s.getAttribute('data-value') <= val) s.classList.add('active');
-                });
-            });
-        });
+      const currentRating = ratingInput ? ratingInput.value : 0;
+      if (currentRating === "0" || currentRating === 0) {
+        alert("Please select a star rating first!");
+        return;
+      }
+    } else if (textArea && textArea.value.trim() === "") {
+      alert("Please fill in the text field.");
+      return;
     }
+
+
+    const finalStallName = urlStallName || "General Feedback";
+    const finalReturnPage = urlReturn || "browsestalls.html";
+
+
+    let userName = "Guest Patron";
+    const storedUser = localStorage.getItem("hawkerHubCurrentUser");
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        if (parsedUser.fullname) userName = parsedUser.fullname;
+      } catch {}
+    }
+
+    const todayDisplay = new Date().toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric"
+    });
+
+    let imageData = "";
+    if (imagePreview && imagePreview.style.display === "block") {
+      imageData = imagePreview.src;
+    }
+
+    if (isReviewPage && urlStallId) {
+      try {
+        const newReviewDoc = {
+          stallId: urlStallId,
+          stallName: finalStallName,
+          user: userName,
+          rating: Number(ratingInput ? ratingInput.value : 0),
+          text: textArea ? textArea.value : "",
+          image: imageData,
+          dateDisplay: todayDisplay,
+          createdAt: serverTimestamp()
+        };
+
+        await addDoc(collection(fs, "stalls", urlStallId, "feedback"), newReviewDoc);
+
+        alert("Thanks! Your review has been submitted.");
+        window.location.href = finalReturnPage;
+        return;
+      } catch (err) {
+        console.error(err);
+        alert("Failed to submit review. Please try again.");
+        return;
+      }
+    }
+
+
+    if (isReviewPage && !urlStallId) {
+      alert("Error: Missing stall id. Please go back and open the feedback page from a stall.");
+      return;
+    }
+
+
+    try {
+      const newFeedback = {
+        stall: finalStallName,
+        user: userName,
+        date: todayDisplay,
+        rating: isReviewPage ? (ratingInput ? ratingInput.value : "0") : "0",
+        text: textArea ? textArea.value : "",
+        image: imageData
+      };
+
+      let reviews = JSON.parse(localStorage.getItem("hawkerReviews"));
+      if (!Array.isArray(reviews)) reviews = [];
+
+      reviews.unshift(newFeedback);
+      localStorage.setItem("hawkerReviews", JSON.stringify(reviews));
+
+      alert("Submitted!");
+      window.location.href = finalReturnPage;
+    } catch (err) {
+      console.error(err);
+      alert("Submit failed. Please try again.");
+    }
+  });
 });

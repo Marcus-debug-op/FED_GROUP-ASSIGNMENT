@@ -1,4 +1,4 @@
-// VendorDetails.js (STALL CHOOSER, not preallocated)
+// VendorStallDetails.js - Handles both first-time setup and normal stall management modes
 import { auth, fs } from "./firebase-init.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import {
@@ -9,6 +9,9 @@ import {
   query,
   where,
   writeBatch,
+  setDoc,
+  serverTimestamp,
+  onSnapshot,
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -16,7 +19,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const stallSelect = document.getElementById("stallSelect");     // <select>
   const addBtn = document.getElementById("addStallBtn");          // "Add Stall"
   const clearBtn = document.getElementById("clearBtn");           // "Clear"
-  const chosenList = document.getElementById("selectedChips"); // div/ul to show chosen
+  const chosenList = document.getElementById("selectedChips");    // div/ul to show chosen
+  const saveBtn = document.getElementById("saveVendorSetupBtn");  // Save/Continue button
+  const pageTitle = document.getElementById("pageTitle");         // Optional: page title element
+  const refreshBtn = document.getElementById("refreshBtn");       // Manual refresh button
+  const lastUpdatedEl = document.getElementById("lastUpdated");   // Last updated timestamp
+  const statusIndicator = document.getElementById("statusIndicator"); // Status indicator
   // ===============================================
 
   if (!stallSelect || !addBtn || !clearBtn || !chosenList) {
@@ -24,30 +32,113 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+  // Determine mode: "setup" for first-time vendors, "normal" for returning vendors
+  const urlParams = new URLSearchParams(window.location.search);
+  const isSetupMode = urlParams.get("mode") === "setup";
+
   let uid = null;
   let chosen = []; // array of { id, name }
+  let tempSelectedStalls = []; // For setup mode: stalls selected before saving to DB
+  let autoRefreshInterval = null;
+  let unsubscribeStalls = null;
+  let isRefreshing = false;
 
-  function renderChosen() {
-    if (chosen.length === 0) {
-      chosenList.innerHTML = `<div class="muted">No stalls added yet.</div>`;
-      return;
+  // Update UI based on mode
+  function updateUIMode() {
+    if (isSetupMode) {
+      // Setup mode: First-time vendor selecting stalls
+      if (pageTitle) pageTitle.textContent = "Select Stalls to Manage";
+      if (saveBtn) saveBtn.textContent = "Save & Continue to Sign In";
+      if (clearBtn) clearBtn.style.display = "inline-block";
+      if (addBtn) addBtn.style.display = "inline-block";
+      if (stallSelect) stallSelect.style.display = "block";
+      if (refreshBtn) refreshBtn.style.display = "inline-block";
+    } else {
+      // Normal mode: Returning vendor managing their stalls
+      if (pageTitle) pageTitle.textContent = "Your Managed Stalls";
+      if (saveBtn) saveBtn.textContent = "Manage Selected Stall";
+      if (clearBtn) clearBtn.style.display = "none";
+      if (addBtn) addBtn.style.display = "none";
+      if (stallSelect) stallSelect.style.display = "none";
+      if (refreshBtn) refreshBtn.style.display = "none";
     }
-    chosenList.innerHTML = chosen
-      .map(
-        (s) => `
-        <div class="chip">
-          <span>${escapeHtml(s.name)}</span>
-          <button type="button" class="chip-x" data-id="${s.id}">×</button>
-        </div>`
-      )
-      .join("");
   }
 
+  function updateLastUpdated() {
+    if (lastUpdatedEl) {
+      const now = new Date();
+      lastUpdatedEl.textContent = `Last updated: ${now.toLocaleTimeString()}`;
+    }
+  }
+
+  function setRefreshing(isLoading) {
+    isRefreshing = isLoading;
+    if (statusIndicator) {
+      statusIndicator.textContent = isLoading ? "⟳ Refreshing..." : "● Live";
+      statusIndicator.className = isLoading ? "status-refreshing" : "status-live";
+    }
+    if (refreshBtn) {
+      refreshBtn.disabled = isLoading;
+      refreshBtn.textContent = isLoading ? "Refreshing..." : "🔄 Refresh";
+    }
+  }
+
+  function renderChosen() {
+    const stallsToRender = isSetupMode ? tempSelectedStalls : chosen;
+    
+    if (stallsToRender.length === 0) {
+      chosenList.innerHTML = `<div class="muted">No stalls selected yet.</div>`;
+      return;
+    }
+
+    if (isSetupMode) {
+      // Setup mode: show removable chips
+      chosenList.innerHTML = stallsToRender
+        .map(
+          (s) => `
+          <div class="chip">
+            <span>${escapeHtml(s.name)}</span>
+            <button type="button" class="chip-x" data-id="${s.id}">×</button>
+          </div>`
+        )
+        .join("");
+    } else {
+      // Normal mode: show selectable stall cards
+      chosenList.innerHTML = stallsToRender
+        .map(
+          (s) => `
+          <div class="stall-card" data-id="${s.id}">
+            <span class="stall-name">${escapeHtml(s.name)}</span>
+            <span class="stall-action">Click to Manage →</span>
+          </div>`
+        )
+        .join("");
+    }
+  }
+
+  // Handle clicks on chips (setup mode) or stall cards (normal mode)
   chosenList.addEventListener("click", async (e) => {
-    const btn = e.target.closest(".chip-x");
-    if (!btn) return;
-    const stallId = btn.dataset.id;
-    await unclaimStall(stallId);
+    if (isSetupMode) {
+      // Setup mode: remove from temp selection
+      const btn = e.target.closest(".chip-x");
+      if (!btn) return;
+      const stallId = btn.dataset.id;
+      tempSelectedStalls = tempSelectedStalls.filter(s => s.id !== stallId);
+      renderChosen();
+      await loadAvailableStalls();
+    } else {
+      // Normal mode: select stall to manage
+      const card = e.target.closest(".stall-card");
+      if (!card) return;
+      const stallId = card.dataset.id;
+      
+      // Store selected stall ID for reference on manage page
+      sessionStorage.setItem("selectedStallId", stallId);
+      sessionStorage.setItem("selectedStallName", chosen.find(s => s.id === stallId)?.name || "");
+      
+      // Redirect to stall management page
+      window.location.href = "ManageStall.html";
+    }
   });
 
   function setLoadingSelect(text) {
@@ -56,69 +147,111 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function loadAvailableStalls() {
-  setLoadingSelect("Loading stalls...");
+    if (isRefreshing) return; // Prevent concurrent refreshes
+    setRefreshing(true);
 
-  const stallsRef = collection(fs, "stalls");
-  const snap = await getDocs(stallsRef); // ✅ load ALL stalls
+    try {
+      const stallsRef = collection(fs, "stalls");
+      const snap = await getDocs(stallsRef);
 
-  stallSelect.innerHTML = "";
+      stallSelect.innerHTML = "";
 
-  // placeholder
-  const ph = document.createElement("option");
-  ph.value = "";
-  ph.textContent = "Select a stall...";
-  stallSelect.appendChild(ph);
+      // placeholder
+      const ph = document.createElement("option");
+      ph.value = "";
+      ph.textContent = "Select a stall...";
+      stallSelect.appendChild(ph);
 
-  if (snap.empty) {
-    const opt = document.createElement("option");
-    opt.value = "";
-    opt.textContent = "No stalls found";
-    stallSelect.appendChild(opt);
-    stallSelect.disabled = true;
-    return;
+      if (snap.empty) {
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "No stalls found";
+        stallSelect.appendChild(opt);
+        stallSelect.disabled = true;
+        return;
+      }
+
+      // Build options based on mode
+      snap.forEach((d) => {
+        const data = d.data();
+        const name = data.name || data.StallName || d.id;
+        const takenBy = data.vendorId || null;
+
+        const opt = document.createElement("option");
+        opt.value = d.id;
+
+        if (isSetupMode) {
+          // Setup mode: show all stalls, disable taken ones
+          const isTaken = takenBy !== null;
+          const isTempSelected = tempSelectedStalls.some(s => s.id === d.id);
+          
+          if (isTaken) {
+            opt.textContent = `${name} (taken)`;
+            opt.disabled = true;
+          } else if (isTempSelected) {
+            opt.textContent = `${name} (selected)`;
+            opt.disabled = true;
+          } else {
+            opt.textContent = name;
+          }
+        } else {
+          // Normal mode: not used (dropdown hidden)
+          opt.textContent = name;
+        }
+
+        stallSelect.appendChild(opt);
+      });
+
+      stallSelect.disabled = false;
+      updateLastUpdated();
+    } catch (err) {
+      console.error("Error loading stalls:", err);
+      if (statusIndicator) {
+        statusIndicator.textContent = "⚠ Error loading stalls";
+        statusIndicator.className = "status-error";
+      }
+    } finally {
+      setRefreshing(false);
+    }
   }
 
-  // Build options, disabling taken stalls
-  snap.forEach((d) => {
-    const data = d.data();
-    const name = data.name || data.StallName || d.id;
-
-    const takenBy = data.vendorId || null;
-    const isMine = takenBy && takenBy === uid;
-    const isTaken = takenBy && takenBy !== uid;
-
-    const opt = document.createElement("option");
-    opt.value = d.id;
-
-    if (isTaken) {
-      opt.textContent = `${name} (taken)`;
-      opt.disabled = true; // ❌ cannot select
-    } else if (isMine) {
-      opt.textContent = `${name} (yours)`;
-      opt.disabled = true; // optional: prevent re-adding duplicates
-    } else {
-      opt.textContent = name; // ✅ available
-    }
-
-    stallSelect.appendChild(opt);
-  });
-
-  stallSelect.disabled = false;
-}
-
-
   async function loadMyChosenStalls() {
-    // Load stalls already claimed by THIS vendor so they show up as chosen
-    const stallsRef = collection(fs, "stalls");
-    const q = query(stallsRef, where("vendorId", "==", uid));
-    const snap = await getDocs(q);
+    if (isRefreshing) return;
+    setRefreshing(true);
 
-    chosen = [];
-    snap.forEach((d) => {
-      const data = d.data();
-      chosen.push({ id: d.id, name: data.name || data.StallName || d.id });
+    try {
+      // Load stalls already claimed by THIS vendor
+      const stallsRef = collection(fs, "stalls");
+      const q = query(stallsRef, where("vendorId", "==", uid));
+      const snap = await getDocs(q);
+
+      chosen = [];
+      snap.forEach((d) => {
+        const data = d.data();
+        chosen.push({ id: d.id, name: data.name || data.StallName || d.id });
+      });
+      renderChosen();
+      updateLastUpdated();
+    } catch (err) {
+      console.error("Error loading my stalls:", err);
+    } finally {
+      setRefreshing(false);
+    }
+  }
+
+  // Real-time listener for stall status changes (setup mode)
+  function setupRealtimeStallListener() {
+    if (!isSetupMode) return;
+    
+    console.log("Setting up real-time stall listener...");
+    
+    const stallsRef = collection(fs, "stalls");
+    unsubscribeStalls = onSnapshot(stallsRef, (snapshot) => {
+      console.log("Stall data updated, refreshing...");
+      loadAvailableStalls();
+    }, (err) => {
+      console.error("Real-time listener error:", err);
     });
-    renderChosen();
   }
 
   async function claimStall(stallId) {
@@ -141,9 +274,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Claim it
     const batch = writeBatch(fs);
-    batch.update(stallRef, { vendorId: uid }); // claim
+    batch.update(stallRef, { vendorId: uid });
 
-    // (optional) also store a simple list under users/{uid}
+    // Also store role under users/{uid}
     const userRef = doc(fs, "users", uid);
     batch.set(userRef, { role: "vendor" }, { merge: true });
 
@@ -165,70 +298,160 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Unclaim
     const batch = writeBatch(fs);
-    batch.update(stallRef, { vendorId: null }); // back to available
+    batch.update(stallRef, { vendorId: null });
     await batch.commit();
 
     await refreshUI();
   }
 
   async function refreshUI() {
-    await loadMyChosenStalls();
-    await loadAvailableStalls();
+    if (isSetupMode) {
+      await loadAvailableStalls();
+    } else {
+      await loadMyChosenStalls();
+    }
   }
 
+  // Manual refresh button handler
+  if (refreshBtn) {
+    refreshBtn.addEventListener("click", async () => {
+      console.log("Manual refresh triggered");
+      await refreshUI();
+    });
+  }
+
+  // Add stall button (setup mode only)
   addBtn.addEventListener("click", async () => {
+    if (!isSetupMode) return;
+    
     const stallId = stallSelect.value;
     if (!stallId) {
       alert("Please select a stall first.");
       return;
     }
-    try {
-      addBtn.disabled = true;
-      await claimStall(stallId);
-      await refreshUI();
-    } catch (e) {
-      console.error(e);
-      alert("Failed to add stall.");
-    } finally {
-      addBtn.disabled = false;
+
+    const stallName = stallSelect.options[stallSelect.selectedIndex].text;
+    
+    // Add to temp selection
+    if (!tempSelectedStalls.some(s => s.id === stallId)) {
+      tempSelectedStalls.push({ id: stallId, name: stallName });
     }
+    
+    renderChosen();
+    stallSelect.value = "";
+    await loadAvailableStalls();
   });
 
+  // Clear button (setup mode only)
   clearBtn.addEventListener("click", async () => {
-    // Clears ALL chosen stalls for this vendor
-    if (!uid) return;
-    if (!confirm("Remove all your stalls?")) return;
-
-    const stallsRef = collection(fs, "stalls");
-    const q = query(stallsRef, where("vendorId", "==", uid));
-    const snap = await getDocs(q);
-
-    const batch = writeBatch(fs);
-    snap.forEach((d) => batch.update(d.ref, { vendorId: null }));
-    await batch.commit();
-
-    await refreshUI();
+    if (!isSetupMode) return;
+    
+    if (!confirm("Clear all selected stalls?")) return;
+    tempSelectedStalls = [];
+    renderChosen();
+    await loadAvailableStalls();
   });
 
   // Save button handler
-  const saveBtn = document.getElementById("saveVendorSetupBtn");
   if (saveBtn) {
-    saveBtn.addEventListener("click", () => {
-      if (chosen.length === 0) {
-        alert("Please select at least one stall before continuing.");
-        return;
+    saveBtn.addEventListener("click", async () => {
+      if (isSetupMode) {
+        // Setup mode: save selected stalls and redirect to sign in
+        if (tempSelectedStalls.length === 0) {
+          alert("Please select at least one stall before continuing.");
+          return;
+        }
+
+        if (!uid) {
+          alert("Session expired. Please sign up again.");
+          window.location.href = "Create AccountVendor.html";
+          return;
+        }
+
+        try {
+          saveBtn.disabled = true;
+          saveBtn.textContent = "Saving...";
+
+          // Claim all selected stalls
+          const batch = writeBatch(fs);
+          
+          for (const stall of tempSelectedStalls) {
+            const stallRef = doc(fs, "stalls", stall.id);
+            const stallSnap = await getDoc(stallRef);
+            
+            if (stallSnap.exists()) {
+              const data = stallSnap.data();
+              // Only claim if not taken by someone else
+              if (!data.vendorId || data.vendorId === uid) {
+                batch.update(stallRef, { vendorId: uid });
+              }
+            }
+          }
+
+          // Update user profile
+          const userRef = doc(fs, "users", uid);
+          batch.set(userRef, { 
+            hasCompletedVendorSetup: true,
+            stallCount: tempSelectedStalls.length,
+            updatedAt: serverTimestamp()
+          }, { merge: true });
+
+          await batch.commit();
+
+          alert("Stalls saved successfully! Please sign in to continue.");
+          
+          // Sign out and redirect to sign in page
+          await auth.signOut();
+          window.location.href = "Sign InVendor.html";
+        } catch (e) {
+          console.error(e);
+          alert("Failed to save stalls. Please try again.");
+          saveBtn.disabled = false;
+          saveBtn.textContent = "Save & Continue to Sign In";
+        }
+      } else {
+        // Normal mode: should not happen (stalls are clicked directly)
+        // But if clicked, show message
+        alert("Please click on a stall card to manage it.");
       }
-      window.location.href = "Home Guest.html";
     });
   }
 
+  // Auth state handler
   onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      window.location.href = "sign up.html";
-      return;
+    if (isSetupMode) {
+      // Setup mode: user just created account, should be logged in
+      if (!user) {
+        // Not logged in, redirect to sign up
+        window.location.href = "Create AccountVendor.html";
+        return;
+      }
+      uid = user.uid;
+      updateUIMode();
+      await loadAvailableStalls();
+      
+      // Set up real-time listener for live stall updates
+      setupRealtimeStallListener();
+    } else {
+      // Normal mode: must be logged in
+      if (!user) {
+        window.location.href = "Sign InVendor.html";
+        return;
+      }
+      uid = user.uid;
+      updateUIMode();
+      await loadMyChosenStalls();
     }
-    uid = user.uid;
-    await refreshUI();
+  });
+
+  // Cleanup on page unload
+  window.addEventListener("beforeunload", () => {
+    if (unsubscribeStalls) {
+      unsubscribeStalls();
+    }
+    if (autoRefreshInterval) {
+      clearInterval(autoRefreshInterval);
+    }
   });
 
   function escapeHtml(s) {

@@ -414,6 +414,38 @@ select, textarea {
   box-shadow: 0 6px 16px rgba(243, 116, 0, 0.35);
 }
 
+.submit-btn,
+#createBtn {
+  position: relative;
+  z-index: 100;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+/* Ensure form-scroll doesn't block clicks */
+.form-scroll {
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure panel-body allows clicks through */
+.panel-body {
+  position: relative;
+  z-index: 1;
+}
+
+/* Fix any potential overlay issues */
+.panel {
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure the button container is properly layered */
+.form-scroll button[type="button"] {
+  position: relative;
+  z-index: 10;
+}
+
 
     /* Responsive tweaks */
     @media (max-width: 900px) {
