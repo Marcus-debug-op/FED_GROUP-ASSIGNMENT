@@ -1,15 +1,7 @@
 // navbar-auth.js — MENU + Auth + Firestore role + nav filtering
 import { auth, fs } from "./firebase-init.js";
-
-import {
-  onAuthStateChanged,
-  signOut,
-} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-
-import {
-  doc,
-  getDoc,
-} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 // Helper: supports <a> or <button>
 function setNavTarget(el, url) {
@@ -43,7 +35,7 @@ async function fetchUserProfile(uid) {
   return snap.exists() ? snap.data() : null;
 }
 
-// ✅ Menu open/close (from your old script.js)
+// ✅ Menu open/close
 function initMenuUI() {
   const menuBtn = document.getElementById("menu-btn");
   const dashboard = document.getElementById("dashboard");
@@ -75,7 +67,9 @@ export function initNavbarAuth() {
 
   const signinBtn = document.getElementById("signinBtn"); // top right
   const dashboardAuthBtn = document.getElementById("dashboardAuthBtn"); // inside menu
-  const profileUrl = "Profile(Patron & Vendor).html";
+
+  // REMOVED: const profileUrl = "Profile(Patron & Vendor).html"; 
+  // We will define the URL inside the auth check below instead.
 
   onAuthStateChanged(auth, async (user) => {
     // ---------------------------
@@ -106,16 +100,23 @@ export function initNavbarAuth() {
       console.warn("Navbar: failed to load Firestore profile:", e);
     }
 
-    const role = (profile?.role || "").toString().toLowerCase() || null;
+    const role = (profile?.role || "").toString().toLowerCase() || "patron"; // Default to patron
+    
+    // 1. DETERMINE TARGET URL BASED ON ROLE
+    let targetUrl = "PatronProfile.html"; // Default for customers
+    if (role === "vendor") {
+        targetUrl = "Vender Account.html"; // Redirect vendors here
+    }
+
     const fullName =
       profile?.fullName ||
       profile?.fullname ||
       user.displayName ||
-      "Account";
+      "My Profile";
 
     if (signinBtn) {
       signinBtn.textContent = fullName;
-      setNavTarget(signinBtn, profileUrl);
+      setNavTarget(signinBtn, targetUrl); // Use the dynamic URL
     }
 
     if (dashboardAuthBtn) {
@@ -123,7 +124,7 @@ export function initNavbarAuth() {
       dashboardAuthBtn.onclick = async () => {
         if (!confirm("Sign out?")) return;
         await signOut(auth);
-        window.location.reload();
+        window.location.href = "Home Guest.html"; // Redirect to home on logout
       };
     }
 
