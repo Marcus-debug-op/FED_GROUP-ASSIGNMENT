@@ -1,6 +1,5 @@
-/* =========================================
-   1) Design Tokens (Variables) + Base Styles
-========================================= */
+/* Base Styles */
+
 :root{
   --bg: #FFF7DC;
   --text: #1f1f1f;
@@ -32,241 +31,10 @@ body{
   margin: 0 auto;
 }
 
-/* =========================================
-   2) Top Navigation Bar
-========================================= */
-.topbar{
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: var(--bg);
-  border-bottom: 1px solid rgba(0,0,0,.06);
-}
-
-.topbar-inner{
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 12px 0;
-}
-
-.icon-btn{
-  height: 40px;
-  width: auto;
-  background: transparent;
-  font-size: 22px;
-  cursor: pointer;
-  padding: 8px 10px;
-  border-radius: 10px;
-}
-
-.icon-btn:hover{
-  background: rgba(0,0,0,.06);
-}
-
-.brand{
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.logo{
-  height: 130px;
-  width: auto;
-}
-
-.navlinks{
-  margin-left: auto;
-  display: flex;
-  justify-content: space-between;
-  gap: 36px;
-}
-
-.navlink{
-  text-decoration: none;
-  color: var(--text);
-  font-weight: bold;
-  font-size: 20px;
-}
-
-.navlink:hover{
-  opacity: 0.8;
-}
-
-/* Buttons */
-.btn{
-  text-decoration: none;
-  border-radius: 999px;
-  padding: 14px 24px;
-  display: inline-flex;
-  align-items: center;
-}
-
-.btn-signin{
-  background-color: #F97316;
-  color: #fff;
-  font-weight: bold;
-  font-size: 20px;
-  margin-left: 32px;
-}
-
-.btn-signin:hover{
-  background-color: #e8650f;
-}
-
-/* =========================================
-   3) Dashboard (Overlay + Side Panel)
-========================================= */
-.overlay{
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.35);
-  backdrop-filter: blur(2px);
-  z-index: 900;
-}
-
-.dashboard{
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 300px;
-  height: 100vh;
-
-  background: linear-gradient(to bottom, #fff7dc, #ffffff);
-  padding: 24px 20px;
-  z-index: 1000;
-
-  display: flex;
-  flex-direction: column;
-
-  transform: translateX(-100%);
-  transition: transform 0.35s cubic-bezier(.4,0,.2,1);
-
-  border-top-right-radius: 20px;
-  border-bottom-right-radius: 20px;
-  box-shadow: 6px 0 24px rgba(0,0,0,0.18);
-}
-
-.dashboard.show{
-  transform: translateX(0);
-}
-
-.dashboard-header{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 14px;
-  padding-top: 72px;
-  margin-bottom: 28px;
-}
-
-.dashboard-brand{
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  font-weight: 800;
-  font-size: 22px;
-}
-
-.dashboard-brand img{
-  height: 100px;
-  width: auto;
-}
-
-.dashboard a{
-  display: flex;
-  align-items: center;
-  gap: 14px;
-
-  padding: 16px 12px;
-  margin-bottom: 10px;
-
-  font-size: 18px;
-  font-weight: 600;
-
-  border-radius: 12px;
-
-  text-decoration: none;   
-  color: var(--text); 
-}
-
-.dashboard a:hover{
-  background: rgba(249,115,22,0.15);
-}
 
 
+/* Hero Section */
 
-#close-btn{
-  position: absolute;
-  top: 16px;        /* aligns with topbar / ☰ icon */
-  right: 16px;
-
-  font-size: 30px;
-  background: none;
-  border: 1px solid #FFF7DC;
-  border-radius: 8px;
-  padding: 6px 10px;
-  cursor: pointer;
-}
-
-.dashboard-footer{
-  margin-top: auto;
-  padding: 20px;
-  background: #F97316;
-  border-radius: 14px;
-  text-align: center;
-}
-
-.dashboard-footer p{
-  color: white;
-  font-size: 14px;
-  margin-bottom: 10px;
-}
-
-.dashboard-footer a{
-  display: block;
-  background: white;
-  color: #F97316;
-  padding: 12px;
-  border-radius: 999px;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-
-.dashboard-auth-btn{
-  width: 100%;
-  border: none;
-  border-radius: 999px;
-  padding: 12px;
-
-  background: #fff;
-  color: #F97316;
-
-  font-weight: 700;
-  font-size: 14px;
-
-  cursor: pointer;
-}
-
-.dashboard-auth-btn:hover{
-  filter: brightness(0.95);
-}
-
-.dashboard-auth-btn:active{
-  transform: translateY(1px);
-}
-
-
-
-/* Utility */
-.hidden{
-  display: none;
-}
-
-/* =========================================
-   4) Hero Section
-========================================= */
 .hero{
   position: relative;
   min-height: 260px;
@@ -315,9 +83,8 @@ body{
   filter: brightness(.80);
 }
 
-/* =========================================
-   5) Trending Section
-========================================= */
+/* Trending Section */
+
 .trending{
   background-color: rgba(249, 115, 22, 0.6);
   padding: 18px 0 26px;
@@ -409,18 +176,15 @@ body{
   filter: brightness(.98);
 }
 
-/* =========================================
-   6) Footer
-========================================= */
+/* Footer */
+
 .footer{
   padding: 22px 0;
   text-align: center;
   color: var(--faded-text);
 }
 
-/* =========================================
-   7) Responsive
-========================================= */
+/* Responsive */
 @media (max-width: 860px){
   .navlinks{ display: none; }
 
@@ -437,19 +201,3 @@ body{
   }
 }
 
-/* Cart dot indicator */
-.navlink.cart-link {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.cart-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  background: red;
-  display: none; /* shown when cart has items */
-  margin-left: 6px;
-}
