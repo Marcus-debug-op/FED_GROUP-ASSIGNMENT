@@ -36,15 +36,15 @@ body {
   max-width: 1600px;
 }
 main.container{
-position: relative;  
+position: centre;  
   top: auto;
   left: auto;
   right: auto;
   bottom: auto;
   overflow: visible;
 
-  padding-top: 30px;
-  padding-bottom: 80px;
+  padding-top: 16px;
+  padding-bottom: 16px;
 }
 
 
@@ -352,13 +352,13 @@ position: relative;
 }
 
 .rental-dashboard{
-  width: 120%;
+  width: 100%;
   max-width: 1100px;
   background: #fff;
   border-radius: 22px;
   box-shadow: 0 18px 55px rgba(0,0,0,.12);
   border: 1px solid rgba(0,0,0,.06);
-  padding: 50px;
+  padding: 18px;
   margin: 0 auto; /* Center the dashboard */
 }
 
