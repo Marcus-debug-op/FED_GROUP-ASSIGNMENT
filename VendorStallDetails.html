@@ -6,6 +6,7 @@
   <title>HawkerHub – Vendor Details</title>
 
   <link rel="stylesheet" href="CreateAccVendorPatronStyle.css">
+  <link rel="stylesheet" href="VendorStallDetails.css">
   <script type="module" src="VendorDetails.js"></script>
 </head>
 <body data-auth-role="vendor">
@@ -19,7 +20,6 @@
     <div class="panel-wrap">
       <div class="panel">
         <div class="panel-top">
-          <div class="mini-back">← Vendor Setup</div>
         </div>
 
         <div class="panel-body">
@@ -40,30 +40,9 @@
 
             <div class="chips" id="selectedChips"></div>
 
-            <p class="hint">You can add more than one stall. You must select at least one.</p>
+            <p class="hint">You must select at least one.</p>
 
             <hr class="separator" />
-
-            <label class="checkbox-label">
-              <input type="checkbox" id="notListedCheck" />
-              <span>My stall isn’t listed (request to add)</span>
-            </label>
-
-            <div id="requestBox" class="hidden">
-              <label for="reqStallName">Stall name</label>
-              <input id="reqStallName" type="text" />
-
-              <label for="reqHawkerCentre">Hawker centre</label>
-              <input id="reqHawkerCentre" type="text" />
-
-              <label for="reqUnitNo">Unit / Stall number</label>
-              <input id="reqUnitNo" type="text" />
-
-              <label for="reqNotes">Notes (optional)</label>
-              <textarea id="reqNotes" rows="3"></textarea>
-
-              <button class="secondary-btn" id="submitRequestBtn" type="button">Submit Request</button>
-            </div>
 
             <button class="submit-btn" id="saveVendorSetupBtn" type="button">Save & Continue to Sign In</button>
           </div>

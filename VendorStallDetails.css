@@ -1,0 +1,245 @@
+/* Vendor Stall Details - Refresh & Status Styles */
+:root {
+     --bg: #FFF7DC;
+  --text: #1f1f1f;
+  --faded-text: #6b6b6b;
+
+  --accent: #F97316;
+  --accent-red: #F43C13;
+  
+  --radius: 18px;
+
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+
+
+/* Status indicator */
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  margin-left: 10px;
+  transition: all 0.3s ease;
+}
+
+.status-live {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-live::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background-color: #28a745;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.status-refreshing {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+/* Last updated timestamp */
+.last-updated {
+  font-size: 11px;
+  color: #6c757d;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* Refresh button */
+.refresh-btn {
+  background-color: #F97316;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 10px;
+  transition: background-color 0.2s;
+}
+
+.refresh-btn:hover {
+  background-color: #F97316;
+}
+
+.refresh-btn:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Header with title and status */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.page-title-section {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Stall cards in normal mode */
+.stall-card {
+  background: #f8f9fa;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  padding: 15px 20px;
+  margin: 10px 0;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.stall-card:hover {
+  background: #e9ecef;
+  border-color: #F97316;
+  transform: translateX(5px);
+}
+
+.stall-name {
+  font-weight: 600;
+  font-size: 16px;
+  color: #212529;
+}
+
+.stall-action {
+  font-size: 13px;
+  color: #F97316;
+}
+
+/* Chips in setup mode */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ff8a1f;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 16px;
+  margin: 4px;
+  font-size: 14px;
+}
+
+.chip-x {
+  background: rgba(255,255,255,0.3);
+  border: none;
+  color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.chip-x:hover {
+  background: rgba(255,255,255,0.5);
+}
+
+/* Muted text */
+.muted {
+  color: #6c757d;
+  font-style: italic;
+  padding: 10px 0;
+}
+
+/* Dropdown styling */
+#stallSelect {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+#stallSelect option:disabled {
+  color: #6c757d;
+  background-color: #f8f9fa;
+}
+
+/* Action buttons */
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+#addStallBtn, #clearBtn, #saveVendorSetupBtn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+#addStallBtn {
+  background-color: #F97316;
+  color: white;
+}
+
+#addStallBtn:hover {
+  background-color: #F97316;
+}
+
+#clearBtn {
+  background-color: #dc3545;
+  color: white;
+}
+
+#clearBtn:hover {
+  background-color: #c82333;
+}
+
+#saveVendorSetupBtn {
+  background-color: #218838;
+  color: white;
+  width: 100%;
+  margin-top: 15px;
+  padding: 12px;
+  font-size: 16px;
+}
+
+#saveVendorSetupBtn:hover {
+  background-color: #F97316;
+}
+
+#saveVendorSetupBtn:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
