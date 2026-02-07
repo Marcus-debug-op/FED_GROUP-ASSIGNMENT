@@ -4,8 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>History - HawkerHub</title>
+
+    <!-- ONLY load topnav and history styles - DO NOT load StylesCheckOut.css -->
     <link rel="stylesheet" href="topnav.css" />
-    <link rel="stylesheet" href="StylesCheckOut.css" />
     <link rel="stylesheet" href="StylesHistory.css" />
   </head>
 
@@ -28,7 +29,7 @@
             </button>
           </div>
 
-          <div id="loadingMsg" class="history-loading">Loading orders...</div>
+          <div id="loadingMsg" class="history-loading">Loading orders.</div>
 
           <div id="historyList" class="history-list"></div>
 
@@ -38,13 +39,15 @@
         </div>
 
         <div id="detailView" class="hidden">
-          <button class="back-btn" id="backToListBtn" type="button">← Back to History</button>
+          <button class="back-btn" id="backToListBtn" type="button">
+            ← Back to History
+          </button>
           <div id="detailsBody"></div>
         </div>
       </section>
     </main>
 
-    <script type="module" src="navbar-init.js"></script>   
+    <script type="module" src="navbar-init.js"></script>
     <script type="module" src="history.js"></script>
   </body>
 </html>
