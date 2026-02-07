@@ -112,13 +112,140 @@
     }
 
 
-    .card {
+    .patron-card,
+    .vendor-card {
     width: 320px;          /* adjust if needed */
-    height: 460px;         /* controls total card height */
+    height: 500px;         /* controls total card height */
     background: white;
     border-radius: 16px;
     overflow: hidden;      /* IMPORTANT: clips image to card */
     box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
+
+.patron-card {
+    border-top: 4px solid #2563EB;
+}
+
+.vendor-card {
+    border-top: 4px solid #E11D48;
+}
+
+/* Top accent borders - Patron: Blue, Vendor: Red/Rose */
+.patron-card {
+    border-top: 4px solid #2563EB;
+}
+
+.vendor-card {
+    border-top: 4px solid #E11D48;
+}
+
+/* Header styling */
+.patron-card h2,
+.vendor-card h2 {
+    margin: 0 0 12px 0;
+    text-align: center;
+    padding: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1f1f1f;
+    line-height: 1.3;
+}
+
+/* Description text */
+.patron-card p,
+.vendor-card p {
+    margin: 0 0 20px 0;
+    text-align: center;
+    padding: 0;
+    color: var(--faded-text);
+    font-size: 14.5px;
+    line-height: 1.6;
+    flex-grow: 1;
+}
+
+/* Features list */
+.patron-card .features,
+.vendor-card .features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 40px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 14px;
+    color: #4b5563;
+    text-align: center;
+}
+
+/* CTA Link styling - Pill buttons */
+.patron-card .cta,
+.vendor-card .cta {
+    margin: 0 70 auto;
+    padding: 12px 24px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    align-self: center;
+}
+
+/* Patron specific - Calm Blue */
+.patron-card .cta {
+    color: #2563EB;
+    border-color: #2563EB;
+    background: rgba(37, 99, 235, 0.05);
+}
+
+.patron-card .cta:hover {
+    background: #2563EB;
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+/* Vendor specific - Vibrant Red/Rose */
+.vendor-card .cta {
+    color: #E11D48;
+    border-color: #E11D48;
+    background: rgba(225, 29, 72, 0.05);
+}
+
+.vendor-card .cta:hover {
+    background: #E11D48;
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
+}
+
+/* Arrow animation */
+.patron-card .cta::after,
+.vendor-card .cta::after {
+    content: "→";
+    transition: transform 0.2s ease;
+}
+
+.patron-card .cta:hover::after,
+.vendor-card .cta:hover::after {
+    transform: translateX(4px);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .patron-card,
+    .vendor-card {
+        width: 100%;
+        max-width: 320px;
+    }
 }
 
 .illustration {
@@ -178,11 +305,6 @@ padding: 24px 24px 24px 32px;
         line-height: 1.5;
     }
 
-    .card h2,
-    .card p {
-    padding-left: 15px;
-    }
-
     .features {
         list-style: none;
         padding: 0;
@@ -204,13 +326,13 @@ padding: 24px 24px 24px 32px;
 
     .cta {
         margin-top: auto;
-        margin-bottom: 16px;
+        margin-bottom: 20px;
         font-weight: 600;
         color: var(--orange-dark);
         cursor: pointer;
         display: inline-flex;
         gap: 10px;
-        padding-left: 60px;
+        padding-left: 15px;
     }
 
     .cta:hover {
@@ -283,28 +405,126 @@ padding: 24px 24px 24px 32px;
 /* ----------------------------------------
    OFFICER & OPERATOR CARD STYLES
    ---------------------------------------- */
+.officer-card,
+.operator-card {
+    width: 320px;
+    height: 260px;
+    min-height: auto;           /* Remove fixed height */
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    display: flex;
+    flex-direction: column;
+    padding: 28px 24px 24px;    /* Unified padding */
+    text-align: center;         /* Center align content */
+    position: relative;
+}
+
+/* Top accent borders */
 .officer-card {
-    border-top: 4px solid #3B82F6;
+    border-top: 4px solid #f6964c;
 }
 
 .operator-card {
     border-top: 4px solid #10B981;
 }
 
-.officer-card .cta a {
-    color: #3B82F6;
-}   
-
-.operator-card .cta a {
-    color: #10B981;
+/* Header styling */
+.officer-card h2,
+.operator-card h2 {
+    margin: 0 0 12px 0;         /* Tight margin below title */
+    padding: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1f1f1f;
+    line-height: 1.3;
 }
 
-.officer-card .features li::before {
-    color: #3B82F6;
+/* Description text */
+.officer-card p,
+.operator-card p {
+    margin: 0 0 20px 0;         /* Space before link */
+    padding: 0;
+    color: var(--faded-text);
+    font-size: 14.5px;
+    line-height: 1.6;
+    flex-grow: 1;               /* Pushes link to bottom if needed */
 }
 
+.officer-card .features li::before,
 .operator-card .features li::before {
+    content: none;              /* Remove bullets for cleaner look */
+}
+
+/* CTA Link styling */
+.officer-card .cta,
+.operator-card .cta {
+    margin: 0;                  /* Remove auto margins */
+    padding: 12px 24px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    align-self: center;         /* Center the button */
+}
+
+/* Officer specific link styling */
+.officer-card .cta {
+    color: rgba(249, 115, 22, 0.25);;
+    border-color: #f6964c;;
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.officer-card .cta:hover {
+    background: #f6964c;;
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: rgba(249, 115, 22, 0.25);;
+}
+
+/* Operator specific link styling */
+.operator-card .cta {
     color: #10B981;
+    border-color: #10B981;
+    background: rgba(16, 185, 129, 0.05);
+}
+
+.operator-card .cta:hover {
+    background: #10B981;
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* Arrow animation */
+.officer-card .cta::after,
+.operator-card .cta::after {
+    content: "→";
+    transition: transform 0.2s ease;
+}
+
+.officer-card .cta:hover::after,
+.operator-card .cta:hover::after {
+    transform: translateX(4px);
+}
+
+/* Hide any image/illustration elements if they exist in HTML */
+.officer-card .illustration,
+.operator-card .illustration,
+.officer-card .card-header,
+.operator-card .card-header {
+    display: none;
 }
 
 /* ----------------------------------------
@@ -390,6 +610,14 @@ padding: 24px 24px 24px 32px;
 /* ----------------------------------------
    RESPONSIVE ADJUSTMENTS - OfficerOperator
    ---------------------------------------- */
+
+   @media (max-width: 900px) {
+    .officer-card,
+    .operator-card {
+        width: 100%;
+        max-width: 320px;
+    }
+}
 @media (max-width: 600px) {
     .more-options-btn {
         padding: 12px 24px;
