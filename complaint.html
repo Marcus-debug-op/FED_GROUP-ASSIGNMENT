@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Complaint</title>
     <link rel="stylesheet" href="topnav.css" />
-    <link rel="stylesheet" href="Forms.css" />
-
+    <link rel="stylesheet" href="Complaint.css" />
 </head>
 <body class="complaint-page">
 
@@ -15,16 +14,11 @@
         
         <div class="form-container">
             <div class="form-header-img">
-                
                 <div class="sub-header" id="default-header">
                      <h1 id="page-title">Complaint Form</h1>
                      <p id="stall-name-display">Loading stall info...</p>
                 </div>
-
-                <img id="image-preview" alt="Uploaded Evidence" style="display:none;">
-
-                
-                <button class="close-modal-btn" id="clear-img-btn">×</button>
+                <button class="close-modal-btn" onclick="history.back()">×</button>
             </div>
 
             <div class="form-body">
@@ -34,12 +28,15 @@
                 <div class="input-group">
                     <div class="label-row">
                         <label>State your complaint</label>
-                        
                         <button class="btn-import-media" id="import-btn">
-                            <span class="icon"></span> Import Media
+                             📷 Import Media
                         </button>
                     </div>
                     <textarea id="complaint-text" class="main-complaint" placeholder="Reason:&#10;Content:"></textarea>
+                </div>
+
+                <div class="complaint-preview-area" id="preview-container">
+                    <img id="image-preview" alt="Uploaded Evidence">
                 </div>
 
                 <div class="input-group">
@@ -56,7 +53,6 @@
     
     <script type="module" src="loadNavbar.js"></script>
     <script type="module" src="navbar-auth.js"></script>
-    <script src="ImagePreview.js"></script>
     <script type="module" src="Complaint.js"></script>
 
 </body>
