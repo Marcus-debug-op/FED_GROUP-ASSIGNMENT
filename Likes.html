@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HawkerHub Profile</title>
+    <title>HawkerHub - My Likes</title>
     
     <link rel="stylesheet" href="Profile.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,13 +13,13 @@
 
     <header class="profile-header">
         <div class="header-content">
-            <h1>My Profile</h1>
-            <p>Manage your account and view your discount code</p>
+            <h1>My Likes</h1>
+            <p>Your favorite menu items from HawkerHub stalls</p>
         </div>
 
         <div class="banner-tabs">
-            <a href="PatronProfile.html" class="active">Profile</a>
-            <a href="Likes.html">Likes</a>
+            <a href="PatronProfile.html">Profile</a>
+            <a href="Likes.html" class="active">Likes</a>
         </div>
     </header>
 
@@ -48,35 +48,11 @@
 
             <section class="discount-section">
                 <h2 class="section-title">
-                    <i class="fa-solid fa-tag rotated-icon"></i> Available Discount Code
+                    <i class="fa-solid fa-heart"></i> Liked Menu Items
                 </h2>
                 
-                <div id="discount-container">
-                    <p class="loading-text">Loading discounts...</p>
-                </div>
-            </section>
-
-            <section class="role-section" data-role="patron">
-                <h2 class="section-title">Patron Tools</h2>
-
-                <div class="voucher-card">
-                    <div class="vc-details">
-                        <h3>My Orders</h3>
-                        <p class="offer">View your order history</p>
-                    </div>
-                    <div class="vc-actions">
-                        <a class="redeem-btn tool-link" href="history.html">Open</a>
-                    </div>
-                </div>
-
-                <div class="voucher-card">
-                    <div class="vc-details">
-                        <h3>My Cart</h3>
-                        <p class="offer">Continue your checkout</p>
-                    </div>
-                    <div class="vc-actions">
-                        <a class="redeem-btn tool-link" href="cart.html">Open</a>
-                    </div>
+                <div id="likes-container">
+                    <p class="loading-text">Loading your liked items...</p>
                 </div>
             </section>
         </div>
@@ -84,6 +60,6 @@
 
     <script type="module" src="navbar-init.js"></script>
     <script src="script.js"></script>
-    <script type="module" src="Profile.js"></script>
+    <script type="module" src="Likes.js"></script>
 </body>
 </html>

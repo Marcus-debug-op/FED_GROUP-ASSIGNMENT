@@ -93,20 +93,34 @@
   margin-bottom:10px;
 }
 
-.likes-container{
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-  gap:6px;
-  color:#6b6b6b;
-  font-size:14px;
+/* Menu Page Heart Icon Styles */
+
+.heart-icon {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    width: 24px;
+    height: 24px;
 }
 
-.heart-icon{
-  width:24px;
-  height:24px;
-  object-fit:contain;
-  cursor:pointer;
+.heart-icon:hover {
+    transform: scale(1.1);
+}
+
+.heart-icon.liked {
+    /* This filter will make the heart red when liked */
+    filter: brightness(0) saturate(100%) invert(27%) sepia(89%) saturate(2527%) hue-rotate(346deg) brightness(95%) contrast(93%);
+}
+
+/* Likes container in menu cards */
+.likes-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.likes-container span {
+    font-size: 14px;
+    color: #666;
 }
 
 .card-footer{
