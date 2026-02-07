@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Centre Manager Portal - Hawker Hub</title>
+    <title>Operator Hawker Hub</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
     <link rel="stylesheet" href="operatorandofficer.css">
 </head>
 <body>
@@ -15,93 +14,166 @@
     <div class="container">
         
         <aside class="sidebar">
+
             <div class="brand">
-                <div class="brand-icon" style="background:#7c3aed;">🏢</div> <div class="brand-info">
-                    <div class="brand-title">Centre Manager</div>
-                    <div class="brand-subtitle">Tiong Bahru Hub</div>
+                <img src="img/logo.png" alt="Centre Logo" class="brand-logo">
+                <div class="brand-info">
+                    <div class="brand-title">Operator Overview</div>
                 </div>
             </div>
 
+
             <nav class="nav-menu">
-                <div class="nav-item active">Overview</div>
-                <div class="nav-item">Stall Management</div>
-                <div class="nav-item">Reports</div>
-                <div class="nav-item">Settings</div>
+                <div class="nav-item active" onclick="switchPage('overview', this)">Overview</div>
+                <div class="nav-item" onclick="switchPage('stalls', this)">Stall Management</div>
+                <div class="nav-item" onclick="switchPage('reports', this)">Reports</div>
+                <div class="nav-item" onclick="switchPage('settings', this)">Settings</div>
             </nav>
         </aside>
 
         <main class="main-content">
             
-            <header class="header">
-                <div>
-                    <h1>Centre Overview</h1>
-                    <p class="subtitle">Real-time performance of the entire hawker centre</p>
-                </div>
-            </header>
+            <div id="page-overview">
+                <header class="header">
+                    <div>
+                        <h1>Operator Overview</h1>
+                        <p class="subtitle">Real-time performance of all hawker centre</p>
+                    </div>
+                </header>
 
-            <div class="stats-grid">
-                <div class="card stat-card">
-                    <div class="stat-header">
-                        <span>Total Centre Revenue</span>
-                        <span class="icon">$</span>
+                <div class="stats-grid">
+                    <div class="card stat-card">
+                        <div class="stat-header">
+                            <span>Total Centre Revenue</span>
+                            <span class="icon">$</span>
+                        </div>
+                        <div class="stat-value" id="centre-revenue">$0</div>
+                        <div class="stat-trend positive">
+                            <span>Live</span> across all stalls
+                        </div>
                     </div>
-                    <div class="stat-value" id="centre-revenue">$0</div>
-                    <div class="stat-trend positive">
-                        <span>Live</span> across all stalls
+
+                    <div class="card stat-card">
+                        <div class="stat-header">
+                            <span>Occupied Stalls</span>
+                            <span class="icon">🏪</span>
+                        </div>
+                        <div class="stat-value" id="active-stalls">0</div>
+                        <div class="stat-subtext">Total Registered Vendors</div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="stat-header">
+                            <span>Total Orders</span>
+                            <span class="icon">📦</span>
+                        </div>
+                        <div class="stat-value" id="total-traffic">0</div>
+                        <div class="stat-trend positive"><span>+12%</span> vs last month</div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="stat-header">
+                            <span>Centre Rating</span>
+                            <span class="icon">⭐</span>
+                        </div>
+                        <div class="stat-value" id="centre-rating">0.0</div>
+                        <div class="stat-subtext">Average of all reviews</div>
                     </div>
                 </div>
 
-                <div class="card stat-card">
-                    <div class="stat-header">
-                        <span>Occupied Stalls</span>
-                        <span class="icon">🏪</span>
+                <div class="charts-grid">
+                    <div class="card chart-container">
+                        <h3>Centre Revenue Trend</h3>
+                        <p class="subtitle">Aggregated sales performance</p>
+                        <div class="canvas-wrapper">
+                            <canvas id="centreRevenueChart"></canvas>
+                        </div>
                     </div>
-                    <div class="stat-value" id="active-stalls">0</div>
-                    <div class="stat-subtext">Total Registered Vendors</div>
-                </div>
 
-                <div class="card stat-card">
-                    <div class="stat-header">
-                        <span>Total Footfall</span>
-                        <span class="icon">👣</span>
+                    <div class="card chart-container" style="overflow-y: auto;">
+                        <h3>Top Performing Stalls</h3>
+                        <p class="subtitle">By total revenue</p>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Stall Name</th>
+                                    <th>Revenue</th>
+                                    <th>Grade</th>
+                                </tr>
+                            </thead>
+                            <tbody id="top-stalls-body">
+                                <tr><td colspan="3">Loading...</td></tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="stat-value" id="total-traffic">0</div>
-                    <div class="stat-trend positive"><span>+12%</span> vs last month</div>
-                </div>
-
-                <div class="card stat-card">
-                    <div class="stat-header">
-                        <span>Centre Rating</span>
-                        <span class="icon">⭐</span>
-                    </div>
-                    <div class="stat-value" id="centre-rating">0.0</div>
-                    <div class="stat-subtext">Average of all reviews</div>
                 </div>
             </div>
 
-            <div class="charts-grid">
-                <div class="card chart-container">
-                    <h3>Centre Revenue Trend</h3>
-                    <p class="subtitle">Aggregated sales performance</p>
-                    <div class="canvas-wrapper">
-                        <canvas id="centreRevenueChart"></canvas>
+            <div id="page-stalls" class="hidden">
+                <header class="header">
+                    <div>
+                        <h1>Stall Management</h1>
+                        <p class="subtitle">View and manage registered tenants</p>
                     </div>
-                </div>
+                    <button class="btn-primary" style="float:right;" onclick="alert('Feature coming soon!')">+ Add New Stall</button>
+                </header>
 
-                <div class="card chart-container" style="overflow-y: auto;">
-                    <h3>Top Performing Stalls</h3>
-                    <p class="subtitle">By total revenue</p>
+                <div class="card">
                     <table class="data-table">
                         <thead>
                             <tr>
+                                <th>Stall ID</th>
                                 <th>Stall Name</th>
-                                <th>Revenue</th>
-                                <th>Grade</th>
+                                <th>Unit No</th>
+                                <th>Hygiene</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="top-stalls-body">
+                        <tbody id="stall-management-body">
                             </tbody>
                     </table>
+                </div>
+            </div>
+
+            <div id="page-reports" class="hidden">
+                <header class="header">
+                    <h1>Sales Reports</h1>
+                    <p class="subtitle">Detailed breakdown of item popularity</p>
+                </header>
+
+                <div class="charts-grid">
+                    <div class="card chart-container">
+                        <h3>Most Popular Items</h3>
+                        <p class="subtitle">Across all stalls</p>
+                        <div class="canvas-wrapper">
+                            <canvas id="topItemsChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card chart-container">
+                        <h3>Payment Methods</h3>
+                        <p class="subtitle">Cash vs Cashless</p>
+                        <div class="canvas-wrapper">
+                            <canvas id="paymentMethodChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-settings" class="hidden">
+                <header class="header"><h1>Manager Settings</h1></header>
+                <div class="card" style="max-width:600px;">
+                    <form>
+                        <div class="form-group">
+                            <label style="display:block; margin-bottom:8px;">Centre Name</label>
+                            <input type="text" style="width:100%; padding:8px;" value="Tiong Bahru Hub" readonly>
+                        </div>
+                        <div class="form-group" style="margin-top:15px;">
+                            <label style="display:block; margin-bottom:8px;">Manager Email</label>
+                            <input type="email" style="width:100%; padding:8px;" value="manager@hawkerhub.sg">
+                        </div>
+                        <button type="button" class="btn-primary" style="margin-top:20px; padding:10px 20px; background:#7c3aed; color:white; border:none; border-radius:5px;">Save Changes</button>
+                    </form>
                 </div>
             </div>
 

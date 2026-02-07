@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-// 1. FIREBASE CONFIG
+// 1. CONFIG
 const firebaseConfig = {
     apiKey: "AIzaSyDo8B0OLtAj-Upfz7yNFeGz4cx3KWLZLuQ",
     authDomain: "hawkerhub-64e2d.firebaseapp.com",
@@ -15,145 +15,218 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// 2. MAIN FUNCTION
+// GLOBAL VARIABLES FOR CHARTS
+let revenueChartInstance = null;
+let itemChartInstance = null;
+let paymentChartInstance = null;
+
+// 2. LOAD DASHBOARD (Overview)
 async function loadManagerDashboard() {
-    console.log("Calculating revenue from real orders...");
-
+    console.log("Loading dashboard...");
+    
     try {
-        // --- STEP A: Get all Orders to calculate Money ---
+        // Fetch Orders & Stalls
         const ordersSnapshot = await getDocs(collection(db, "orders"));
+        const stallsSnapshot = await getDocs(collection(db, "stalls"));
         
-        let totalCentreRevenue = 0;
-        let totalOrdersCount = 0;
-        
-        // This object will store revenue per stall: { "Laksa Legend": 50, "Ah Seng": 120 }
-        let stallRevenueMap = {}; 
+        // A. Hygiene Map (Stall Name -> Grade)
+        let hygieneMap = {};
+        stallsSnapshot.forEach(doc => {
+            const d = doc.data();
+            if(d.name) hygieneMap[d.name] = d.hygiene || "B";
+        });
 
-        ordersSnapshot.forEach((doc) => {
+        // B. Calculate Revenue & Item Sales
+        let totalRev = 0;
+        let orderCount = 0;
+        let stallRevMap = {};
+        let itemSalesMap = {}; // { "Chicken Rice": 50 }
+        let paymentMap = { "Card": 0, "Cash": 0 };
+
+        ordersSnapshot.forEach(doc => {
             const data = doc.data();
+            
+            // Only count Paid/Completed
+            if(data.status === "Paid" || data.status === "Completed") {
+                const amount = data.total || 0;
+                totalRev += amount;
+                orderCount++;
 
-            // Only count valid/paid orders to be accurate
-            // (If you want to count EVERYTHING, remove the 'if' check)
-            if (data.status === "Paid" || data.status === "Completed") {
-                
-                // 1. Add to Grand Total
-                const amount = data.total || 0; 
-                totalCentreRevenue += amount;
-                totalOrdersCount++;
+                // Per Stall
+                const sName = data.stallName || "Unknown";
+                stallRevMap[sName] = (stallRevMap[sName] || 0) + amount;
 
-                // 2. Add to Specific Stall's Total
-                const sName = data.stallName || "Unknown Stall";
-                
-                if (stallRevenueMap[sName]) {
-                    stallRevenueMap[sName] += amount;
-                } else {
-                    stallRevenueMap[sName] = amount;
+                // Per Item (if items array exists)
+                if(data.items && Array.isArray(data.items)) {
+                    data.items.forEach(item => {
+                        const itemName = item.name || "Unknown Item";
+                        itemSalesMap[itemName] = (itemSalesMap[itemName] || 0) + (item.qty || 1);
+                    });
                 }
+                
+                // Payment Method (Mock data if missing)
+                const method = data.payment?.method === 'card' ? 'Card' : 'Cash'; // simplified check
+                paymentMap[method]++;
             }
         });
 
-        // --- STEP B: Get Stalls for Hygiene Info (Optional but nice) ---
-        // We fetch stalls just to count how many exist and get their grades
-        const stallsSnapshot = await getDocs(collection(db, "stalls"));
-        let activeStallsCount = stallsSnapshot.size;
-        let hygieneMap = {}; // { "Laksa Legend": "A" }
+        // C. Update HTML Text
+        if(document.getElementById('centre-revenue')) document.getElementById('centre-revenue').innerText = "$" + totalRev.toLocaleString();
+        if(document.getElementById('active-stalls')) document.getElementById('active-stalls').innerText = stallsSnapshot.size;
+        if(document.getElementById('total-traffic')) document.getElementById('total-traffic').innerText = orderCount;
 
-        stallsSnapshot.forEach(doc => {
-            const sData = doc.data();
-            const name = sData.name;
-            if(name) hygieneMap[name] = sData.hygiene || "?";
-        });
-
-
-        // --- STEP C: Update the HTML ---
-
-        // 1. Grand Totals
-        document.getElementById('centre-revenue').innerText = "$" + totalCentreRevenue.toLocaleString();
-        document.getElementById('total-traffic').innerText = totalOrdersCount.toLocaleString();
-        document.getElementById('active-stalls').innerText = activeStallsCount;
-
-        // 2. Populate "Top Performing Stalls" Table
-        // Convert our Map into an Array so we can sort it
+        // D. Top Stalls Table
         let sortedStalls = [];
-        for (let [name, revenue] of Object.entries(stallRevenueMap)) {
-            sortedStalls.push({
-                name: name,
-                revenue: revenue,
-                grade: hygieneMap[name] || "-" // Get grade from the other collection
-            });
+        for (let [name, revenue] of Object.entries(stallRevMap)) {
+            sortedStalls.push({ name, revenue, grade: hygieneMap[name] || "-" });
         }
-
-        // Sort by highest revenue
         sortedStalls.sort((a, b) => b.revenue - a.revenue);
 
-        // Generate Table HTML
-        const tableBody = document.getElementById('top-stalls-body');
-        let html = "";
-        
-        // Show top 5
-        sortedStalls.slice(0, 5).forEach(stall => {
-            let badgeClass = 'badge-pending';
-            if (stall.grade === 'A') badgeClass = 'badge-success';
-            if (stall.grade === 'C') badgeClass = 'badge-danger';
-            
-            html += `
-                <tr>
-                    <td>${stall.name}</td>
-                    <td>$${stall.revenue.toLocaleString()}</td>
-                    <td><span class="badge ${badgeClass}">${stall.grade}</span></td>
-                </tr>
-            `;
-        });
-        
-        if (sortedStalls.length === 0) {
-            html = "<tr><td colspan='3'>No paid orders found yet.</td></tr>";
-        }
+        const topStallHTML = sortedStalls.slice(0,5).map(s => `
+            <tr>
+                <td>${s.name}</td>
+                <td>$${s.revenue.toLocaleString()}</td>
+                <td><span class="badge ${s.grade === 'A' ? 'badge-success' : 'badge-pending'}">${s.grade}</span></td>
+            </tr>
+        `).join('');
+        document.getElementById('top-stalls-body').innerHTML = topStallHTML || '<tr><td colspan="3">No sales yet</td></tr>';
 
-        tableBody.innerHTML = html;
+        // E. Render Revenue Chart
+        renderRevenueChart(totalRev);
 
-        // 3. Render Chart
-        renderCentreChart(totalCentreRevenue);
+        // F. Store data globally for Reports Page
+        window.reportData = { itemSalesMap, paymentMap };
 
-    } catch (error) {
-        console.error("Error calculating revenue:", error);
+    } catch (e) {
+        console.error("Dashboard Error:", e);
     }
 }
 
-function renderCentreChart(currentTotal) {
-    const ctx = document.getElementById('centreRevenueChart').getContext('2d');
+// 3. LOAD STALL MANAGEMENT PAGE
+async function loadStallManagement() {
+    const tableBody = document.getElementById('stall-management-body');
+    if(!tableBody) return;
     
-    // Fake trend data for visual effect
-    const trendData = [
-        currentTotal * 0.7, 
-        currentTotal * 0.8, 
-        currentTotal * 0.6, 
-        currentTotal * 0.9, 
-        currentTotal * 0.85, 
-        currentTotal
-    ];
+    tableBody.innerHTML = '<tr><td colspan="5">Loading stalls...</td></tr>';
 
-    new Chart(ctx, {
-        type: 'line',
+    try {
+        const snapshot = await getDocs(collection(db, "stalls"));
+        let html = "";
+        
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const id = doc.id;
+            
+            html += `
+                <tr>
+                    <td>#${id.substring(0,6)}</td>
+                    <td>${data.name || 'Unknown'}</td>
+                    <td>${data.stallNo || '-'}</td>
+                    <td><span class="badge badge-success">${data.hygiene || '?'}</span></td>
+                    <td>
+                        <button class="btn-text" onclick="alert('Editing ${data.name}')">Edit</button>
+                        <button class="btn-text" style="color:red" onclick="deleteStall('${id}')">Delete</button>
+                    </td>
+                </tr>
+            `;
+        });
+        tableBody.innerHTML = html;
+        
+    } catch (e) {
+        console.error("Stall Load Error:", e);
+    }
+}
+
+// 4. LOAD REPORTS PAGE
+function loadReports() {
+    if(!window.reportData) return; // Wait for dashboard to load data first
+
+    const { itemSalesMap, paymentMap } = window.reportData;
+
+    // A. Top Items Chart
+    const topItems = Object.entries(itemSalesMap)
+        .sort((a,b) => b[1] - a[1]) // Sort by count
+        .slice(0, 5); // Take top 5
+
+    const ctxItems = document.getElementById('topItemsChart').getContext('2d');
+    
+    if(itemChartInstance) itemChartInstance.destroy(); // Prevent duplicate charts
+    
+    itemChartInstance = new Chart(ctxItems, {
+        type: 'bar',
         data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            labels: topItems.map(i => i[0]), // Item Names
             datasets: [{
-                label: 'Cumulative Revenue',
-                data: trendData,
-                borderColor: '#7c3aed',
-                backgroundColor: 'rgba(124, 58, 237, 0.1)',
-                borderWidth: 2,
-                tension: 0.4,
-                fill: true
+                label: 'Units Sold',
+                data: topItems.map(i => i[1]), // Counts
+                backgroundColor: '#7c3aed'
             }]
         },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true }, x: { grid: { display: false } } }
+        options: { responsive: true }
+    });
+
+    // B. Payment Chart
+    const ctxPay = document.getElementById('paymentMethodChart').getContext('2d');
+    if(paymentChartInstance) paymentChartInstance.destroy();
+
+    paymentChartInstance = new Chart(ctxPay, {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(paymentMap),
+            datasets: [{
+                data: Object.values(paymentMap),
+                backgroundColor: ['#7c3aed', '#a78bfa']
+            }]
         }
     });
 }
 
-// Run it
+// 5. CHART HELPER (Revenue)
+function renderRevenueChart(total) {
+    const ctx = document.getElementById('centreRevenueChart').getContext('2d');
+    if(revenueChartInstance) revenueChartInstance.destroy();
+
+    revenueChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Revenue',
+                data: [total*0.7, total*0.8, total*0.9, total], // Mock trend
+                borderColor: '#7c3aed',
+                fill: false
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+    });
+}
+
+// 6. DELETE STALL FUNCTION (Stub)
+window.deleteStall = async function(id) {
+    if(confirm("Are you sure you want to delete this stall? This cannot be undone.")) {
+        try {
+            await deleteDoc(doc(db, "stalls", id));
+            alert("Stall deleted.");
+            loadStallManagement(); // Refresh table
+        } catch(e) {
+            console.error("Delete failed:", e);
+            alert("Delete failed (Permission denied or error).");
+        }
+    }
+};
+
+// 7. NAVIGATION
+window.switchPage = function(pageId, element) {
+    document.querySelectorAll('[id^="page-"]').forEach(p => p.classList.add('hidden'));
+    document.getElementById('page-' + pageId).classList.remove('hidden');
+    
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    element.classList.add('active');
+
+    // Trigger specific page loads
+    if(pageId === 'stalls') loadStallManagement();
+    if(pageId === 'reports') loadReports();
+};
+
+// Start
 loadManagerDashboard();
