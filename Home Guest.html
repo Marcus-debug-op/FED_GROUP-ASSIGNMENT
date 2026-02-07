@@ -4,13 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HawkerHub Home Page</title>
-  <link rel="stylesheet" href="topnav.css" />
   <link rel="stylesheet" href="styles.css" />
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="topnav.css" />
 </head>
 
 <body>
-
   <!-- Hero -->
   <section class="hero">
     <div class="hero-bg"></div>
@@ -28,41 +27,12 @@
       <h2 class="section-title-color">Trending from Community</h2>
 
       <div class="trend-row">
-        <button class="arrow-btn" aria-label="Previous">‹</button>
+  
 
-        <div class="trend-cards">
-          <article class="food-card">
-            <img src="img/grilling_action.jpg" alt="Grilling satay" class="food-img" />
-            <div class="food-body">
-              <div class="food-title">Satay King</div>
-              <div class="food-meta">Malay • ⭐ 4.9 (456 reviews)</div>
-              <p class="food-desc">Grilled chicken and mutton satay with authentic peanut sauce.</p>
-              <button class="food-btn">View</button>
-            </div>
-          </article>
+        <!-- JS will inject the cards here -->
+        <div class="trend-cards" id="trendingGrid"></div>
 
-          <article class="food-card">
-            <img src="img/steamed-chicken-with-rice.jpg" alt="Ah Seng Chicken Rice" class="food-img" />
-            <div class="food-body">
-              <div class="food-title">Ah Seng Chicken Rice</div>
-              <div class="food-meta">Chinese • ⭐ 4.7 (302 reviews)</div>
-              <p class="food-desc">Famous Hainanese chicken rice with tender poached chicken.</p>
-              <button class="food-btn">View</button>
-            </div>
-          </article>
 
-          <article class="food-card">
-            <img src="img/high-angle-noodles-meal-bowl-composition.jpg" alt="Laksa Legend" class="food-img" />
-            <div class="food-body">
-              <div class="food-title">Laksa Legend</div>
-              <div class="food-meta">Malay • ⭐ 4.7 (421 reviews)</div>
-              <p class="food-desc">Rich and creamy laksa with thick rice noodles.</p>
-              <button class="food-btn">View</button>
-            </div>
-          </article>
-        </div>
-
-        <button class="arrow-btn" aria-label="Next">›</button>
       </div>
     </div>
   </section>
@@ -72,6 +42,7 @@
     <small>© 2026 HawkerHub. All rights reserved.</small>
   </footer>
 
- <script type="module" src="navbar-init.js"></script>
+  <script type="module" src="navbar-init.js"></script>
+  <script type="module" src="home-guest.js"></script>
 </body>
 </html>

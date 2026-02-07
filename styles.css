@@ -9,13 +9,9 @@
   --accent-red: #F43C13;
 
   --radius: 18px;
-
-  
 }
 
-
 *{ box-sizing: border-box;}
-
 
 body{
   margin: 0;
@@ -31,22 +27,23 @@ body{
   margin: 0 auto;
 }
 
-
-
-/* Hero Section */
+/* Hero */
 
 .hero{
   position: relative;
-  min-height: 260px;
+  min-height: 330px;
   overflow: hidden;
 }
 
 .hero-bg{
   position: absolute;
   inset: 0;
+
+  /* ✅ FIX: use the image that actually exists in your project */
   background-image:
     linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
     url("img/Home_Box background.jpg");
+
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -54,76 +51,67 @@ body{
 
 .hero-content{
   position: relative;
-  padding: 44px 0;
+  padding: 40px 0;
   color: #fff;
+  z-index: 1;
 }
 
 .hero-small{
+  opacity: .92;
   margin: 0 0 8px;
-  font-size: 20px;
 }
 
 .hero-title{
   margin: 0 0 16px;
-  max-width: 720px;
-  font-size: 24px;
-  line-height: 1.2;
+  font-size: 34px;
+  line-height: 1.15;
+  max-width: 560px;
+}
+
+.btn{
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 14px 24px;
+  display: inline-flex;
+  align-items: center;
 }
 
 .btn-cta{
   background: var(--accent-red);
-  font-weight: bold;
-  font-size: 20px;
   color: #fff;
-  border-radius: 16px;
-  padding: 20px;
+  font-weight: 800;
+  gap: 10px;
+  padding: 16px 26px;
 }
 
 .btn-cta:hover{
-  filter: brightness(.80);
+  filter: brightness(.98);
 }
 
-/* Trending Section */
+/* Trending */
 
 .trending{
-  background-color: rgba(249, 115, 22, 0.6);
-  padding: 18px 0 26px;
-}
-
-.section-title{
-  margin: 0 0 14px;
-  font-size: 20px;
+  background: #f0b07a;
+  padding: 42px 0 26px;
 }
 
 .section-title-color{
-  color: black;
+  color: #1f1f1f;
+  font-size: 28px;
+  margin: 0 0 18px;
+  font-weight: 900;
 }
 
 .trend-row{
   display: grid;
-  grid-template-columns: 46px 1fr 46px;
-  gap: 14px;
+  grid-template-columns: 1fr;
+  gap: 18px;
   align-items: center;
-}
-
-.arrow-btn{
-  width: 46px;
-  height: 46px;
-  border: none;
-  border-radius: 999px;
-  font-size: 30px;
-  cursor: pointer;
-  background: rgba(255,255,255,.55);
-}
-
-.arrow-btn:hover{
-  background: rgba(255,255,255,.7);
 }
 
 .trend-cards{
   display: flex;
   gap: 18px;
-  overflow: hidden;
 }
 
 .food-card{
@@ -185,23 +173,6 @@ body{
 }
 
 /* Responsive */
-@media (max-width: 860px){
-  .navlinks{ display: none; }
-
-  .logo{ height: 64px; }
-
-  .btn-signin{
-    font-size: 16px;
-    padding: 10px 16px;
-    margin-left: 0;
-  }
-
-  .topbar-inner{
-    gap: 10px;
-  }
-}
-
-
 @media (max-width:600px){
   .hero-content{
     padding:28px 0;
