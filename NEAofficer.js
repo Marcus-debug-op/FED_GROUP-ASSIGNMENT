@@ -1,4 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { getFirestore, collection, getDocs, getDoc, addDoc, deleteDoc, updateDoc, doc, query, orderBy, limit, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -12,7 +13,10 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = getFirestore(app);
+
+let currentOfficerId = null;
 
 // ==========================================
 // 1. DATE PICKER LOGIC (Custom)
@@ -185,10 +189,11 @@ window.confirmSchedule = async function() {
 };
 
 window.deleteSchedule = async function(scheduleId) {
-    if(!confirm("Remove this scheduled visit?")) return;
+    if (!confirm("Delete this scheduled visit?")) return;
     try {
         await deleteDoc(doc(db, "schedules", scheduleId));
-        loadSchedule(); 
+        alert("Schedule deleted!");
+        loadSchedule();
     } catch (error) { console.error(error); alert("Error deleting."); }
 };
 
@@ -196,14 +201,11 @@ window.submitInspection = async function() {
     const scheduleId = document.getElementById('inspect-schedule-id').value;
     const stallId = document.getElementById('inspect-stall-id').value;
     const stallName = document.getElementById('inspect-stall-name').value;
-    const scoreVal = document.getElementById('input-score').value;
-    const strengthsText = document.getElementById('input-strengths').value;
-    const remarksText = document.getElementById('input-remarks').value;
-
-    const score = parseInt(scoreVal);
-    if (isNaN(score) || score < 0 || score > 100) { alert("Invalid score"); return; }
-
-    let grade = 'D'; let status = 'Action Req.';
+    const score = parseInt(document.getElementById('input-score').value);
+    const strengthsText = document.getElementById('input-strengths').value.trim();
+    const remarksText = document.getElementById('input-remarks').value.trim();
+    if (!score || score < 0 || score > 100) { alert("Enter a valid score."); return; }
+    let grade = 'D', status = 'Risk';
     if (score >= 85) { grade = 'A'; status = 'Pass'; }
     else if (score >= 70) { grade = 'B'; status = 'Warning'; }
     else if (score >= 50) { grade = 'C'; status = 'Warning'; }
@@ -333,12 +335,9 @@ window.switchPage = function(pageId, element) {
 window.logoutOfficer = async function() {
     if (!confirm("Are you sure you want to log out?")) return;
 
-    // Use the stored ID from login, or your backup ID if you are still testing
-    const officerDocId = sessionStorage.getItem("officerDocId");
-
-    if (officerDocId) {
+    if (currentOfficerId) {
         try {
-            const officerRef = doc(db, "officers", officerDocId);
+            const officerRef = doc(db, "officers", currentOfficerId);
             await updateDoc(officerRef, {
                 isActive: false,  
                 lastLogout: serverTimestamp()
@@ -349,36 +348,33 @@ window.logoutOfficer = async function() {
         }
     }
 
+    await signOut(auth);
+    localStorage.clear();
     sessionStorage.clear();
-    localStorage.removeItem("user"); 
-    window.location.href = "Home Guest.html"; 
+    window.location.href = "Sign InOfficer.html"; 
 };
 
 // ==========================================
-// 6. LOAD OFFICER PROFILE (New)
+// 6. LOAD OFFICER PROFILE
 // ==========================================
 
 async function loadOfficerProfile() {
-    const officerDocId = sessionStorage.getItem("officerDocId");
-
-    if (!officerDocId) {
-        console.warn("No officer ID in session. Ensure you set sessionStorage.setItem('officerDocId', id) on login.");
+    if (!currentOfficerId) {
+        console.warn("No officer ID available.");
         return;
     }
 
     try {
-        const officerRef = doc(db, "officers", officerDocId);
+        const officerRef = doc(db, "officers", currentOfficerId);
         const officerSnap = await getDoc(officerRef);
 
         if (officerSnap.exists()) {
             const data = officerSnap.data();
             
-            // Updates the IDs we added to the HTML
-            // Falls back to email or 'N/A' if name/badge fields are missing
             const nameEl = document.getElementById('display-officer-name');
             const badgeEl = document.getElementById('display-badge-id');
 
-            if(nameEl) nameEl.innerText = data.name || data.email || "Officer";
+            if(nameEl) nameEl.innerText = data.officerName || data.email || "Officer";
             if(badgeEl) badgeEl.innerText = data.badgeId || "N/A";
         }
     } catch (error) {
@@ -386,8 +382,38 @@ async function loadOfficerProfile() {
     }
 }
 
-// Initial Loaders
-loadDashboard();
-loadStallDirectory();
-loadSchedule();
-loadOfficerProfile(); // <-- Run this immediately on load
+// ==========================================
+// 7. AUTH STATE HANDLER
+// ==========================================
+
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        // Not logged in, redirect to sign in
+        window.location.href = "Sign InOfficer.html";
+        return;
+    }
+
+    currentOfficerId = user.uid;
+
+    // Verify they are an officer
+    try {
+        const officerDoc = await getDoc(doc(db, "officers", user.uid));
+        if (!officerDoc.exists()) {
+            // Not an officer, sign out and redirect
+            await signOut(auth);
+            alert("Access denied. This account is not registered as an officer.");
+            window.location.href = "Sign InOfficer.html";
+            return;
+        }
+
+        // Load all data
+        loadOfficerProfile();
+        loadDashboard();
+        loadStallDirectory();
+        loadSchedule();
+    } catch (error) {
+        console.error("Error verifying officer status:", error);
+        await signOut(auth);
+        window.location.href = "Sign InOfficer.html";
+    }
+});
