@@ -147,11 +147,30 @@
             <input type="hidden" id="schedule-stall-id">
             <input type="hidden" id="schedule-stall-name">
 
+            <input type="hidden" id="input-date">
+
             <label class="form-label">Date</label>
-            <input type="date" id="input-date" class="form-input-box" onchange="checkAvailability()">
+            <div class="date-picker-group">
+                <select id="picker-year" class="form-input-box" onchange="updateDayOptions()"></select>
+                <select id="picker-month" class="form-input-box" onchange="updateDayOptions()">
+                    <option value="0">January</option>
+                    <option value="1">February</option>
+                    <option value="2">March</option>
+                    <option value="3">April</option>
+                    <option value="4">May</option>
+                    <option value="5">June</option>
+                    <option value="6">July</option>
+                    <option value="7">August</option>
+                    <option value="8">September</option>
+                    <option value="9">October</option>
+                    <option value="10">November</option>
+                    <option value="11">December</option>
+                </select>
+                <select id="picker-day" class="form-input-box" onchange="updateFinalDate()"></select>
+            </div>
 
             <label class="form-label">Time</label>
-            <select id="input-time" class="form-input-box">
+            <select id="input-time" class="form-input-box" onchange="checkAvailability()">
                 <option value="08:00">08:00 AM</option>
                 <option value="08:30">08:30 AM</option>
                 <option value="09:00">09:00 AM</option>

@@ -14,26 +14,99 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// --- MODAL FUNCTIONS ---
+// ==========================================
+// 1. DATE PICKER LOGIC (Custom)
+// ==========================================
+
+// Populate Years (Current Year + 5)
+function initializeDatePicker() {
+    const yearSelect = document.getElementById('picker-year');
+    const currentYear = new Date().getFullYear();
+    yearSelect.innerHTML = "";
+    
+    for (let i = 0; i < 5; i++) {
+        let option = document.createElement("option");
+        option.value = currentYear + i;
+        option.text = currentYear + i;
+        yearSelect.appendChild(option);
+    }
+}
+
+// Calculate Days in Month (Handles Leap Years)
+window.updateDayOptions = function() {
+    const year = parseInt(document.getElementById('picker-year').value);
+    const monthIndex = parseInt(document.getElementById('picker-month').value); // 0=Jan, 1=Feb
+    const daySelect = document.getElementById('picker-day');
+    
+    // JS Trick: Day 0 of next month gives the last day of current month
+    // Example: (2026, 2, 0) gives last day of February 2026
+    const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+    
+    // Preserve current selection if possible
+    const currentSelection = daySelect.value;
+    
+    daySelect.innerHTML = "";
+    
+    for (let i = 1; i <= daysInMonth; i++) {
+        let option = document.createElement("option");
+        option.value = i < 10 ? `0${i}` : i; // Pad with 0 (01, 02)
+        option.text = i;
+        daySelect.appendChild(option);
+    }
+
+    // Try to restore previous selection, or default to 01
+    if (currentSelection && currentSelection <= daysInMonth) {
+        daySelect.value = currentSelection;
+    } else {
+        daySelect.value = "01";
+    }
+
+    // Update the actual hidden input that Firebase uses
+    updateFinalDate();
+};
+
+// Combine Year-Month-Day into YYYY-MM-DD string
+window.updateFinalDate = function() {
+    const year = document.getElementById('picker-year').value;
+    // Pad Month (Jan is 0 -> 01)
+    const month = (parseInt(document.getElementById('picker-month').value) + 1).toString().padStart(2, '0');
+    const day = document.getElementById('picker-day').value; // Already padded
+
+    const finalDateString = `${year}-${month}-${day}`;
+    document.getElementById('input-date').value = finalDateString;
+    
+    // Check Availability whenever date changes
+    checkAvailability();
+};
+
+// ==========================================
+// 2. MODAL FUNCTIONS
+// ==========================================
+
 window.openScheduleModal = function(stallId, stallName) {
     document.getElementById('schedule-stall-id').value = stallId;
     document.getElementById('schedule-stall-name').value = stallName;
     
-    // Set Date to Today
+    // Initialize Date Picker to TODAY
+    initializeDatePicker();
     const today = new Date();
-    document.getElementById('input-date').valueAsDate = today;
+    document.getElementById('picker-year').value = today.getFullYear();
+    document.getElementById('picker-month').value = today.getMonth();
     
-    // Reset Time Dropdown (Enable all options first)
+    // Populate days first, then set today's day
+    updateDayOptions();
+    document.getElementById('picker-day').value = today.getDate().toString().padStart(2, '0');
+    updateFinalDate();
+
+    // Reset Time Dropdown
     const select = document.getElementById('input-time');
     for (let i = 0; i < select.options.length; i++) {
         select.options[i].disabled = false;
-        select.options[i].innerText = select.options[i].value; // Reset text
+        select.options[i].innerText = select.options[i].value;
     }
     select.value = "10:00"; 
 
     document.getElementById('modal-schedule').classList.remove('hidden');
-
-    // Run check immediately for today's date
     checkAvailability();
 };
 
@@ -55,30 +128,28 @@ window.closeModal = function(modalId) {
     document.getElementById(modalId).classList.add('hidden');
 };
 
-// --- NEW: CHECK AVAILABILITY ---
+// ==========================================
+// 3. FIREBASE ACTIONS
+// ==========================================
+
 window.checkAvailability = async function() {
     const dateVal = document.getElementById('input-date').value;
     const timeSelect = document.getElementById('input-time');
     
     if (!dateVal) return;
 
-    // 1. Reset all options first
+    // Reset Dropdown
     for (let i = 0; i < timeSelect.options.length; i++) {
         timeSelect.options[i].disabled = false;
-        // Clean up previous "(Booked)" text if it exists
         timeSelect.options[i].innerText = timeSelect.options[i].value; 
     }
 
     try {
-        // 2. Query Firebase for schedules ON this date
         const q = query(collection(db, "schedules"), where("date", "==", dateVal));
         const snapshot = await getDocs(q);
 
-        // 3. Disable the booked times
         snapshot.forEach(doc => {
             const bookedTime = doc.data().time;
-            
-            // Find the option with this value
             for (let i = 0; i < timeSelect.options.length; i++) {
                 if (timeSelect.options[i].value === bookedTime) {
                     timeSelect.options[i].disabled = true;
@@ -87,9 +158,7 @@ window.checkAvailability = async function() {
             }
         });
 
-    } catch (error) {
-        console.error("Error checking availability:", error);
-    }
+    } catch (error) { console.error("Error checking availability:", error); }
 };
 
 window.calculateLiveGrade = function(val) {
@@ -105,11 +174,10 @@ window.calculateLiveGrade = function(val) {
     previewEl.innerText = `Projected Grade: ${grade}`;
 };
 
-// --- ACTIONS ---
 window.confirmSchedule = async function() {
     const stallId = document.getElementById('schedule-stall-id').value;
     const stallName = document.getElementById('schedule-stall-name').value;
-    const dateVal = document.getElementById('input-date').value;
+    const dateVal = document.getElementById('input-date').value; // Reading hidden input
     const timeVal = document.getElementById('input-time').value;
     const note = document.getElementById('input-note').value;
 
@@ -172,7 +240,10 @@ window.submitInspection = async function() {
     } catch (error) { console.error(error); alert("Error saving."); }
 };
 
-// --- LOADERS ---
+// ==========================================
+// 4. LOADERS
+// ==========================================
+
 async function loadStallDirectory() {
     const tbody = document.getElementById('stall-directory-body');
     if (!tbody) return;
@@ -206,7 +277,6 @@ async function loadSchedule() {
     querySnapshot.forEach((doc) => {
         const data = doc.data();
         const safeName = (data.stallName || '').replace(/'/g, "\\'");
-        
         html += `
             <div class="schedule-card-item">
                 <div class="schedule-time-box">
