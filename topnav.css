@@ -222,10 +222,46 @@ body{
 }
 
 @media (max-width:860px){
-  .navlinks{display:none;}
+  /*
+    MOBILE NAV FIX
+    We used to hide .navlinks entirely on <= 860px.
+    That made it look like the navbar was missing buttons.
+
+    Now we keep the links visible as a horizontally-scrollable row,
+    while still keeping the hamburger/dashboard available.
+  */
+
+  .topbar-inner{
+    gap:10px;
+  }
+
   .logo{height:64px;}
-  .btn-signin{font-size:16px;padding:10px 16px;margin-left:0;}
-  .topbar-inner{gap:10px;}
+
+  .btn-signin{
+    font-size:16px;
+    padding:10px 16px;
+    margin-left:0;
+    flex:0 0 auto;
+  }
+
+  .navlinks{
+    display:flex;
+    margin-left:auto;
+    gap:18px;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    max-width:55vw;
+    padding:4px 2px;
+  }
+
+  .navlinks::-webkit-scrollbar{display:none;}
+
+  .navlink{
+    flex:0 0 auto;
+    font-size:16px;
+    white-space:nowrap;
+  }
 }
 
 /* Cart dot indicator */
