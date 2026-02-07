@@ -15,12 +15,13 @@
   font-family: "Segoe UI", system-ui, -apple-system, sans-serif; 
 }
 
+/* ✅ FIX #1: Remove overflow hidden on html/body - this was preventing mobile scrolling */
 html, body {
   height: 100%;
-  overflow: hidden; 
+  /* REMOVED: overflow: hidden; */
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
-
 
 body {
   background: #f5f5f5;
@@ -36,13 +37,12 @@ body {
   max-width: 1600px;
 }
 main.container{
-position: centre;  
+  position: centre;  
   top: auto;
   left: auto;
   right: auto;
   bottom: auto;
   overflow: visible;
-
   padding-top: 16px;
   padding-bottom: 16px;
 }
@@ -59,9 +59,7 @@ position: centre;
   padding: 40px 0;
   color: white;
   z-index: 5;
-
 }
-
 
 .banner-tabs {
   display: flex;
@@ -121,6 +119,7 @@ position: centre;
   display: flex;
   flex-direction: row;
   justify-content: center;
+  position: relative;
 }
 
 .dropdown-trigger {
@@ -231,32 +230,84 @@ position: centre;
   text-overflow: ellipsis;
 }
 
-    
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+}
 
+.price {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--orange);
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  padding: 8px 12px;
+  border: 1px solid #e0e0e0;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 16px;
+  color: #666;
+}
+
+.action-btn:hover {
+  background: var(--cream);
+  color: var(--orange);
+  border-color: var(--orange);
+}
+
+.edit-btn:hover {
+  background: #e3f2fd;
+  color: #1976d2;
+  border-color: #1976d2;
+}
+
+.delete-btn:hover {
+  background: #ffebee;
+  color: #d32f2f;
+  border-color: #d32f2f;
+}
+    
 
 /* ===== Modal Overlay (Menu Editor) ===== */
 .no-scroll { overflow: hidden; }
 
-.modal.hidden { display: none; }
-
-.modal {
+.modal-overlay {
   position: fixed;
   inset: 0;
+  background: rgba(0,0,0,0.5);
   z-index: 2000;
-  display: flex;
-  align-items: center;  
-  justify-content: center; 
+  display: none;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px;
 }
 
-.modal-card {
-  position: relative;
-  width: min(560px, calc(100vw - 28px));
-  max-height: 90vh;       
+.modal-overlay[style*="display: flex"] {
+  display: flex !important;
+}
 
+.modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
   background: #fff;
   border-radius: 18px;
   box-shadow: 0 30px 70px rgba(0,0,0,0.25);
-  overflow: auto;        
+  overflow-y: auto;
+  margin: auto;
 }
 
 
@@ -267,6 +318,165 @@ position: centre;
   gap: 12px;
   padding: 18px 18px 12px;
   border-bottom: 1px solid rgba(0,0,0,0.08);
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.close-btn {
+  font-size: 28px;
+  cursor: pointer;
+  line-height: 1;
+  color: #666;
+  border: none;
+  background: transparent;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  color: #000;
+}
+
+#addItemForm {
+  padding: 20px;
+}
+
+.upload-section {
+  margin-bottom: 20px;
+}
+
+.upload-box {
+  width: 100%;
+  height: 200px;
+  border: 2px dashed #ccc;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  background: #fafafa;
+  transition: all 0.3s;
+}
+
+.upload-box:hover {
+  border-color: var(--orange);
+  background: #fff7f0;
+}
+
+.camera-icon {
+  font-size: 48px;
+  color: #ccc;
+  margin-bottom: 10px;
+}
+
+.upload-box p {
+  color: #666;
+  margin: 10px 0;
+}
+
+.browse-btn {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  padding: 8px 16px;
+  background: var(--orange);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#imagePreview {
+  display: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.input-group input,
+.input-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: inherit;
+}
+
+.input-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.input-group input:focus,
+.input-group textarea:focus {
+  outline: none;
+  border-color: var(--orange);
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.cancel-btn,
+.add-btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 16px;
+  border: none;
+  transition: all 0.3s;
+}
+
+.cancel-btn {
+  background: #f5f5f5;
+  color: #666;
+}
+
+.cancel-btn:hover {
+  background: #e0e0e0;
+}
+
+.add-btn {
+  background: var(--orange);
+  color: white;
+}
+
+.add-btn:hover {
+  background: var(--orange-dark);
 }
 
 .icon-btn {
@@ -334,6 +544,11 @@ position: centre;
   border-color: rgba(244, 60, 19, 0.45);
   color: #f43c13;
 }
+
+.footer-spacer {
+  height: 60px;
+}
+
 /* =========================================
    RENTAL DETAILS CARD CONTAINER
    ========================================= */
@@ -345,7 +560,7 @@ position: centre;
 .rental-wrap {
   width: 100%;
   display: flex;
-  flex-direction: column; /* Stack toolbar and dashboard vertically */
+  flex-direction: column;
   justify-content: center;
   padding: 0 0 80px;
   position: relative;
@@ -359,7 +574,9 @@ position: centre;
   box-shadow: 0 18px 55px rgba(0,0,0,.12);
   border: 1px solid rgba(0,0,0,.06);
   padding: 18px;
-  margin: 0 auto; /* Center the dashboard */
+  margin: 0 auto;
+  min-height: auto;
+  height: auto;
 }
 
 .rental-head{
@@ -421,69 +638,81 @@ position: centre;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 14px;
-  padding: 0 6px 10px;
+  margin-bottom: 18px;
 }
 
 .rental-tile{
+  background: linear-gradient(135deg, #fff 0%, #fafafa 100%);
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 16px;
+  padding: 16px;
   display: flex;
-  gap: 15px;
   align-items: center;
-  background: rgba(0,0,0,.03);
-  border: 1px solid rgba(0,0,0,.06);
-  border-radius: 18px;
-  padding: 14px 14px;
+  gap: 14px;
+  transition: box-shadow .25s;
+}
+
+.rental-tile:hover{
+  box-shadow: 0 8px 24px rgba(0,0,0,.12);
 }
 
 .tile-icon{
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  background: var(--cream);
+  font-size: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.tile-icon img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+}
+
+.tile-meta{
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .tile-label{
   font-size: 12px;
-  font-weight: 900;
+  font-weight: 600;
+  color: #888;
   text-transform: uppercase;
-  letter-spacing: .6px;
-  color: #777;
+  letter-spacing: .5px;
 }
 
 .tile-value{
   font-size: 16px;
   font-weight: 900;
   color: #111;
-  margin-top: 2px;
 }
 
 .rental-sep{
   height: 1px;
   background: rgba(0,0,0,.08);
-  margin: 14px 6px 18px;
+  margin: 24px 0;
 }
 
-/* Two panels */
 .two-col{
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 16px;
-  padding: 0 6px 8px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-bottom: 20px;
 }
 
 .panel{
-  background: #fff;
-  border: 1px solid rgba(0,0,0,.08);
-  border-radius: 18px;
-  padding: 18px;
-  box-shadow: 0 12px 30px rgba(0,0,0,.06);
+  background: #fafafa;
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: 14px;
+  padding: 20px;
+  overflow: hidden;
 }
 
 .panel-title{
-  margin: 0 0 12px;
+  margin: 0 0 16px;
   font-size: 18px;
   font-weight: 900;
 }
@@ -491,686 +720,258 @@ position: centre;
 .kv{
   display: flex;
   justify-content: space-between;
-  gap: 14px;
-  padding: 12px 0;
+  align-items: center;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
   border-bottom: 1px solid rgba(0,0,0,.06);
 }
-.kv:last-child{ border-bottom: 0; }
+
+.kv:last-child{
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
 
 .k{
+  font-size: 14px;
   color: #666;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .v{
+  font-size: 15px;
   font-weight: 900;
   color: #111;
-  text-align: right;
 }
 
-.muted{ color: #777; font-weight: 700; }
+.muted{
+  color: #999 !important;
+}
 
-/* Buttons */
 .actions{
+  margin-top: 20px;
   display: flex;
-  gap: 10px;
-  margin-top: 14px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .btn-primary{
-  background: var(--orange-dark);
+  flex: 1;
+  background: linear-gradient(135deg, #f58220 0%, #ff9a42 100%);
   color: #fff;
-  border: 0;
-  padding: 12px 16px;
-  border-radius: 14px;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 20px;
   font-weight: 900;
   cursor: pointer;
+  transition: all .25s;
+  box-shadow: 0 4px 12px rgba(245, 130, 32, 0.3);
+}
+
+.btn-primary:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(245, 130, 32, 0.4);
 }
 
 .btn-ghost{
+  flex: 1;
   background: #fff;
   color: #111;
-  border: 1px solid rgba(0,0,0,.15);
-  padding: 12px 16px;
-  border-radius: 14px;
-  font-weight: 900;
+  border: 1px solid rgba(0,0,0,.12);
+  border-radius: 999px;
+  padding: 12px 20px;
+  font-weight: 700;
   cursor: pointer;
+  transition: all .25s;
 }
 
-.btn-primary:hover{ filter: brightness(.97); }
-.btn-ghost:hover{ background: rgba(0,0,0,.03); }
+.btn-ghost:hover{
+  background: #f5f5f5;
+  border-color: rgba(0,0,0,.2);
+}
 
 .dash-footer{
-  padding: 12px 6px 0;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0,0,0,.06);
+  text-align: center;
 }
 
-/* Lease Renewal Page */
-
-.renewal-container {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.renewal-card {
-  background: white;
-  padding: 35px;
-  border-radius: 18px;
-  width: 420px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-}
-
-.renewal-field {
-  margin-top: 18px;
-}
-
-.renewal-field label {
-  font-weight: 800;
-  display: block;
-  margin-bottom: 6px;
-}
-
-.renewal-actions {
-  margin-top: 25px;
-  display: flex;
-  gap: 10px;
-}
-
-/* Admin requests */
-
-.admin-list { margin-top: 14px; display: grid; gap: 12px; }
-.req-card {
-  border: 1px solid rgba(0,0,0,.08);
-  border-radius: 14px;
-  padding: 14px;
-  display: grid;
-  gap: 8px;
-}
-.req-row { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
-.req-actions { display:flex; gap:10px; justify-content:flex-end; }
-
-
-
-/* =========================================
-   MOBILE NAV SYSTEM (shared across all pages)
-   ========================================= */
-
-/* Optional: smoother tap behavior */
-a, button { -webkit-tap-highlight-color: transparent; }
-
-/* ---- Tablet and below ---- */
-@media (max-width: 992px) {
-
-      .rental-grid{ grid-template-columns: repeat(2, 1fr); }
-  .two-col{ grid-template-columns: 1fr; }
-  .rental-title{ font-size: 28px; }
-
-   .banner {
-    margin-top: 0px;
-    padding: 28px 0 22px;
-    height: auto;
-   }
-  /* Make the fixed navbar less tall on mobile */
-  .top-nav {
-    height: 96px;
-    padding: 0;
-  }
-
-  .brand img {
-    height: 96px;
-    margin-left: 8px;
-  }
-
-  .container {
-    padding: 0 16px;
-  }
-
-  /* Banner should always start below fixed nav */
-  .banner {
-  top: 96px;          
-  padding: 28px 0 22px;
-  height: auto;
-}
-
-
-  .banner h1 { font-size: 28px; }
-  .banner p { font-size: 14px; }
-
-  .nav-right { gap: 12px; }
-
-  /* Hamburger button (you must have an element with class="hamburger" in navbar.html) */
-  .hamburger {
-    display: inline-flex;   /* show it on mobile */
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    border: 1px solid rgba(0,0,0,.12);
-    background: #fff;
-    border-radius: 12px;
-    cursor: pointer;
-  }
-
-  /* Turn nav-links into a mobile dropdown panel instead of hiding permanently */
-  .nav-links {
-    display: none;          /* hidden by default */
-    position: absolute;
-    top: 96px;              /* sits under nav */
-    left: 0;
-    right: 0;
-    background: #fff;
-    padding: 14px 16px;
-    box-shadow: 0 20px 40px rgba(0,0,0,.12);
-    border-bottom-left-radius: 18px;
-    border-bottom-right-radius: 18px;
-    gap: 14px;
-    flex-direction: column;
-    font-size: 16px;
-    font-weight: 800;
-    z-index: 1200;
-  }
-
-  /* When nav is opened (JS toggles .nav-open on body) */
-  body.nav-open .nav-links {
-    display: flex;
-  }
-
-  /* Make links full-width tap targets */
-  .nav-links a {
-    padding: 12px 10px;
-    border-radius: 12px;
-  }
-  .nav-links a:active {
-    background: rgba(0,0,0,.05);
-  }
-
-  /* User pill fits */
-  .user-pill {
-    font-size: 14px;
-    padding: 8px 12px;
-    border-radius: 12px;
-  }
-
-  /* Banner tabs wrap nicely */
-  .banner-tabs {
-    justify-content: flex-start;
-    font-size: 14px;
-    gap: 14px;
-    flex-wrap: wrap;
-  }
-
-  /* Grid becomes single column */
-  .grid {
-    grid-template-columns: 1fr;
-    gap: 18px;
-  }
-
-  .card img { height: 180px; }
-
-}
-
-/* ---- Small phones ---- */
-@media (max-width: 600px) {
-  .banner h1 { font-size: 24px; }
-  .card-body { padding: 16px; }
-  .price { font-size: 18px; }
-
-  /* Rental card spacing */
-  .rental-card { padding: 18px; }
-}
-  .rental-dashboard{ padding: 18px; }
-  .rental-grid{ grid-template-columns: 1fr; }
-
-
-/* =========================================
-   DROPDOWN FIX FOR TOUCH (works everywhere)
-   ========================================= */
-
-/* On mobile, hovering isn’t reliable. Use a click/tap toggle class instead. */
-@media (max-width: 992px) {
-  .dropdown-menu {
-    left: 0;
-    transform: none;         /* remove translateX(-50%) on mobile */
-    min-width: 220px;
-  }
-
-  /* Disable hover-open on mobile (so it doesn't flicker) */
-  .dropdown-container:hover .dropdown-menu {
-    opacity: 0;
-    visibility: hidden;
-    transform: none;
-  }
-
-  /* Enable open via .open class */
-  .dropdown-container.open .dropdown-menu {
-    opacity: 1;
-    visibility: visible;
-  }
-}
-.card-footer { 
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center; 
-  border-top: 1px solid #eee;
-  padding-top: 15px;
-}
-.price { color: var(--orange-dark); font-weight: 800; font-size: 20px; }
-
-/* --- FIXED ACTION BUTTONS --- */
-.card-actions {
-    display: flex;
-    gap: 10px;
-    position: relative; 
-    z-index: 10;
-}
-
-.action-btn {
-    border: 1px solid #ddd;
-    background: white;
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* SPECIFIC TRANSITIONS ONLY to prevent layout jitter */
-    transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
-    font-size: 14px;
-    position: relative;
-    z-index: 20; 
-}
-
-/* THE FIX: Forces browser to ignore the icon for mouse events */
-.action-btn i, .action-btn svg {
-    pointer-events: none !important; 
-}
-
-/* Edit Button Hover */
-.edit-btn:hover { background: #f0f0f0; border-color: #bbb; }
-
-/* Delete Button Hover */
-.delete-btn { border-color: #ffcccc; background: #fff5f5; color: #e4002b; }
-.delete-btn:hover { background: #ffe0e0; transform: scale(1.05); border-color: #ff9999; }
-
-/* =========================================
-   6. CLEAN MODAL DESIGN
-   ========================================= */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 9999;
-  justify-content: center;
-  align-items: center;
-  backdrop-filter: blur(2px);
-}
-
-.modal-content {
-  background: white;
-  width: 95%;
-  max-width: 500px;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-  display: flex;
-  flex-direction: column;
-  animation: popIn 0.3s ease;
-}
-
-@keyframes popIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-.modal-header {
-  background: var(--orange);
-  color: white;
-  padding: 15px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.modal-header h2 { margin: 0; font-size: 18px; }
-.close-btn { font-size: 24px; cursor: pointer; color: white; opacity: 0.8; }
-.close-btn:hover { opacity: 1; }
-
-#addItemForm {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  max-height: 80vh;
-  overflow-y: auto;
-}
-
-.upload-section { display: flex; justify-content: center; }
-
-.upload-box {
-  width: 100%;
-  max-width: 300px;
-  height: 180px;
-  background: #f9f9f9;
-  border: 2px dashed #ccc;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.2s;
-}
-.upload-box:hover { background: #fffdf9; border-color: var(--orange); }
-.upload-box i { font-size: 30px; color: #ccc; margin-bottom: 10px; }
-.upload-box p { color: #888; margin: 0; font-weight: 600; font-size: 14px; }
-
-#imagePreview {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  object-fit: cover;
-  border-radius: 6px;
-  display: none;
-  z-index: 10;
-}
-
-.input-group { display: flex; flex-direction: column; gap: 5px; }
-.input-group label { font-weight: 700; font-size: 14px; color: #444; }
-.input-group input, 
-.input-group textarea {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 15px;
-  width: 100%;
-}
-.input-group textarea { height: 80px; resize: none; }
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.add-btn {
-  background: var(--orange-dark);
-  color: white;
-  border: none;
-  padding: 10px 25px;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-}
-.add-btn:hover { background: #d35400; }
-
-.cancel-btn {
-  background: #eee;
-  color: #333;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-.cancel-btn:hover { background: #ddd; }
-
-/* ========================================
-   AUTO-RENEWAL SYSTEM STYLES
-   ======================================== */
-
-/* Renewal Container */
-.renewal-container {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.renewal-card {
-  background: white;
-  padding: 32px;
-  border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-  max-width: 500px;
-  width: 100%;
-}
-
-.renewal-card h2 {
-  margin: 0 0 8px 0;
-  font-size: 28px;
-  color: #333;
-}
-
-.renewal-card .muted {
-  color: #666;
-  font-size: 14px;
-  margin: 0 0 24px 0;
-}
-
-/* Renewal Fields */
-.renewal-field {
-  margin-bottom: 20px;
-}
-
-.renewal-field label {
-  display: block;
-  font-weight: 600;
-  color: #555;
-  margin-bottom: 8px;
-  font-size: 14px;
-}
-
-.renewal-field #currentLease {
-  padding: 12px;
-  background: #f5f5f5;
-  border-radius: 8px;
-  color: #333;
-  font-size: 15px;
-  font-weight: 500;
-}
-
-.renewal-field input[type="date"] {
-  width: 100%;
-  padding: 12px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 15px;
-  transition: all 0.2s;
-}
-
-.renewal-field input[type="date"]:focus {
-  outline: none;
-  border-color: #2196f3;
-  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
-}
-
-.renewal-field input[type="date"]:disabled {
-  background: #f5f5f5;
-  cursor: not-allowed;
-}
-
-/* Renewal Actions */
-.renewal-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 24px;
-}
-
-.renewal-actions button {
-  flex: 1;
-  padding: 14px;
-  border: none;
-  border-radius: 8px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-/* Status Pills */
-.status-pill {
-  display: inline-block;
-  padding: 8px 16px;
-  border-radius: 20px;
+.dash-footer .muted{
   font-size: 13px;
-  font-weight: 600;
+}
+
+/* Patron Like Card */
+.patron-like-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.patron-like-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+}
+
+.patron-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f58220 0%, #ff9a42 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.patron-details {
+  flex: 1;
+}
+
+.patron-name {
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 3px 0;
+  font-size: 1rem;
+}
+
+.patron-email {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0 0 5px 0;
+}
+
+.liked-date {
+  font-size: 0.8rem;
+  color: #999;
+  margin: 0;
+}
+
+.liked-date i {
+  margin-right: 5px;
+}
+
+.like-indicator {
+  font-size: 1.5rem;
+  color: #e74c3c;
+  flex-shrink: 0;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+}
+
+.empty-state h3 {
+  margin: 20px 0 10px;
+  color: #666;
+}
+
+.empty-state p {
+  color: #999;
+}
+
+/* Renewal forms */
+.form-section {
+  margin-bottom: 28px;
+}
+
+.form-section h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 12px 0;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.status-pill.paid {
-  background: #e8f5e9;
-  color: #2e7d32;
-}
-
-.status-pill.due {
-  background: #fff3cd;
-  color: #856404;
-}
-
-.status-pill.overdue {
-  background: #ffebee;
-  color: #c62828;
-}
-
-/* Buttons */
-.btn-primary {
-  background: #2196f3;
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #1976d2;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
-}
-
-.btn-primary:active {
-  transform: translateY(0);
-}
-
-.btn-primary:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.btn-ghost {
-  background: transparent;
-  color: #666;
-  border: 2px solid #e0e0e0;
-}
-
-.btn-ghost:hover {
-  background: #f5f5f5;
-  border-color: #ccc;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .renewal-card {
-    padding: 24px;
-  }
-  
-  .renewal-actions {
-    flex-direction: column;
-  }
-}
-
-/* Muted Text */
-.muted {
-  color: #999;
-  font-size: 14px;
-}
-
-/* Payment Info Styles */
-.payment-info {
-  margin: 20px 0;
-}
-
-.info-box {
-  background: #f5f5f5;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 20px;
-  margin: 16px 0;
-}
-
-.info-box.error {
-  background: #ffebee;
-  border-color: #f44336;
-  color: #c62828;
-}
-
-.info-box h4 {
-  margin: 0 0 16px 0;
-  font-size: 16px;
-  color: #333;
-}
-
-.payment-summary {
+.form-group {
   margin-bottom: 16px;
 }
 
-.summary-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.summary-item.total {
-  border-bottom: none;
-  border-top: 2px solid #333;
-  margin-top: 8px;
-  padding-top: 12px;
-  font-weight: 700;
-  font-size: 18px;
-}
-
-.summary-item .label {
-  color: #666;
-}
-
-.summary-item .value {
-  color: #333;
-  font-weight: 600;
-}
-
-.payment-schedule {
-  margin-top: 16px;
-}
-
-.payment-schedule h5 {
-  margin: 0 0 12px 0;
+.form-group label {
+  display: block;
   font-size: 14px;
+  font-weight: 600;
   color: #666;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--orange);
+}
+
+.form-group textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: auto;
+  margin-top: 3px;
+  cursor: pointer;
+}
+
+.checkbox-group label {
+  margin-bottom: 0;
+  cursor: pointer;
+  flex: 1;
+}
+
+.payment-history {
+  margin-top: 24px;
 }
 
 .payment-item {
-  display: grid;
-  grid-template-columns: auto 1fr auto auto;
-  gap: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 12px;
   background: white;
   border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  margin-bottom: 8px;
-  align-items: center;
+  border-radius: 8px;
+  margin-bottom: 10px;
 }
 
-.payment-item.paid {
-  background: #e8f5e9;
-  border-color: #4caf50;
+.payment-info {
+  flex: 1;
 }
 
 .payment-num {
@@ -1243,132 +1044,132 @@ a, button { -webkit-tap-highlight-color: transparent; }
    ========================================= */
 
 .license-container {
-      min-height: 100vh;
-      padding: 40px 20px;
-      background: #f5f5f5;
-    }
-    
-    .license-document {
-      max-width: 900px;
-      margin: 0 auto;
-      background: white;
-      border: 2px solid #333;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    }
-    
-    .license-header {
-      background: #ff8a1f;
-      color: white;
-      padding: 32px;
-      text-align: center;
-      border-bottom: 4px solid #333;
-    }
-    
-    .license-header h1 {
-      margin: 0 0 8px 0;
-      font-size: 32px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-    
-    .license-header p {
-      margin: 0;
-      opacity: 0.9;
-      font-size: 14px;
-    }
-    
-    .license-body {
-      padding: 40px;
-    }
-    
-    .license-section {
-      margin-bottom: 32px;
-      padding-bottom: 24px;
-      border-bottom: 1px solid #e0e0e0;
-    }
-    
-    .license-section:last-child {
-      border-bottom: none;
-    }
-    
-    .section-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: #333;
-      margin: 0 0 16px 0;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    
-    .detail-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 16px;
-    }
-    
-    .detail-item {
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .detail-label {
-      font-size: 12px;
-      color: #666;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 4px;
-      font-weight: 600;
-    }
-    
-    .detail-value {
-      font-size: 16px;
-      color: #333;
-      font-weight: 500;
-    }
-    
-    .license-footer {
-      background: #f9f9f9;
-      padding: 24px 40px;
-      border-top: 2px solid #e0e0e0;
-      text-align: center;
-    }
-    
-    .footer-text {
-      color: #666;
-      font-size: 12px;
-      margin: 0;
-    }
-    
-    .license-actions {
-      text-align: center;
-      padding: 24px;
-      background: #f9f9f9;
-      border-top: 2px solid #e0e0e0;
-    }
-    
-    .license-actions button {
-      margin: 0 8px;
-    }
-    
-    .official-seal {
-      text-align: center;
-      margin-top: 32px;
-      padding: 16px;
-      background: #fff9e6;
-      border: 2px dashed #ffc107;
-      border-radius: 8px;
-    }
-    
-    .seal-text {
-      font-size: 14px;
-      color: #856404;
-      margin: 0;
-      font-weight: 600;
-    }
+  min-height: 100vh;
+  padding: 40px 20px;
+  background: #f5f5f5;
+}
 
-    /* VendorLikes.css - Additional styles for Customer Likes page */
+.license-document {
+  max-width: 900px;
+  margin: 0 auto;
+  background: white;
+  border: 2px solid #333;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
 
-/* Stats Summary */
+.license-header {
+  background: #ff8a1f;
+  color: white;
+  padding: 32px;
+  text-align: center;
+  border-bottom: 4px solid #333;
+}
+
+.license-header h1 {
+  margin: 0 0 8px 0;
+  font-size: 32px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.license-header p {
+  margin: 0;
+  opacity: 0.9;
+  font-size: 14px;
+}
+
+.license-body {
+  padding: 40px;
+}
+
+.license-section {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.license-section:last-child {
+  border-bottom: none;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 16px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-label {
+  font-size: 12px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.detail-value {
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+}
+
+.license-footer {
+  background: #f9f9f9;
+  padding: 24px 40px;
+  border-top: 2px solid #e0e0e0;
+  text-align: center;
+}
+
+.footer-text {
+  color: #666;
+  font-size: 12px;
+  margin: 0;
+}
+
+.license-actions {
+  text-align: center;
+  padding: 24px;
+  background: #f9f9f9;
+  border-top: 2px solid #e0e0e0;
+}
+
+.license-actions button {
+  margin: 0 8px;
+}
+
+.official-seal {
+  text-align: center;
+  margin-top: 32px;
+  padding: 16px;
+  background: #fff9e6;
+  border: 2px dashed #ffc107;
+  border-radius: 8px;
+}
+
+.seal-text {
+  font-size: 14px;
+  color: #856404;
+  margin: 0;
+  font-weight: 600;
+}
+
+/* VendorLikes.css - Additional styles for Customer Likes page */
+
+/* ✅ Stats Summary - UPDATED FOR HORIZONTAL MOBILE LAYOUT */
 .stats-summary {
   display: flex;
   gap: 20px;
@@ -1555,9 +1356,31 @@ body {
   }
 }
 
+/* ========================================
+   ✅ MOBILE RESPONSIVE FIXES
+   ======================================== */
+
+/* Tablet breakpoint */
+@media (max-width: 992px) {
+  .grid { 
+    grid-template-columns: repeat(2, 1fr); 
+  }
+  
+  .banner-tabs { 
+    font-size: 16px;
+    gap: 15px;
+  }
+  
+  .rental-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile breakpoint */
 @media (max-width: 768px) {
   .toolbar {
     padding: 15px 20px;
+    flex-wrap: wrap;
   }
   
   .rental-wrap .toolbar {
@@ -1572,24 +1395,254 @@ body {
   .plus-btn {
     font-size: 32px;
   }
+  
+  .rental-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .rental-tile {
+    padding: 14px;
+  }
+  
+  .two-col {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .panel {
+    padding: 16px;
+  }
+  
+  .rental-title {
+    font-size: 28px;
+  }
+  
+  .rental-sub {
+    font-size: 14px;
+  }
+  
+  .rental-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .status-pill {
+    align-self: flex-start;
+  }
+  
+  .banner-tabs {
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 14px;
+    gap: 10px;
+  }
+  
+  .banner-text h1 {
+    font-size: 28px;
+  }
+  
+  .banner-text p {
+    font-size: 16px;
+  }
+  
+  /* ✅ UPDATED: Stats summary - HORIZONTAL layout on mobile */
+  .stats-summary {
+    flex-direction: row;
+    gap: 12px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 10px;
+    scrollbar-width: none;
+  }
+  
+  .stats-summary::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .stat-box {
+    min-width: 140px;
+    flex: 0 0 auto;
+    padding: 16px;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+  
+  .stat-box i {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+  }
+  
+  .stat-box > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .stat-box .stat-number {
+    font-size: 1.6rem;
+  }
+  
+  .stat-box .stat-label {
+    font-size: 0.75rem;
+  }
+  
+  .item-header {
+    flex-direction: column;
+    padding: 20px;
+  }
+  
+  .item-thumb,
+  .item-thumb-placeholder {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .actions {
+    flex-direction: column;
+  }
+  
+  .btn-primary,
+  .btn-ghost {
+    width: 100%;
+  }
+  
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+  
+  .form-actions button {
+    width: 100%;
+  }
+  
+  .license-container {
+    padding: 20px 10px;
+  }
+  
+  .license-header {
+    padding: 20px;
+  }
+  
+  .license-header h1 {
+    font-size: 24px;
+  }
+  
+  .license-body {
+    padding: 20px;
+  }
+  
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
-@media (max-width: 992px) {
-  .grid { grid-template-columns: repeat(2, 1fr); }
-  .banner-tabs { font-size: 14px; }
-}
-
+/* Small mobile */
 @media (max-width: 600px) {
-  .grid { grid-template-columns: 1fr; }
-  .banner { height: auto; padding-bottom: 20px; }
-  .container { padding: 0 20px; }
+  .grid { 
+    grid-template-columns: 1fr; 
+  }
+  
+  .banner { 
+    padding: 30px 0 20px;
+  }
+  
+  .container { 
+    padding: 0 16px;
+  }
+  
+  .banner-text h1 {
+    font-size: 24px;
+  }
+  
+  .banner-text p {
+    font-size: 14px;
+  }
+  
+  .rental-dashboard {
+    border-radius: 16px;
+    padding: 16px;
+  }
+  
+  .rental-title {
+    font-size: 24px;
+    margin: 5px;
+  }
+  
+  .tile-value {
+    font-size: 14px;
+  }
+  
+  .tile-label {
+    font-size: 11px;
+  }
+  
+  .modal-content {
+    max-width: 100%;
+    margin: 10px;
+    border-radius: 12px;
+  }
+  
+  #addItemForm {
+    padding: 16px;
+  }
+  
+  .upload-box {
+    height: 150px;
+  }
+  
+  .camera-icon {
+    font-size: 36px;
+  }
+  
+  .dropdown-menu {
+    left: 0;
+    right: 0;
+    min-width: auto;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 400px) {
+  .banner-tabs {
+    font-size: 12px;
+    gap: 8px;
+  }
+  
+  .banner-tabs a,
+  .banner-tabs span {
+    padding-bottom: 3px;
+  }
+  
+  .rental-title {
+    font-size: 20px;
+  }
+  
+  /* ✅ UPDATED: Keep stats horizontal but more compact */
+  .stat-box {
+    min-width: 110px;
+    padding: 12px;
+  }
+  
+  .stat-box i {
+    font-size: 1.5rem;
+  }
+  
+  .stat-box .stat-number {
+    font-size: 1.3rem;
+  }
+  
+  .stat-box .stat-label {
+    font-size: 0.7rem;
+  }
 }
 
 @media print {
-      .license-actions {
-        display: none;
-      }
-      .license-container {
-        padding: 0;
-      }
-    }
+  .license-actions {
+    display: none;
+  }
+  .license-container {
+    padding: 0;
+  }
+}
