@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Complaint</title>
-    <link rel="stylesheet" href="Menu.css">
+    <link rel="stylesheet" href="topnav.css" />
+    <link rel="stylesheet" href="Forms.css" />
+
 </head>
 <body class="complaint-page">
 
@@ -19,7 +21,8 @@
                      <p id="stall-name-display">Loading stall info...</p>
                 </div>
 
-                <img id="image-preview" src="" alt="Uploaded Evidence">
+                <img id="image-preview" alt="Uploaded Evidence" style="display:none;">
+
                 
                 <button class="close-modal-btn" id="clear-img-btn">×</button>
             </div>
@@ -33,7 +36,7 @@
                         <label>State your complaint</label>
                         
                         <button class="btn-import-media" id="import-btn">
-                            <span class="icon">🖼️</span> Import Media
+                            <span class="icon"></span> Import Media
                         </button>
                     </div>
                     <textarea id="complaint-text" class="main-complaint" placeholder="Reason:&#10;Content:"></textarea>

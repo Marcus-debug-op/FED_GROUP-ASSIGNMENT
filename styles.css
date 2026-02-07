@@ -201,3 +201,43 @@ body{
   }
 }
 
+
+@media (max-width:600px){
+  .hero-content{
+    padding:28px 0;
+  }
+
+  .hero-small{
+    font-size:14px;
+  }
+
+  .hero-title{
+    font-size:18px;
+    line-height:1.25;
+  }
+
+  .btn-cta{
+    font-size:16px;
+    padding:14px;
+  }
+}
+
+@media (max-width:600px){
+  .trend-row{
+    grid-template-columns:1fr;
+  }
+
+  .arrow-btn{
+    display:none;
+  }
+
+  .trend-cards{
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+  }
+
+  .food-card{
+    scroll-snap-align:start;
+    min-width:220px;
+  }
+}

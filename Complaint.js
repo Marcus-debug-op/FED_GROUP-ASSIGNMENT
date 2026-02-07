@@ -70,4 +70,15 @@ submitBtn.addEventListener('click', async () => {
 
 importBtn.addEventListener('click', () => {
     realFileInput.click();
+})
+
+realFileInput.addEventListener("change", () => {
+  const file = realFileInput.files && realFileInput.files[0];
+  if(!file){
+    imagePreview.style.display="none";
+    imagePreview.src="";
+    return;
+  }
+  imagePreview.src = URL.createObjectURL(file);
+  imagePreview.style.display="block";
 });
