@@ -39,7 +39,6 @@ body{
   position: absolute;
   inset: 0;
 
-  /* ✅ FIX: use the image that actually exists in your project */
   background-image:
     linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
     url("img/Home_Box background.jpg");
@@ -67,6 +66,8 @@ body{
   line-height: 1.15;
   max-width: 560px;
 }
+
+
 
 .btn{
   text-decoration: none;
@@ -172,7 +173,104 @@ body{
   color: var(--faded-text);
 }
 
-/* Responsive */
+/* ===== Guest Prompt Modal ===== */
+.guest-prompt-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  z-index: 2000;
+}
+
+.guest-prompt-overlay.hidden{
+  display: none;
+}
+
+.guest-prompt-card{
+  width: 100%;
+  max-width: 420px;
+  background: #fff7dc;
+  border-radius: 18px;
+  padding: 18px 18px 16px;
+  position: relative;
+  box-shadow: 0 18px 45px rgba(0,0,0,0.22);
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.guest-prompt-title{
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 900;
+  color: #1f1f1f;
+}
+
+.guest-prompt-text{
+  margin: 0 0 16px;
+  color: #4b4b4b;
+  line-height: 1.35;
+  font-size: 14px;
+}
+
+.guest-prompt-actions{
+  display: flex;
+  justify-content: center;   
+  align-items: center;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+
+.guest-prompt-btn{
+  flex: 1;
+  border-radius: 999px;
+  padding: 12px 14px;
+  font-weight: 800;
+  text-decoration: none;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.guest-prompt-btn.guest{
+  background: #ffffff;
+  color: #f97316;
+  border: 2px solid rgba(249,115,22,0.5);
+}
+
+.guest-prompt-btn.signin{
+  background: #f97316;
+  color: #fff;
+}
+
+.guest-prompt-close{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(0,0,0,0.06);
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.guest-prompt-close:hover{
+  background: rgba(0,0,0,0.10);
+}
+
+/* Mobile */
+@media (max-width: 480px){
+  .guest-prompt-actions{
+    flex-direction: column;
+  }
+}
+
 @media (max-width:600px){
   .hero-content{
     padding:28px 0;
@@ -212,3 +310,5 @@ body{
     min-width:220px;
   }
 }
+
+
