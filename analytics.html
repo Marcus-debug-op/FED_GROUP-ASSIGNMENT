@@ -36,7 +36,7 @@
   </section>
 
   <!-- SAME container pattern -->
-    <main class="container">
+  <main class="container">
     <div class="toolbar">
       <div class="dropdown-container">
         <div class="dropdown-trigger">
@@ -49,13 +49,10 @@
         </ul>
       </div>
 
-      <!-- Optional small doc label (uses existing pill styles in your CSS) -->
       <span class="status-pill paid" id="statsDocLabel" style="margin-left:auto;">doc: —</span>
     </div>
 
-    <!-- DASHBOARD (uses existing classes already inside VendorAccount.css) -->
     <section class="rental-dashboard">
-
       <div class="rental-head">
         <div>
           <h2 class="rental-title">Performance Overview</h2>
@@ -65,40 +62,41 @@
         <span class="status-pill paid">Active</span>
       </div>
 
+      <!-- ✅ NEW KPI TILES -->
       <div class="rental-grid">
         <div class="rental-tile">
           <div class="tile-icon"><i class="fa-solid fa-dollar-sign"></i></div>
           <div>
-            <div class="tile-label">Revenue Increase</div>
-            <div class="tile-value" id="kpiRevenueIncrease">—</div>
-            <div class="muted" id="kpiRevenueSub">vs previous</div>
+            <div class="tile-label">Total Revenue</div>
+            <div class="tile-value" id="kpiTotalRevenue">—</div>
+            <div class="muted" id="kpiTotalRevenueSub">—</div>
           </div>
         </div>
 
         <div class="rental-tile">
           <div class="tile-icon"><i class="fa-solid fa-receipt"></i></div>
           <div>
-            <div class="tile-label">Orders Today</div>
-            <div class="tile-value" id="kpiOrdersToday">—</div>
-            <div class="muted" id="kpiOrdersIncrease">—</div>
+            <div class="tile-label">Total Orders</div>
+            <div class="tile-value" id="kpiTotalOrders">—</div>
+            <div class="muted" id="kpiTotalOrdersSub">—</div>
           </div>
         </div>
 
         <div class="rental-tile">
-          <div class="tile-icon"><i class="fa-solid fa-star"></i></div>
+          <div class="tile-icon"><i class="fa-solid fa-box"></i></div>
           <div>
-            <div class="tile-label">Average Rating</div>
-            <div class="tile-value" id="kpiAvgRating">—</div>
-            <div class="muted" id="kpiOwnerName">—</div>
+            <div class="tile-label">Avg Order Value</div>
+            <div class="tile-value" id="kpiAvgOrderValue">—</div>
+            <div class="muted" id="kpiAvgOrderValueSub">—</div>
           </div>
         </div>
 
         <div class="rental-tile">
-          <div class="tile-icon"><i class="fa-solid fa-shield-heart"></i></div>
+          <div class="tile-icon"><i class="fa-solid fa-users"></i></div>
           <div>
-            <div class="tile-label">Hygiene</div>
-            <div class="tile-value" id="kpiHygieneGrade">—</div>
-            <div class="muted" id="kpiHygieneInfo">—</div>
+            <div class="tile-label">Total Customers</div>
+            <div class="tile-value" id="kpiTotalCustomers">—</div>
+            <div class="muted" id="kpiTotalCustomersSub">—</div>
           </div>
         </div>
       </div>
@@ -108,8 +106,6 @@
       <div class="two-col">
         <div class="panel">
           <h3 class="panel-title">Monthly Sales Trend</h3>
-
-          <!-- ✅ FIX: chart-box wrapper gives the canvas a fixed height -->
           <div class="chart-box">
             <canvas id="salesLineChart"></canvas>
           </div>
@@ -117,13 +113,9 @@
 
         <div class="panel">
           <h3 class="panel-title">Sales by Category</h3>
-
-          <!-- ✅ FIX: chart-box-pie wrapper gives the canvas a fixed height -->
           <div class="chart-box-pie">
             <canvas id="categoryPieChart"></canvas>
           </div>
-
-          <!-- ✅ FIX: add legend class so your legend styles apply -->
           <div id="categoryLegend" class="legend"></div>
         </div>
       </div>
@@ -133,7 +125,6 @@
 
   <footer class="footer-spacer"></footer>
 
-  <!-- IMPORTANT: must be module if you use import in analytics.js -->
   <script type="module" src="analytics.js"></script>
   <script type="module" src="navbar-init.js"></script>
 </body>
