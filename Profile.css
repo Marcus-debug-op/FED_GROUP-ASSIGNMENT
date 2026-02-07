@@ -308,3 +308,125 @@ body {
     .header-tabs { justify-content: center; }
     .navlinks { display: none; } /* Hide menu links on mobile */
 }
+/* =========================================
+   LIKES PAGE SPECIFIC STYLES
+========================================= */
+
+/* Empty state for no likes */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+/* Like card with image */
+.like-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.like-card-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+}
+
+.like-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.like-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.like-image-placeholder {
+    width: 100px;
+    height: 100px;
+    border-radius: 12px;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #ccc;
+}
+
+/* View menu button */
+.view-menu-btn {
+    background: var(--brand-orange);
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.view-menu-btn:hover {
+    opacity: 0.9;
+}
+
+/* Unlike button */
+.unlike-btn {
+    background: #fff;
+    color: #666;
+    border: 1px solid #ddd;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.unlike-btn:hover {
+    background: #f5f5f5;
+    color: var(--btn-red);
+}
+
+/* Heart icon animation */
+.heart-icon {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.heart-icon:hover {
+    transform: scale(1.1);
+}
+
+.heart-icon.liked {
+    filter: brightness(0) saturate(100%) invert(27%) sepia(89%) saturate(2527%) hue-rotate(346deg) brightness(95%) contrast(93%);
+}
+
+/* Responsive for likes */
+@media (max-width: 850px) {
+    .like-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .like-card-content {
+        width: 100%;
+    }
+    
+    .vc-actions {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .view-menu-btn, .unlike-btn {
+        flex: 1;
+    }
+}

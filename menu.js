@@ -4,8 +4,15 @@ import {
   doc,
   getDoc,
   collection,
-  getDocs
+  getDocs,
+  setDoc,
+  deleteDoc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDo8B0OLtAj-Upfz7yNFeGz4cx3KWLZLuQ",
@@ -19,6 +26,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 /** =============================
  * CART STORAGE (matches checkout.js)
@@ -141,7 +149,7 @@ function renderMenuItemCard(stallId, stallName, itemId, item) {
         <h3>${name}</h3>
 
         <div class="likes-container">
-          <img src="img/heart.png" class="heart-icon" alt="like" data-item="${itemId}" />
+          <img src="img/heart.png" class="heart-icon" alt="like" data-item="${itemId}" data-stall="${stallId}" />
           <span>${likes}</span>
         </div>
       </div>
@@ -250,6 +258,9 @@ async function loadMenuPage() {
       btn.disabled = false;
     }, 800);
   });
+  
+  // After menu is loaded, update heart icons
+  updateHeartIcons();
 }
 
 loadMenuPage().catch((err) => {
@@ -257,3 +268,166 @@ loadMenuPage().catch((err) => {
   document.getElementById("menu-container").innerHTML =
     "<p>Something went wrong loading the menu.</p>";
 });
+
+/** =============================
+ * LIKES FUNCTIONALITY
+ * ============================= */
+
+// Store user's likes in memory for quick UI updates
+const userLikesCache = new Set();
+let currentUserForLikes = null;
+
+// Track auth state for likes
+onAuthStateChanged(auth, (user) => {
+  currentUserForLikes = user;
+  
+  if (user) {
+    // Load existing likes for this user
+    loadUserLikes();
+  }
+});
+
+// Load user's existing likes
+async function loadUserLikes() {
+  if (!currentUserForLikes) return;
+  
+  try {
+    const likesRef = collection(db, "users", currentUserForLikes.uid, "likes");
+    const snapshot = await getDocs(likesRef);
+    
+    userLikesCache.clear();
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+      if (data.itemId && data.stallId) {
+        userLikesCache.add(`${data.stallId}__${data.itemId}`);
+      }
+    });
+    
+    // Update heart icons on the page
+    updateHeartIcons();
+  } catch (error) {
+    console.error("Error loading user likes:", error);
+  }
+}
+
+// Update all heart icons based on cache
+function updateHeartIcons() {
+  document.querySelectorAll(".heart-icon").forEach((heart) => {
+    const itemId = heart.dataset.item;
+    const stallId = heart.dataset.stall || getStallIdFromUrl();
+    const likeKey = `${stallId}__${itemId}`;
+    
+    if (userLikesCache.has(likeKey)) {
+      heart.src = "img/heart-filled.png";
+      heart.classList.add("liked");
+    } else {
+      heart.src = "img/heart.png";
+      heart.classList.remove("liked");
+    }
+  });
+}
+
+// Handle heart icon clicks
+document.addEventListener("click", async (e) => {
+  const heart = e.target.closest(".heart-icon");
+  if (!heart) return;
+  
+  e.preventDefault();
+  e.stopPropagation();
+  
+  // Check if user is logged in
+  if (!currentUserForLikes) {
+    alert("Please log in to like items");
+    window.location.href = "login.html";
+    return;
+  }
+  
+  const itemId = heart.dataset.item;
+  const card = heart.closest(".menu-card");
+  
+  if (!card) return;
+  
+  // Get item details from the card
+  const btn = card.querySelector(".add-to-cart");
+  const stallId = heart.dataset.stall || getStallIdFromUrl();
+  const itemName = decodeURIComponent(btn.dataset.name || "");
+  const price = Number(btn.dataset.price) || 0;
+  const image = decodeURIComponent(btn.dataset.image || "");
+  const stallName = decodeURIComponent(btn.dataset.stall || "");
+  
+  if (!stallId || !itemId) {
+    console.error("Missing stallId or itemId");
+    return;
+  }
+  
+  const likeKey = `${stallId}__${itemId}`;
+  const isLiked = userLikesCache.has(likeKey);
+  
+  try {
+    if (isLiked) {
+      // Unlike
+      await unlikeItem(stallId, itemId);
+      userLikesCache.delete(likeKey);
+      heart.src = "img/heart.png";
+      heart.classList.remove("liked");
+    } else {
+      // Like
+      await likeItem({
+        stallId,
+        stallName,
+        itemId,
+        itemName,
+        price,
+        image
+      });
+      userLikesCache.add(likeKey);
+      heart.src = "img/heart-filled.png";
+      heart.classList.add("liked");
+      
+      // Optional: show brief feedback
+      showLikeFeedback(heart);
+    }
+  } catch (error) {
+    console.error("Error toggling like:", error);
+    alert("Error updating like. Please try again.");
+  }
+});
+
+// Save like to Firestore
+async function likeItem(data) {
+  if (!currentUserForLikes) return;
+  
+  const { stallId, stallName, itemId, itemName, price, image } = data;
+  
+  // Use stallId__itemId as the document ID for easy lookup
+  const likeId = `${stallId}__${itemId}`;
+  const likeRef = doc(db, "users", currentUserForLikes.uid, "likes", likeId);
+  
+  await setDoc(likeRef, {
+    stallId,
+    stallName,
+    itemId,
+    itemName,
+    price,
+    image,
+    likedAt: serverTimestamp()
+  });
+}
+
+// Remove like from Firestore
+async function unlikeItem(stallId, itemId) {
+  if (!currentUserForLikes) return;
+  
+  const likeId = `${stallId}__${itemId}`;
+  const likeRef = doc(db, "users", currentUserForLikes.uid, "likes", likeId);
+  
+  await deleteDoc(likeRef);
+}
+
+// Show brief animation when liking
+function showLikeFeedback(heart) {
+  heart.style.transform = "scale(1.3)";
+  setTimeout(() => {
+    heart.style.transform = "scale(1)";
+  }, 200);
+}
