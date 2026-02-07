@@ -26,7 +26,6 @@
             <nav class="nav-menu">
                 <div class="nav-item active" onclick="switchPage('overview', this)">Overview</div>
                 <div class="nav-item" onclick="switchPage('stalls', this)">Stall Management</div>
-                <div class="nav-item" onclick="switchPage('reports', this)">Reports</div>
                 <div class="nav-item" onclick="switchPage('settings', this)">Settings</div>
             </nav>
         </aside>
@@ -45,7 +44,6 @@
                     <div class="card stat-card">
                         <div class="stat-header">
                             <span>Total Centre Revenue</span>
-                            <span class="icon">$</span>
                         </div>
                         <div class="stat-value" id="centre-revenue">$0</div>
                         <div class="stat-trend positive">
@@ -56,7 +54,6 @@
                     <div class="card stat-card">
                         <div class="stat-header">
                             <span>Occupied Stalls</span>
-                            <span class="icon">🏪</span>
                         </div>
                         <div class="stat-value" id="active-stalls">0</div>
                         <div class="stat-subtext">Total Registered Vendors</div>
@@ -65,16 +62,14 @@
                     <div class="card stat-card">
                         <div class="stat-header">
                             <span>Total Orders</span>
-                            <span class="icon">📦</span>
                         </div>
                         <div class="stat-value" id="total-traffic">0</div>
-                        <div class="stat-trend positive"><span>+12%</span> vs last month</div>
+                        <div class="stat-trend positive"> Made this month</div>
                     </div>
 
                     <div class="card stat-card">
                         <div class="stat-header">
                             <span>Centre Rating</span>
-                            <span class="icon">⭐</span>
                         </div>
                         <div class="stat-value" id="centre-rating">0.0</div>
                         <div class="stat-subtext">Average of all reviews</div>
@@ -115,7 +110,6 @@
                         <h1>Stall Management</h1>
                         <p class="subtitle">View and manage registered tenants</p>
                     </div>
-                    <button class="btn-primary" style="float:right;" onclick="alert('Feature coming soon!')">+ Add New Stall</button>
                 </header>
 
                 <div class="card">
@@ -132,31 +126,6 @@
                         <tbody id="stall-management-body">
                             </tbody>
                     </table>
-                </div>
-            </div>
-
-            <div id="page-reports" class="hidden">
-                <header class="header">
-                    <h1>Sales Reports</h1>
-                    <p class="subtitle">Detailed breakdown of item popularity</p>
-                </header>
-
-                <div class="charts-grid">
-                    <div class="card chart-container">
-                        <h3>Most Popular Items</h3>
-                        <p class="subtitle">Across all stalls</p>
-                        <div class="canvas-wrapper">
-                            <canvas id="topItemsChart"></canvas>
-                        </div>
-                    </div>
-
-                    <div class="card chart-container">
-                        <h3>Payment Methods</h3>
-                        <p class="subtitle">Cash vs Cashless</p>
-                        <div class="canvas-wrapper">
-                            <canvas id="paymentMethodChart"></canvas>
-                        </div>
-                    </div>
                 </div>
             </div>
 
