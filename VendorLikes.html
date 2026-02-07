@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HawkerHub – Customer Likes</title> 
+  <link rel="stylesheet" href="VendorAccount.css">
+  <link rel="stylesheet" href="topnav.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <section class="banner">
+    <div class="container">
+      <div class="banner-tabs">
+        <a href="Profile(Patron & Vendor).html">Profile</a>
+        <span>|</span>
+        <a href="VendorComplaints.html">Complaints</a>
+        <span>|</span>
+        <a href="Vender Account.html">Stall</a>
+      </div>
+
+      <div class="banner-text">
+        <h1 id="stallNameDisplay">Customer Likes</h1>
+        <p>See which customers love your menu items</p>
+      </div>
+    </div>
+  </section>
+
+  <main class="container">
+    <div class="toolbar">
+      <div class="dropdown-container">
+        <div class="dropdown-trigger">
+          Menu <span>▾</span>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="Vender Account.html">Menu</a></li>
+          <li><a href="Vender AccountRentalStatus.html">Rental Status</a></li>
+          <li><a href="analytics.html">Analytics</a></li>
+          <li><a href="VendorLikes.html" class="active">Customer Likes</a></li>
+        </ul>
+      </div>
+      
+      <div class="stats-summary" id="likesSummary">
+        <div class="stat-box">
+          <i class="fa-solid fa-heart"></i>
+          <div>
+            <span class="stat-number" id="totalLikes">-</span>
+            <span class="stat-label">Total Likes</span>
+          </div>
+        </div>
+        <div class="stat-box">
+          <i class="fa-solid fa-users"></i>
+          <div>
+            <span class="stat-number" id="uniquePatrons">-</span>
+            <span class="stat-label">Customers</span>
+          </div>
+        </div>
+        <div class="stat-box">
+          <i class="fa-solid fa-utensils"></i>
+          <div>
+            <span class="stat-number" id="likedItems">-</span>
+            <span class="stat-label">Items Liked</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter Options -->
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">All Likes</button>
+      <button class="filter-btn" data-filter="today">Today</button>
+      <button class="filter-btn" data-filter="week">This Week</button>
+      <button class="filter-btn" data-filter="month">This Month</button>
+    </div>
+
+    <div id="likesContainer" class="likes-grid">
+      <p class="loading-message">Loading customer likes...</p>
+    </div>
+  </main>
+
+  <footer class="footer-spacer"></footer>
+
+  <script type="module" src="VendorLikes.js"></script>
+  <script type="module" src="navbar-init.js"></script>
+</body>
+</html>
