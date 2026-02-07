@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc, deleteDoc, updateDoc, doc, query, orderBy, limit, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, getDoc, addDoc, deleteDoc, updateDoc, doc, query, orderBy, limit, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDo8B0OLtAj-Upfz7yNFeGz4cx3KWLZLuQ",
@@ -39,43 +39,37 @@ window.updateDayOptions = function() {
     const daySelect = document.getElementById('picker-day');
     
     // JS Trick: Day 0 of next month gives the last day of current month
-    // Example: (2026, 2, 0) gives last day of February 2026
     const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
     
-    // Preserve current selection if possible
     const currentSelection = daySelect.value;
     
     daySelect.innerHTML = "";
     
     for (let i = 1; i <= daysInMonth; i++) {
         let option = document.createElement("option");
-        option.value = i < 10 ? `0${i}` : i; // Pad with 0 (01, 02)
+        option.value = i < 10 ? `0${i}` : i; 
         option.text = i;
         daySelect.appendChild(option);
     }
 
-    // Try to restore previous selection, or default to 01
     if (currentSelection && currentSelection <= daysInMonth) {
         daySelect.value = currentSelection;
     } else {
         daySelect.value = "01";
     }
 
-    // Update the actual hidden input that Firebase uses
     updateFinalDate();
 };
 
 // Combine Year-Month-Day into YYYY-MM-DD string
 window.updateFinalDate = function() {
     const year = document.getElementById('picker-year').value;
-    // Pad Month (Jan is 0 -> 01)
     const month = (parseInt(document.getElementById('picker-month').value) + 1).toString().padStart(2, '0');
-    const day = document.getElementById('picker-day').value; // Already padded
+    const day = document.getElementById('picker-day').value; 
 
     const finalDateString = `${year}-${month}-${day}`;
     document.getElementById('input-date').value = finalDateString;
     
-    // Check Availability whenever date changes
     checkAvailability();
 };
 
@@ -87,18 +81,15 @@ window.openScheduleModal = function(stallId, stallName) {
     document.getElementById('schedule-stall-id').value = stallId;
     document.getElementById('schedule-stall-name').value = stallName;
     
-    // Initialize Date Picker to TODAY
     initializeDatePicker();
     const today = new Date();
     document.getElementById('picker-year').value = today.getFullYear();
     document.getElementById('picker-month').value = today.getMonth();
     
-    // Populate days first, then set today's day
     updateDayOptions();
     document.getElementById('picker-day').value = today.getDate().toString().padStart(2, '0');
     updateFinalDate();
 
-    // Reset Time Dropdown
     const select = document.getElementById('input-time');
     for (let i = 0; i < select.options.length; i++) {
         select.options[i].disabled = false;
@@ -138,7 +129,6 @@ window.checkAvailability = async function() {
     
     if (!dateVal) return;
 
-    // Reset Dropdown
     for (let i = 0; i < timeSelect.options.length; i++) {
         timeSelect.options[i].disabled = false;
         timeSelect.options[i].innerText = timeSelect.options[i].value; 
@@ -177,7 +167,7 @@ window.calculateLiveGrade = function(val) {
 window.confirmSchedule = async function() {
     const stallId = document.getElementById('schedule-stall-id').value;
     const stallName = document.getElementById('schedule-stall-name').value;
-    const dateVal = document.getElementById('input-date').value; // Reading hidden input
+    const dateVal = document.getElementById('input-date').value; 
     const timeVal = document.getElementById('input-time').value;
     const note = document.getElementById('input-note').value;
 
@@ -336,6 +326,68 @@ window.switchPage = function(pageId, element) {
     if(pageId === 'overview') loadDashboard();
 };
 
+// ==========================================
+// 5. LOGOUT LOGIC
+// ==========================================
+
+window.logoutOfficer = async function() {
+    if (!confirm("Are you sure you want to log out?")) return;
+
+    // Use the stored ID from login, or your backup ID if you are still testing
+    const officerDocId = sessionStorage.getItem("officerDocId");
+
+    if (officerDocId) {
+        try {
+            const officerRef = doc(db, "officers", officerDocId);
+            await updateDoc(officerRef, {
+                isActive: false,  
+                lastLogout: serverTimestamp()
+            });
+            console.log("Officer status set to inactive.");
+        } catch (error) {
+            console.error("Error updating logout status:", error);
+        }
+    }
+
+    sessionStorage.clear();
+    localStorage.removeItem("user"); 
+    window.location.href = "Home Guest.html"; 
+};
+
+// ==========================================
+// 6. LOAD OFFICER PROFILE (New)
+// ==========================================
+
+async function loadOfficerProfile() {
+    const officerDocId = sessionStorage.getItem("officerDocId");
+
+    if (!officerDocId) {
+        console.warn("No officer ID in session. Ensure you set sessionStorage.setItem('officerDocId', id) on login.");
+        return;
+    }
+
+    try {
+        const officerRef = doc(db, "officers", officerDocId);
+        const officerSnap = await getDoc(officerRef);
+
+        if (officerSnap.exists()) {
+            const data = officerSnap.data();
+            
+            // Updates the IDs we added to the HTML
+            // Falls back to email or 'N/A' if name/badge fields are missing
+            const nameEl = document.getElementById('display-officer-name');
+            const badgeEl = document.getElementById('display-badge-id');
+
+            if(nameEl) nameEl.innerText = data.name || data.email || "Officer";
+            if(badgeEl) badgeEl.innerText = data.badgeId || "N/A";
+        }
+    } catch (error) {
+        console.error("Error fetching profile:", error);
+    }
+}
+
+// Initial Loaders
 loadDashboard();
 loadStallDirectory();
 loadSchedule();
+loadOfficerProfile(); // <-- Run this immediately on load
