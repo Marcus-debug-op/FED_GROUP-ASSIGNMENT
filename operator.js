@@ -15,67 +15,91 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// GLOBAL VARIABLES FOR CHARTS
+// GLOBAL VARIABLES (Only Revenue Chart remains)
 let revenueChartInstance = null;
-let itemChartInstance = null;
-let paymentChartInstance = null;
 
 // 2. LOAD DASHBOARD (Overview)
 async function loadManagerDashboard() {
     console.log("Loading dashboard...");
     
     try {
-        // Fetch Orders & Stalls
         const ordersSnapshot = await getDocs(collection(db, "orders"));
         const stallsSnapshot = await getDocs(collection(db, "stalls"));
         
-        // A. Hygiene Map (Stall Name -> Grade)
-        let hygieneMap = {};
-        stallsSnapshot.forEach(doc => {
-            const d = doc.data();
-            if(d.name) hygieneMap[d.name] = d.hygiene || "B";
-        });
+        // --- A. SETUP DATES ---
+        const today = new Date();
+        const thisMonth = today.getMonth();      // e.g., 1 (Feb)
+        const thisYear = today.getFullYear();    // e.g., 2026
 
-        // B. Calculate Revenue & Item Sales
+        // --- B. INITIALIZE COUNTERS ---
         let totalRev = 0;
-        let orderCount = 0;
-        let stallRevMap = {};
-        let itemSalesMap = {}; // { "Chicken Rice": 50 }
-        let paymentMap = { "Card": 0, "Cash": 0 };
+        let totalOrders = 0;
+        
+        let totalStallRating = 0;
+        let stallCountWithRating = 0;
 
-        ordersSnapshot.forEach(doc => {
+        let stallRevMap = {};
+        let dailyRevenueMap = {}; 
+        let hygieneMap = {}; 
+
+        // --- C. PROCESS STALLS (Rating & Hygiene) ---
+        stallsSnapshot.forEach(doc => {
             const data = doc.data();
             
-            // Only count Paid/Completed
-            if(data.status === "Paid" || data.status === "Completed") {
-                const amount = data.total || 0;
-                totalRev += amount;
-                orderCount++;
+            if(data.name) hygieneMap[data.name] = data.hygiene || "B";
 
-                // Per Stall
-                const sName = data.stallName || "Unknown";
-                stallRevMap[sName] = (stallRevMap[sName] || 0) + amount;
-
-                // Per Item (if items array exists)
-                if(data.items && Array.isArray(data.items)) {
-                    data.items.forEach(item => {
-                        const itemName = item.name || "Unknown Item";
-                        itemSalesMap[itemName] = (itemSalesMap[itemName] || 0) + (item.qty || 1);
-                    });
-                }
-                
-                // Payment Method (Mock data if missing)
-                const method = data.payment?.method === 'card' ? 'Card' : 'Cash'; // simplified check
-                paymentMap[method]++;
+            // Calculate Rating from Stalls Collection
+            if (data.rating && typeof data.rating === 'number') {
+                totalStallRating += data.rating;
+                stallCountWithRating++;
             }
         });
 
-        // C. Update HTML Text
-        if(document.getElementById('centre-revenue')) document.getElementById('centre-revenue').innerText = "$" + totalRev.toLocaleString();
-        if(document.getElementById('active-stalls')) document.getElementById('active-stalls').innerText = stallsSnapshot.size;
-        if(document.getElementById('total-traffic')) document.getElementById('total-traffic').innerText = orderCount;
+        // --- D. PROCESS ORDERS (Revenue & Daily Graph) ---
+        ordersSnapshot.forEach(doc => {
+            const data = doc.data();
+            
+            if(data.status === "Paid" || data.status === "Completed") {
+                const amount = data.total || 0;
+                totalRev += amount;
+                totalOrders++;
 
-        // D. Top Stalls Table
+                // Date Checks for Graph (Current Month Only)
+                if (data.createdAt) {
+                    let dateObj = data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt);
+                    if (dateObj.getMonth() === thisMonth && dateObj.getFullYear() === thisYear) {
+                        const day = dateObj.getDate();
+                        dailyRevenueMap[day] = (dailyRevenueMap[day] || 0) + amount;
+                    }
+                }
+
+                // Stall Aggregation (For Top Stalls)
+                const sName = data.stallName || "Unknown";
+                stallRevMap[sName] = (stallRevMap[sName] || 0) + amount;
+            }
+        });
+
+        // --- E. UPDATE HTML (TOTALS) ---
+        if(document.getElementById('centre-revenue')) 
+            document.getElementById('centre-revenue').innerText = "$" + totalRev.toLocaleString();
+        
+        if(document.getElementById('active-stalls')) 
+            document.getElementById('active-stalls').innerText = stallsSnapshot.size;
+        
+        if(document.getElementById('total-traffic')) 
+            document.getElementById('total-traffic').innerText = totalOrders;
+
+
+        // --- F. UPDATE AVERAGE RATING ---
+        const avgRating = stallCountWithRating > 0 
+            ? (totalStallRating / stallCountWithRating).toFixed(1) 
+            : "0.0";
+            
+        if(document.getElementById('centre-rating')) 
+            document.getElementById('centre-rating').innerText = avgRating;
+
+
+        // --- G. TOP STALLS TABLE ---
         let sortedStalls = [];
         for (let [name, revenue] of Object.entries(stallRevMap)) {
             sortedStalls.push({ name, revenue, grade: hygieneMap[name] || "-" });
@@ -91,11 +115,18 @@ async function loadManagerDashboard() {
         `).join('');
         document.getElementById('top-stalls-body').innerHTML = topStallHTML || '<tr><td colspan="3">No sales yet</td></tr>';
 
-        // E. Render Revenue Chart
-        renderRevenueChart(totalRev);
 
-        // F. Store data globally for Reports Page
-        window.reportData = { itemSalesMap, paymentMap };
+        // --- H. RENDER DAILY CHART ---
+        const currentMonthName = today.toLocaleString('default', { month: 'short' });
+        const sortedDays = Object.keys(dailyRevenueMap).map(Number).sort((a,b) => a - b);
+        
+        const chartLabels = sortedDays.map(day => `${currentMonthName} ${day}`);
+        const chartData = sortedDays.map(day => dailyRevenueMap[day]);
+        
+        const chartTitleElement = document.querySelector('#centreRevenueChart').closest('.card').querySelector('h3');
+        if(chartTitleElement) chartTitleElement.innerText = `Centre Revenue (${currentMonthName} Daily)`;
+
+        renderRevenueChart(chartLabels, chartData);
 
     } catch (e) {
         console.error("Dashboard Error:", e);
@@ -124,7 +155,6 @@ async function loadStallManagement() {
                     <td>${data.stallNo || '-'}</td>
                     <td><span class="badge badge-success">${data.hygiene || '?'}</span></td>
                     <td>
-                        <button class="btn-text" onclick="alert('Editing ${data.name}')">Edit</button>
                         <button class="btn-text" style="color:red" onclick="deleteStall('${id}')">Delete</button>
                     </td>
                 </tr>
@@ -137,77 +167,41 @@ async function loadStallManagement() {
     }
 }
 
-// 4. LOAD REPORTS PAGE
-function loadReports() {
-    if(!window.reportData) return; // Wait for dashboard to load data first
-
-    const { itemSalesMap, paymentMap } = window.reportData;
-
-    // A. Top Items Chart
-    const topItems = Object.entries(itemSalesMap)
-        .sort((a,b) => b[1] - a[1]) // Sort by count
-        .slice(0, 5); // Take top 5
-
-    const ctxItems = document.getElementById('topItemsChart').getContext('2d');
-    
-    if(itemChartInstance) itemChartInstance.destroy(); // Prevent duplicate charts
-    
-    itemChartInstance = new Chart(ctxItems, {
-        type: 'bar',
-        data: {
-            labels: topItems.map(i => i[0]), // Item Names
-            datasets: [{
-                label: 'Units Sold',
-                data: topItems.map(i => i[1]), // Counts
-                backgroundColor: '#7c3aed'
-            }]
-        },
-        options: { responsive: true }
-    });
-
-    // B. Payment Chart
-    const ctxPay = document.getElementById('paymentMethodChart').getContext('2d');
-    if(paymentChartInstance) paymentChartInstance.destroy();
-
-    paymentChartInstance = new Chart(ctxPay, {
-        type: 'doughnut',
-        data: {
-            labels: Object.keys(paymentMap),
-            datasets: [{
-                data: Object.values(paymentMap),
-                backgroundColor: ['#7c3aed', '#a78bfa']
-            }]
-        }
-    });
-}
-
-// 5. CHART HELPER (Revenue)
-function renderRevenueChart(total) {
+// 4. CHART HELPER (Revenue Only)
+function renderRevenueChart(labels, data) {
     const ctx = document.getElementById('centreRevenueChart').getContext('2d');
     if(revenueChartInstance) revenueChartInstance.destroy();
 
     revenueChartInstance = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            labels: labels,
             datasets: [{
-                label: 'Revenue',
-                data: [total*0.7, total*0.8, total*0.9, total], // Mock trend
+                label: 'Revenue ($)',
+                data: data,
                 borderColor: '#7c3aed',
-                fill: false
+                backgroundColor: 'rgba(124, 58, 237, 0.1)',
+                fill: true,
+                tension: 0.3
             }]
         },
-        options: { responsive: true, maintainAspectRatio: false }
+        options: { 
+            responsive: true, 
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
     });
 }
 
-// 6. DELETE STALL FUNCTION (Stub)
+// 5. DELETE STALL FUNCTION
 window.deleteStall = async function(id) {
     if(confirm("Are you sure you want to delete this stall? This cannot be undone.")) {
         try {
             await deleteDoc(doc(db, "stalls", id));
             alert("Stall deleted.");
-            loadStallManagement(); // Refresh table
+            loadStallManagement();
         } catch(e) {
             console.error("Delete failed:", e);
             alert("Delete failed (Permission denied or error).");
@@ -215,7 +209,7 @@ window.deleteStall = async function(id) {
     }
 };
 
-// 7. NAVIGATION
+// 6. NAVIGATION
 window.switchPage = function(pageId, element) {
     document.querySelectorAll('[id^="page-"]').forEach(p => p.classList.add('hidden'));
     document.getElementById('page-' + pageId).classList.remove('hidden');
@@ -223,9 +217,7 @@ window.switchPage = function(pageId, element) {
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     element.classList.add('active');
 
-    // Trigger specific page loads
     if(pageId === 'stalls') loadStallManagement();
-    if(pageId === 'reports') loadReports();
 };
 
 // Start
