@@ -6,7 +6,7 @@
   <title>HawkerHub – Officer Portal</title>
   <link rel="stylesheet" href="SignInStyle.css">
   <script type="module" src="SignInOfficer.js"></script>
-<base target="_blank">
+  <base target="_blank">
 </head>
 
 <body data-auth-role="officer">
@@ -25,46 +25,19 @@
 
         <div class="panel-body">
           <div class="icon">👮</div>
-          <div class="title" id="formTitle">Sign In</div>
+          <div class="title">Officer Sign In</div>
           <div class="subtitle">NEA Officer Portal</div>
 
-          <div class="segmented" data-role="officer">
-            <button class="inactive" id="tabSignUp" type="button">Sign Up</button>
-            <button class="active" id="tabSignIn" type="button">Sign In</button>
-          </div>
-
-          <!-- Sign Up Fields (hidden by default) -->
-          <div id="signupFields" style="display: none;">
-            <label for="fullname">Full Name</label>
-            <input id="fullname" type="text" placeholder="" />
-
-            <label for="badgeId">Badge ID</label>
-            <input id="badgeId" type="text" placeholder="" />
-
-            <label for="zone">Assigned Zone</label>
-            <input id="zone" type="text" placeholder="" />
-
-            <label for="phone">Phone Number</label>
-            <input id="phone" type="tel" placeholder="" />
-          </div>
-
           <label for="email">Email Address</label>
-          <input id="email" type="email" placeholder="" />
+          <input id="email" type="email" placeholder="Enter your email" />
 
           <label for="password">Password</label>
-          <input id="password" type="password" placeholder="" />
-
-          <!-- Confirm Password (Sign Up only) -->
-          <div id="confirmField" style="display: none;">
-            <label for="confirm">Confirm Password</label>
-            <input id="confirm" type="password" placeholder="" />
-          </div>
+          <input id="password" type="password" placeholder="Enter your password" />
 
           <button class="submit" type="button" id="submitBtn">Sign In</button>
         </div>
 
-        <div class="panel-footer">
-
+        <div class="panel-footer"></div>
       </div>
     </div>
   </div>

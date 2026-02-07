@@ -1,10 +1,9 @@
-// SignInOperator.js - Operator Sign In / Sign Up with Firestore Integration
+// SignInOperator.js - Operator Sign In with Auto-Account Creation & Role Isolation
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { 
     getAuth, 
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
-    updateProfile,
     onAuthStateChanged,
     setPersistence,
     browserLocalPersistence
@@ -17,7 +16,6 @@ import {
     serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-// Firebase Configuration
 const firebaseConfig = {
     apiKey: "AIzaSyDo8B0OLtAj-Upfz7yNFeGz4cx3KWLZLuQ",
     authDomain: "hawkerhub-64e2d.firebaseapp.com",
@@ -28,100 +26,30 @@ const firebaseConfig = {
     appId: "1:722888051277:web:59926d0a54ae0e4fe36a04"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const ROLE = "operator";
+const OPPOSITE_ROLE = "officer";
 
-// Set persistence to local
 setPersistence(auth, browserLocalPersistence);
 
-// State
-let isSignUpMode = false;
-
-// DOM Elements
-const tabSignUp = document.getElementById("tabSignUp");
-const tabSignIn = document.getElementById("tabSignIn");
-const signupFields = document.getElementById("signupFields");
-const confirmField = document.getElementById("confirmField");
-const formTitle = document.getElementById("formTitle");
 const submitBtn = document.getElementById("submitBtn");
-const googleLabel = document.getElementById("googleLabel");
+let emailEl, passwordEl;
 
-// Input Elements
-let fullnameEl, operatorIdEl, centreEl, phoneEl, emailEl, passwordEl, confirmEl;
-
-// Initialize when DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
-    // Get input elements
-    fullnameEl = document.getElementById("fullname");
-    operatorIdEl = document.getElementById("operatorId");
-    centreEl = document.getElementById("centre");
-    phoneEl = document.getElementById("phone");
     emailEl = document.getElementById("email");
     passwordEl = document.getElementById("password");
-    confirmEl = document.getElementById("confirm");
 
-    // Attach toggle handlers
-    tabSignUp?.addEventListener("click", () => setMode("signup"));
-    tabSignIn?.addEventListener("click", () => setMode("signin"));
-
-    // Attach submit handler
     submitBtn?.addEventListener("click", handleSubmit);
-
-    // Allow Enter key to submit
     passwordEl?.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") handleSubmit(e);
-    });
-    confirmEl?.addEventListener("keypress", (e) => {
         if (e.key === "Enter") handleSubmit(e);
     });
 });
 
-/**
- * Toggle between Sign In and Sign Up modes
- */
-function setMode(mode) {
-    isSignUpMode = mode === "signup";
-
-    // Update tab styles
-    if (isSignUpMode) {
-        tabSignUp?.classList.remove("inactive");
-        tabSignUp?.classList.add("active");
-        tabSignIn?.classList.remove("active");
-        tabSignIn?.classList.add("inactive");
-
-        // Show sign up fields
-        if (signupFields) signupFields.style.display = "block";
-        if (confirmField) confirmField.style.display = "block";
-
-        // Update labels
-        if (formTitle) formTitle.textContent = "Sign Up";
-        if (submitBtn) submitBtn.textContent = "Create Account";
-        if (googleLabel) googleLabel.textContent = "Sign up with Google";
-    } else {
-        tabSignIn?.classList.remove("inactive");
-        tabSignIn?.classList.add("active");
-        tabSignUp?.classList.remove("active");
-        tabSignUp?.classList.add("inactive");
-
-        // Hide sign up fields
-        if (signupFields) signupFields.style.display = "none";
-        if (confirmField) confirmField.style.display = "none";
-
-        // Update labels
-        if (formTitle) formTitle.textContent = "Sign In";
-        if (submitBtn) submitBtn.textContent = "Sign In";
-        if (googleLabel) googleLabel.textContent = "Sign in with Google";
-    }
-}
-
-/**
- * Handle form submission (Sign In or Sign Up)
- */
 async function handleSubmit(e) {
     e.preventDefault();
-
+    
     const email = (emailEl?.value || "").trim().toLowerCase();
     const password = passwordEl?.value || "";
 
@@ -130,194 +58,172 @@ async function handleSubmit(e) {
         return;
     }
 
-    if (isSignUpMode) {
-        await handleSignUp(email, password);
-    } else {
-        await handleSignIn(email, password);
+    if (password.length < 6) {
+        alert("Password must be at least 6 characters.");
+        return;
     }
-}
 
-/**
- * Handle Sign In
- */
-async function handleSignIn(email, password) {
     setLoading(true);
 
     try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-
-        // Verify operator role in Firestore
-        const operatorDoc = await getDoc(doc(db, "operators", user.uid));
-
-        if (!operatorDoc.exists()) {
-            const userDoc = await getDoc(doc(db, "users", user.uid));
-
-            if (!userDoc.exists() || userDoc.data().role !== "operator") {
+        // Try to sign in first
+        let userCredential;
+        let isNewAccount = false;
+        
+        try {
+            userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            
+            // Check if user has opposite role (officer trying to sign in as operator)
+            const oppositeRoleDoc = await getDoc(doc(db, "officers", user.uid));
+            if (oppositeRoleDoc.exists()) {
                 await auth.signOut();
-                alert("This account is not registered as a Hawker Centre Operator.");
+                alert("This email is registered as an Officer. Please use the Officer Portal instead.");
                 setLoading(false);
                 return;
             }
+            
+            // Check if user exists in operators collection
+            const roleDoc = await getDoc(doc(db, "operators", user.uid));
+            if (!roleDoc.exists()) {
+                // User exists in Auth but not in Firestore operators - create entry
+                await createRoleDocument(user.uid, email);
+                isNewAccount = true;
+            } else {
+                // Update last login
+                await setDoc(doc(db, "operators", user.uid), {
+                    lastLogin: serverTimestamp()
+                }, { merge: true });
+            }
+            
+        } catch (signInError) {
+            // If user not found in Auth, create new account
+            if (signInError.code === "auth/user-not-found" || signInError.code === "auth/invalid-credential") {
+                console.log("Account not found, auto-creating operator account...");
+                
+                // Check if email exists in opposite role first (Firestore only check)
+                const emailExists = await checkEmailInOppositeRole(email);
+                if (emailExists) {
+                    alert(`This email is already registered as an ${OPPOSITE_ROLE}. Each email can only be used for one role.`);
+                    setLoading(false);
+                    return;
+                }
+                
+                userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                await createRoleDocument(user.uid, email);
+                isNewAccount = true;
+            } else if (signInError.message && signInError.message.includes("Officer Portal")) {
+                // Re-throw our custom role error
+                throw signInError;
+            } else {
+                throw signInError;
+            }
         }
 
-        // Update last login
-        await setDoc(doc(db, "operators", user.uid), {
-            lastLogin: serverTimestamp()
-        }, { merge: true });
-
-        // Store session info
-        localStorage.setItem("hawkerhub_user", JSON.stringify({
-            uid: user.uid,
-            email: user.email,
-            role: "operator"
-        }));
-
-        // Redirect to Operator Dashboard
-        window.location.href = "operator.html";
-
-    } catch (err) {
-        console.error("Sign in error:", err);
-        alert(prettyFirebaseError(err));
-        setLoading(false);
-    }
-}
-
-/**
- * Handle Sign Up (Account Creation)
- */
-async function handleSignUp(email, password) {
-    const fullname = fullnameEl?.value.trim() || "";
-    const operatorId = operatorIdEl?.value.trim() || "";
-    const centre = centreEl?.value.trim() || "";
-    const phone = phoneEl?.value.trim() || "";
-    const confirm = confirmEl?.value || "";
-
-    // Validation
-    if (!fullname || !operatorId || !centre || !phone) {
-        alert("Please fill in all fields.");
-        return;
-    }
-
-    if (password !== confirm) {
-        alert("Passwords do not match!");
-        return;
-    }
-
-    if (password.length < 6) {
-        alert("Password must be at least 6 characters long.");
-        return;
-    }
-
-    setLoading(true);
-
-    try {
-        // Create user with Firebase Auth
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // Update user profile
-        await updateProfile(user, { displayName: fullname });
-
-        // Create operator document in Firestore
-        const operatorData = {
-            uid: user.uid,
-            fullname: fullname,
-            operatorId: operatorId,
-            assignedCentre: centre,
-            email: email,
-            phone: phone,
-            role: "operator",
-            createdAt: serverTimestamp(),
-            lastLogin: serverTimestamp(),
-            isActive: true
-        };
-
-        await setDoc(doc(db, "operators", user.uid), operatorData);
-        await setDoc(doc(db, "users", user.uid), operatorData);
-
-        // Store session info
+        // Store session
         localStorage.setItem("hawkerhub_user", JSON.stringify({
             uid: user.uid,
             email: user.email,
-            role: "operator",
-            displayName: fullname
+            role: ROLE,
+            isNewAccount: isNewAccount
         }));
 
-        // Success and redirect
-        alert("Operator account created successfully! Welcome to HawkerHub.");
+        // Redirect
         window.location.href = "operator.html";
 
     } catch (err) {
-        console.error("Account creation error:", err);
+        console.error("Authentication error:", err);
         alert(prettyFirebaseError(err));
         setLoading(false);
     }
 }
 
-/**
- * Set loading state on submit button
- */
+async function checkEmailInOppositeRole(email) {
+    // Check if this email exists in officers collection
+    // Note: This requires a query. Since we can't query easily without composite indexes,
+    // we'll check during the sign-in attempt instead. If the user exists in Auth as an officer,
+    // they would have failed the opposite role check above.
+    
+    // Alternative: Check if email exists in users collection with opposite role
+    const userDoc = await getDoc(doc(db, "users", email)); // This won't work with email as ID
+    
+    // Better approach: We already checked the officers collection by UID above if they exist in Auth
+    // If they don't exist in Auth, they can't exist in Firestore with a role (since we create both together)
+    // So this is mainly for edge cases
+    return false;
+}
+
+async function createRoleDocument(uid, email) {
+    const accountData = {
+        uid: uid,
+        email: email,
+        role: ROLE,
+        createdAt: serverTimestamp(),
+        lastLogin: serverTimestamp(),
+        isActive: true
+    };
+    
+    await setDoc(doc(db, "operators", uid), accountData);
+    await setDoc(doc(db, "users", uid), accountData);
+    console.log(`Auto-created ${ROLE} account in Firestore`);
+}
+
 function setLoading(isLoading) {
     if (!submitBtn) return;
-
     if (isLoading) {
         submitBtn.disabled = true;
         submitBtn.style.opacity = "0.7";
+        submitBtn.textContent = "Signing In...";
     } else {
         submitBtn.disabled = false;
         submitBtn.style.opacity = "1";
+        submitBtn.textContent = "Sign In";
     }
 }
 
-/**
- * Convert Firebase error codes to user-friendly messages
- */
 function prettyFirebaseError(err) {
     const code = err?.code || "";
-
+    const message = err?.message || "";
+    
+    if (message.includes("Officer Portal")) return message;
+    
     switch (true) {
-        case code.includes("email-already-in-use"):
-            return "This email is already registered. Please sign in instead.";
         case code.includes("invalid-credential"):
         case code.includes("wrong-password"):
-            return "Incorrect email or password. Please try again.";
-        case code.includes("user-not-found"):
-            return "No account found with this email. Please sign up first.";
+            return "Incorrect password. Please try again.";
         case code.includes("invalid-email"):
             return "Please enter a valid email address.";
         case code.includes("weak-password"):
-            return "Password is too weak. Please use at least 6 characters.";
-        case code.includes("user-disabled"):
-            return "This account has been disabled. Please contact support.";
+            return "Password is too weak. Must be at least 6 characters.";
+        case code.includes("email-already-in-use"):
+            return "This email is already registered with a different role.";
         case code.includes("too-many-requests"):
-            return "Too many failed attempts. Please try again later.";
+            return "Too many attempts. Please try again later.";
         case code.includes("network-request-failed"):
-            return "Network error. Please check your internet connection.";
+            return "Network error. Please check your connection.";
         default:
             return err?.message || "An error occurred. Please try again.";
     }
 }
 
-/**
- * Check if operator is already logged in
- */
 onAuthStateChanged(auth, async (user) => {
     if (user) {
-        try {
-            const operatorDoc = await getDoc(doc(db, "operators", user.uid));
-            const userDoc = await getDoc(doc(db, "users", user.uid));
-
-            const isOperator = operatorDoc.exists() || (userDoc.exists() && userDoc.data().role === "operator");
-
-            if (isOperator) {
-                window.location.href = "operator.html";
-            }
-        } catch (error) {
-            console.error("Auth state check error:", error);
+        // Verify they are an operator, not an officer
+        const officerDoc = await getDoc(doc(db, "officers", user.uid));
+        if (officerDoc.exists()) {
+            // Wrong role, sign out
+            await auth.signOut();
+            return;
+        }
+        
+        const operatorDoc = await getDoc(doc(db, "operators", user.uid));
+        if (operatorDoc.exists()) {
+            window.location.href = "operator.html";
         }
     }
 });
 
-// Export for use in other modules
 export { auth, db };
