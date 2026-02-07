@@ -1,48 +1,78 @@
+// feedbackUi.js
+// Handles visual interactions only (stars, photo preview showing/hiding)
+
 document.addEventListener("DOMContentLoaded", () => {
-  const container = document.getElementById("star-container");
-  const hidden = document.getElementById("rating-value");
-  if (!container || !hidden) return;
+    
+    // --- 1. STAR RATING VISUALS ---
+    const starContainer = document.getElementById("star-container");
+    const ratingInput = document.getElementById("rating-value");
+    
+    if (starContainer && ratingInput) {
+        let currentRating = 0;
 
-  let selected = Number(hidden.value || 0);
+        // Generate 5 text stars
+        for (let i = 1; i <= 5; i++) {
+            const btn = document.createElement("button");
+            btn.type = "button"; 
+            btn.className = "rating-star";
+            btn.innerHTML = "&#9733;"; // The text star character
+            
+            // Click: Set value
+            btn.addEventListener("click", () => {
+                currentRating = i;
+                ratingInput.value = i;
+                updateStarVisuals(i);
+            });
+
+            // Hover: Show preview
+            btn.addEventListener("mouseenter", () => updateStarVisuals(i));
+            
+            starContainer.appendChild(btn);
+        }
+
+        // Mouse leave: Reset to selected value
+        starContainer.addEventListener("mouseleave", () => updateStarVisuals(currentRating));
+
+        function updateStarVisuals(value) {
+            const stars = starContainer.querySelectorAll(".rating-star");
+            stars.forEach((star, index) => {
+                // Add 'active' class if the star index is less than the value
+                star.classList.toggle("active", index < value);
+            });
+        }
+    }
 
 
-  container.innerHTML = "";
-  for (let i = 1; i <= 5; i++) {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "rating-star";
-    btn.setAttribute("aria-label", `${i} star`);
-    btn.dataset.value = String(i);
+    // --- 2. PHOTO PREVIEW VISUALS ---
+    const fileIn = document.getElementById('real-file-input');
+    const importBtn = document.getElementById('import-btn');
+    const previewWrapper = document.getElementById('photo-preview-wrapper');
+    const previewImg = document.getElementById('image-preview');
+    const removeBtn = document.getElementById('remove-photo-btn');
 
-    // start as empty star
-    btn.innerHTML = `<i class="fa-regular fa-star"></i>`;
-    container.appendChild(btn);
+    if(importBtn && fileIn && previewWrapper && previewImg) {
+        // Click "Add Photo" -> Click hidden input
+        importBtn.addEventListener('click', () => fileIn.click());
 
-    btn.addEventListener("mouseenter", () => paint(i));
-    btn.addEventListener("click", () => {
-      selected = i;
-      hidden.value = String(i); // GlobalSubmit.js will read this
-      paint(selected);
-    });
-  }
+        // File selected -> Show preview box
+        fileIn.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if(file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    previewImg.src = ev.target.result;
+                    previewWrapper.classList.add('show'); // CSS makes it visible
+                };
+                reader.readAsDataURL(file);
+            }
+        });
 
-  container.addEventListener("mouseleave", () => paint(selected));
-
-  // Paint stars based on number
-  function paint(value) {
-    const stars = container.querySelectorAll(".rating-star i");
-    stars.forEach((icon, idx) => {
-      const starNum = idx + 1;
-      if (starNum <= value) {
-        icon.className = "fa-solid fa-star";
-        icon.style.color = "#f5b301"; 
-      } else {
-        icon.className = "fa-regular fa-star";
-        icon.style.color = "#d9d9d9"; 
-      }
-    });
-  }
-
-  // initial render
-  paint(selected);
+        // Click "X" -> Hide preview box
+        if(removeBtn) {
+            removeBtn.addEventListener('click', () => {
+                fileIn.value = ""; // Clear the input
+                previewWrapper.classList.remove('show'); // Hide box
+            });
+        }
+    }
 });
