@@ -1,6 +1,6 @@
 import { auth, fs } from "./firebase-init.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-import { collection, query, where, getDocs, addDoc, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { collection, query, where, getDocs, addDoc, doc, getDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 console.log("VendorAccount.js loaded");
 
@@ -153,6 +153,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function findAndLoadStall(uid) {
         try {
+            // Check if there's a selected stall in sessionStorage (from VendorStallDetails.js)
+            const selectedStallId = sessionStorage.getItem("selectedStallId");
+            const selectedStallName = sessionStorage.getItem("selectedStallName");
+
+            if (selectedStallId) {
+                // Load the specific selected stall
+                const stallRef = doc(fs, "stalls", selectedStallId);
+                const stallSnap = await getDoc(stallRef);
+                
+                if (stallSnap.exists() && stallSnap.data().vendorId === uid) {
+                    currentStallId = selectedStallId;
+                    const display = document.getElementById("stallNameDisplay");
+                    if (display) display.textContent = selectedStallName || stallSnap.data().name;
+                    loadMenu(currentStallId);
+                } else {
+                    // Selected stall doesn't exist or doesn't belong to this vendor
+                    sessionStorage.removeItem("selectedStallId");
+                    sessionStorage.removeItem("selectedStallName");
+                    await loadFirstStall(uid);
+                }
+            } else {
+                // No selected stall, load the first stall owned by this vendor
+                await loadFirstStall(uid);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function loadFirstStall(uid) {
+        try {
             const stallsRef = collection(fs, "stalls");
             const q = query(stallsRef, where("vendorId", "==", uid));
             const querySnapshot = await getDocs(q);
@@ -194,10 +225,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="card-body">
                         <div class="card-header">
                             <h3 class="card-title">${item.name}</h3>
-                            <div class="likes-stack">
-                                <div class="heart-icon">♡</div>
-                                <span class="likes-count">${item.likes || 0} likes</span>
-                            </div>
                         </div>
                         <p class="card-desc">${item.description || ''}</p>
                         <div class="card-footer">
@@ -255,8 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     await updateDoc(docRef, itemData);
                     alert("Updated successfully!");
                 } else {
-                    // ADD
-                    itemData.likes = 0;
+                    // ADD - removed likes field
                     const colRef = collection(fs, "stalls", currentStallId, "menu");
                     await addDoc(colRef, itemData);
                     alert("Added successfully!");
