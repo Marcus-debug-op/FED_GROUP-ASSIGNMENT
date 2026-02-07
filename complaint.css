@@ -1,0 +1,219 @@
+/* =========================================
+   COMPLAINT FORM STYLES
+   (Centered & Compact)
+========================================= */
+
+/* 1. Page Background & Alignment */
+.complaint-page {
+    margin: 0;
+    min-height: 100vh;
+    font-family: system-ui, -apple-system, sans-serif;
+    /* Background Image */
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("img/hawker_background1.avif");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    
+    /* Flexbox to CENTER content */
+    display: flex;
+    justify-content: center;   /* Horizontal Center */
+    align-items: center;       /* Vertical Center */
+    padding: 20px;             /* Small padding for mobile edges */
+    box-sizing: border-box;
+}
+
+/* 2. Wrapper */
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    /* Align 'Go Back' button to the left of the card */
+    align-items: flex-start; 
+    width: 100%;
+    max-width: 500px; /* Keeps the form compact */
+}
+
+/* 3. The Form Card */
+.form-container {
+    width: 100%;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    /* Subtle pop-in animation */
+    animation: popIn 0.3s ease-out;
+}
+
+@keyframes popIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* 4. Header */
+.form-header-img {
+    background: #ea580c; /* Orange Header */
+    color: white;
+    padding: 20px 30px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sub-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+.sub-header p {
+    margin: 5px 0 0;
+    font-size: 0.9rem;
+    opacity: 0.95;
+}
+
+/* Close Button */
+.close-modal-btn {
+    background: rgba(255,255,255,0.2);
+    border: none; color: white;
+    width: 32px; height: 32px;
+    border-radius: 50%; cursor: pointer;
+    font-size: 20px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+}
+.close-modal-btn:hover { background: rgba(255,255,255,0.4); }
+
+/* 5. Body */
+.form-body {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 6. Inputs */
+.input-group {
+    display: flex; flex-direction: column; gap: 8px;
+}
+
+label {
+    font-weight: 700; font-size: 0.95rem; color: #444;
+}
+
+textarea {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+    box-sizing: border-box;
+    background: #fafafa;
+}
+
+textarea.main-complaint { height: 140px; }
+textarea.improvement-input { height: 100px; }
+
+textarea:focus {
+    border-color: #ea580c;
+    outline: none;
+    background: #fff;
+}
+
+/* 7. Hide Ugly File Input */
+#real-file-input {
+    display: none; 
+}
+
+/* 8. Nice "Import Media" Button */
+.label-row {
+    display: flex; justify-content: space-between; align-items: center;
+}
+
+.btn-import-media {
+    background: white;
+    color: #ea580c;
+    border: 2px solid #ea580c;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-import-media:hover {
+    background: #ea580c; color: white;
+}
+
+/* 9. Submit Button */
+.btn-submit {
+    width: 100%;
+    background: #ea580c;
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s;
+}
+
+.btn-submit:hover {
+    background: #c2410c;
+}
+
+/* 10. Go Back Link */
+.btn-go-back {
+    color: white;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+    /* Aligns to the left, matching the card start */
+    align-self: flex-start; 
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+/* Photo Preview */
+#image-preview {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-top: 15px;
+    display: none; 
+    border: 2px solid #eee;
+}
+#image-preview[src] { display: block; }
+
+/* --- New Photo Preview Box --- */
+.complaint-preview-area {
+    display: none; /* Hidden by default */
+    width: 100%;
+    background: #f9f9f9;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    margin-top: 10px;
+    box-sizing: border-box;
+}
+
+/* This class is added by JS to show the box */
+.complaint-preview-area.show {
+    display: block;
+}
+
+.complaint-preview-area img {
+    max-width: 100%;
+    max-height: 200px; /* Limit height so it doesn't stretch the page */
+    border-radius: 8px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
