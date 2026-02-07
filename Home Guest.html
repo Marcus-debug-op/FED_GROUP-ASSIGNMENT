@@ -10,6 +10,32 @@
 </head>
 
 <body>
+    <!-- only pop up when not logged in) -->
+  <div id="guestPromptOverlay" class="guest-prompt-overlay hidden">
+    <div class="guest-prompt-card" role="dialog" aria-modal="true" aria-labelledby="guestPromptTitle">
+      <h2 id="guestPromptTitle" class="guest-prompt-title">Welcome to HawkerHub</h2>
+      <p class="guest-prompt-text">
+        Can't make up your mind? Continue as Guest to explore!
+      </p>
+      <p>
+        Sign up now for exclusive deals and promotions!
+      </p>
+
+      <div class="guest-prompt-actions">
+        <button id="guestPromptGuestBtn" class="guest-prompt-btn guest" type="button">
+          Continue as guest
+        </button>
+        <a id="guestPromptSigninBtn" class="guest-prompt-btn signin" href="sign up.html">
+          Sign in
+        </a>
+      </div>
+
+      <button id="guestPromptClose" class="guest-prompt-close" type="button" aria-label="Close">
+        X
+      </button>
+    </div>
+  </div>
+
   <!-- Hero -->
   <section class="hero">
     <div class="hero-bg"></div>
@@ -44,5 +70,7 @@
 
   <script type="module" src="navbar-init.js"></script>
   <script type="module" src="home-guest.js"></script>
+  <script type="module" src="guestPrompt.js"></script>
+
 </body>
 </html>
