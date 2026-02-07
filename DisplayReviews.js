@@ -30,7 +30,7 @@ function loadReviews() {
 
         reviewCard.innerHTML = `
             <div class="user-meta">
-                <div class="user-avatar">👤</div>
+    
                 <div class="user-title">
                     <strong>${review.user}</strong>
                     <div class="stars-gold-small">${filledStars}</div>
