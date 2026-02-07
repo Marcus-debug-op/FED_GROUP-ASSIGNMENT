@@ -217,7 +217,205 @@ padding: 24px 24px 24px 32px;
         text-decoration: underline;
     }
 
-    @media (max-width: 900px) {
+/* ----------------------------------------
+   MORE OPTIONS BUTTON (on main sign up page)
+   ---------------------------------------- */
+.more-options-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+    padding: 20px;
+    gap: 16px;
+}
+
+.more-options-text {
+    font-size: 14px;
+    color: var(--faded-text);
+    margin: 0;
+    font-weight: 500;
+}
+
+.more-options-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-red) 100%);
+    border: none;
+    border-radius: 999px;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(249, 115, 22, 0.35);
+    transition: all 0.3s ease;
+    min-width: 200px;
+}
+
+.more-options-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 32px rgba(249, 115, 22, 0.45);
+}
+
+.more-options-btn:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+.btn-icon {
+    font-size: 18px;
+}
+
+.btn-text {
+    letter-spacing: 0.3px;
+}
+
+.btn-arrow {
+    font-size: 16px;
+    transition: transform 0.3s ease;
+}
+
+.more-options-btn:hover .btn-arrow {
+    transform: translateX(4px);
+}
+/* ----------------------------------------
+   OFFICER & OPERATOR CARD STYLES
+   ---------------------------------------- */
+.officer-card {
+    border-top: 4px solid #3B82F6;
+}
+
+.operator-card {
+    border-top: 4px solid #10B981;
+}
+
+.officer-card .cta a {
+    color: #3B82F6;
+}   
+
+.operator-card .cta a {
+    color: #10B981;
+}
+
+.officer-card .features li::before {
+    color: #3B82F6;
+}
+
+.operator-card .features li::before {
+    color: #10B981;
+}
+
+/* ----------------------------------------
+   CONTINUE AS GUEST BUTTON (same orange style)
+   ---------------------------------------- */
+.guest-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-red) 100%);
+    border: none;
+    border-radius: 999px;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(249, 115, 22, 0.35);
+    transition: all 0.3s ease;
+    min-width: 200px;
+    text-decoration: none;
+}
+
+.guest-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 32px rgba(249, 115, 22, 0.45);
+}
+
+.guest-btn:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+.guest-btn:hover .btn-arrow {
+    transform: translateX(4px);
+}
+
+
+/* ----------------------------------------
+   ADDITIONAL LINKS SECTION
+   ---------------------------------------- */
+.additional-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+    padding: 20px;
+    gap: 12px;
+}
+
+.links-text {
+    font-size: 14px;
+    color: var(--faded-text);
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Guest Link */
+.guest-link-container {
+    margin-top: 10px;
+}
+
+.guest-link {
+    font-size: 14px;
+    color: var(--faded-text);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    padding: 10px 20px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.guest-link:hover {
+    color: var(--accent);
+    background: rgba(249, 115, 22, 0.1);
+    border-color: var(--accent);
+}
+
+
+/* ----------------------------------------
+   RESPONSIVE ADJUSTMENTS - OfficerOperator
+   ---------------------------------------- */
+@media (max-width: 600px) {
+    .more-options-btn {
+        padding: 12px 24px;
+        font-size: 14px;
+        min-width: 160px;
+    }
+    
+    .links-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .divider {
+        display: none;
+    }
+    
+    .link-btn {
+        width: 180px;
+        justify-content: center;
+    }
+}
+
+/* ----------------------------------------
+   RESPONSIVE ADJUSTMENTS - PatronVendor
+   ---------------------------------------- */
+@media (max-width: 900px) {
     .content {
         flex-direction: column;
         gap: 24px;

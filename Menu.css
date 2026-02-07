@@ -236,6 +236,52 @@ body {
     display: inline-block;
 }
 
+/* Feedback page – name + photo row */
+.feedback-page .horizontal-group {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.feedback-page .name-input-box {
+  flex: 1;
+}
+
+.feedback-page .name-input-box input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+}
+
+.feedback-page .photo-upload-box {
+  width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.feedback-page .photo-preview-wrapper {
+  width: 100%;
+  height: 120px;
+  border-radius: 12px;
+  border: 2px dashed #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #fafafa;
+}
+
+.feedback-page .photo-preview-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none; /* hidden until image selected */
+}
+
+
 .ratings-container {
     display: flex;
     justify-content: space-between;
@@ -500,6 +546,32 @@ body {
     flex-direction: column;
 }
 
+/* Feedback page – rating stars */
+.feedback-page .star-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.feedback-page .rating-star {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 34px;
+  padding: 0;
+}
+
+.feedback-page .rating-star i {
+  pointer-events: none;
+}
+
+.feedback-page .rating-star:focus {
+  outline: 2px solid rgba(249, 115, 22, 0.4);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+
 .btn-go-back {
     color: white;
     text-decoration: none;
@@ -584,7 +656,7 @@ h2 {
     transition: color 0.2s;
 }
 .star.active {
-    color: #FFC107 !important; /* Forces the color to Gold */
+    color: blue !important; /* Forces the color to Gold */
 }
 
 .star:hover {
@@ -1288,3 +1360,48 @@ textarea:focus {
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     border: 2px solid white;
 }
+
+
+/* Feedback page - name input */
+.feedback-page #reviewer-name {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+}
+
+/* Put button + preview in one line */
+.feedback-page .photo-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.feedback-page .photo-tools {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Small preview box beside button */
+.feedback-page .photo-preview-wrapper {
+  width: 120px;
+  height: 70px;
+  border-radius: 10px;
+  border: 2px dashed #ddd;
+  background: #fafafa;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feedback-page .photo-preview-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none; /* shown after upload */
+}
+
+

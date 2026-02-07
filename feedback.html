@@ -1,65 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leave a Review</title>
-    <link rel="stylesheet" href="Menu.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leave a Review</title>
+
+  <link rel="stylesheet" href="Menu.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
+
 <body class="feedback-page" data-stall="General Feedback" data-return="browsestalls.html">
 
-    <div class="page-wrapper">
-        <a href="javascript:history.back()" class="btn-go-back"> ↩ Go Back</a>
-        
-        <div class="form-container">
-            <div class="form-header-img">
-                
-                <div class="sub-header" id="default-header">
-                     <h1>Leave a Review</h1>
-                </div>
+  <div class="page-wrapper">
+    <a href="javascript:history.back()" class="btn-go-back">↩ Go Back</a>
 
-                <img id="image-preview" src="" alt="Uploaded Photo">
-                
-                <button class="close-modal-btn">×</button>
-            </div>
-
-            <div class="form-body">
-                <input type="file" id="real-file-input" accept="image/*">
-
-                <div class="input-group">
-                    <div class="label-row">
-                        <label>Your Review</label>
-                        
-                        <button class="btn-import-media" id="import-btn">
-                            <span class="icon">🖼️</span> Add Photo
-                        </button>
-                    </div>
-                    <textarea class="main-complaint" placeholder="What did you like?&#10;What can we improve?"></textarea>
-                </div>
-
-                <div class="input-group">
-                    <label>Rating</label>
-                    <div class="star-group" id="star-container">
-                        <span class="star" data-value="1">★</span>
-                        <span class="star" data-value="2">★</span>
-                        <span class="star" data-value="3">★</span>
-                        <span class="star" data-value="4">★</span>
-                        <span class="star" data-value="5">★</span>
-                    </div>
-                    <input type="hidden" id="rating-value" value="0">
-                </div>
-
-                <div class="submit-container">
-                    <button class="btn-submit">Post Review</button>
-                </div>
-            </div>
+    <div class="form-container">
+      <div class="form-header-img">
+        <div class="sub-header" id="default-header">
+          <h1>Leave a Review</h1>
         </div>
+        <button class="close-modal-btn" type="button">×</button>
+      </div>
+
+      <div class="form-body">
+ 
+        <input type="file" id="real-file-input" accept="image/*" style="display:none;">
+
+        <div class="input-group">
+          <label>Your Name</label>
+          <input type="text" id="reviewer-name" placeholder="Enter your name">
+        </div>
+
+        <div class="input-group">
+          <div class="label-row photo-row">
+            <label>Your Review</label>
+
+            <div class="photo-tools">
+              <button class="btn-import-media" id="import-btn" type="button">
+                <span class="icon"></span> Add Photo
+              </button>
+
+              <div class="photo-preview-wrapper" id="photo-preview-wrapper" title="Preview">
+                <img id="image-preview" src="" alt="Preview" style="display:none;">
+                <div id="photo-placeholder" style="opacity:.45;font-size:12px;">No photo</div>
+              </div>
+            </div>
+          </div>
+
+          <textarea class="main-complaint"></textarea>
+        </div>
+
+        <div class="input-group">
+          <label>Rating</label>
+          <div class="star-group" id="star-container"></div>
+          <input type="hidden" id="rating-value" value="0">
+        </div>
+
+        <div class="submit-container">
+          <button class="btn-submit" type="button">Post Review</button>
+        </div>
+      </div>
     </div>
-    <script type="module" src="loadNavbar.js"></script>
-    <script type="module" src="navbar-auth.js"></script>
-    <script src="ImagePreview.js"></script>
-    <script type="module" src="GlobalSubmit.js"></script>
+  </div>
+
+  <script type="module" src="loadNavbar.js"></script>
+  <script type="module" src="navbar-auth.js"></script>
 
 
+  <script src="ImagePreview.js"></script>
+
+  <script type="module" src="feedbackRating.js"></script>
+  <script type="module" src="GlobalSubmit.js"></script>
 </body>
 </html>

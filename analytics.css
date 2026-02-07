@@ -1,0 +1,79 @@
+/* ===== Chart sizing fixes (ONLY chart/graph parts) ===== */
+
+/* Keep chart visuals inside panels */
+.panel{
+  overflow: hidden;
+}
+
+/* The wrapper around the LINE chart canvas */
+.chart-box{
+  height: 320px;          /* FIX: prevents super long chart */
+  max-height: 320px;
+  overflow: hidden;
+}
+
+/* The wrapper around the PIE chart canvas */
+.chart-box-pie{
+  height: 260px;          /* FIX: keeps pie chart normal size */
+  max-height: 260px;
+  overflow: hidden;
+}
+
+/* Make Chart.js fit the container and not stretch page height */
+.chart-box canvas,
+.chart-box-pie canvas{
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* Legend like your screenshot */
+.legend{
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.legend-row{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.legend-left{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.legend-dot{
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #999;
+  flex: 0 0 auto;
+}
+
+.legend-name{
+  color: #111;
+  font-weight: 800;
+}
+
+.legend-percent{
+  color: #444;
+  font-weight: 800;
+}
+
+.rental-dashboard{
+  width: 100%;
+  max-width: 1100px;
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: 0 18px 55px rgba(0,0,0,.12);
+  border: 1px solid rgba(0,0,0,.06);
+  padding: 18px;
+  margin: 0 auto; /* Center the dashboard */
+}

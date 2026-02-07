@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HawkerHub – Operator Portal</title>
+  <link rel="stylesheet" href="SignInStyle.css">
+  <script type="module" src="SignInOperator.js"></script>
+<base target="_blank">
+</head>
+
+<body data-auth-role="operator">
+  <div class="app">
+    <button class="back-btn" type="button" onclick="window.location.href='sign upOfficerOperator.html'">← Go Back</button>
+
+    <div class="logo">
+      <img src="img/logo.png" alt="HawkerHub Logo" />
+    </div>
+
+    <div class="panel-wrap">
+      <div class="panel">
+        <div class="panel-top">
+          <div class="mini-back">← Back to Selection</div>
+        </div>
+
+        <div class="panel-body">
+          <div class="icon">⚙️</div>
+          <div class="title" id="formTitle">Sign In</div>
+          <div class="subtitle">Hawker Centre Operator Portal</div>
+
+          <div class="segmented" data-role="operator">
+            <button class="inactive" id="tabSignUp" type="button">Sign Up</button>
+            <button class="active" id="tabSignIn" type="button">Sign In</button>
+          </div>
+
+          <!-- Sign Up Fields (hidden by default) -->
+          <div id="signupFields" style="display: none;">
+            <label for="fullname">Full Name</label>
+            <input id="fullname" type="text" placeholder="" />
+
+            <label for="operatorId">Operator ID</label>
+            <input id="operatorId" type="text" placeholder="" />
+
+            <label for="centre">Assigned Centre</label>
+            <input id="centre" type="text" placeholder="" />
+
+            <label for="phone">Phone Number</label>
+            <input id="phone" type="tel" placeholder="" />
+          </div>
+
+          <label for="email">Email Address</label>
+          <input id="email" type="email" placeholder="" />
+
+          <label for="password">Password</label>
+          <input id="password" type="password" placeholder="" />
+
+          <!-- Confirm Password (Sign Up only) -->
+          <div id="confirmField" style="display: none;">
+            <label for="confirm">Confirm Password</label>
+            <input id="confirm" type="password" placeholder="" />
+          </div>
+
+          <button class="submit" type="button" id="submitBtn">Sign In</button>
+        </div>
+
+        <div class="panel-footer">
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>
