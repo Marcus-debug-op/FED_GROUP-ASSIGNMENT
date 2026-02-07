@@ -35,14 +35,16 @@ const OPPOSITE_ROLE = "operator";
 setPersistence(auth, browserLocalPersistence);
 
 const submitBtn = document.getElementById("submitBtn");
-let emailEl, passwordEl;
+let officerNameEl, emailEl, passwordEl, badgeIdEl;
 
 document.addEventListener("DOMContentLoaded", () => {
+    officerNameEl = document.getElementById("officerName");
     emailEl = document.getElementById("email");
     passwordEl = document.getElementById("password");
+    badgeIdEl = document.getElementById("badgeId");
 
     submitBtn?.addEventListener("click", handleSubmit);
-    passwordEl?.addEventListener("keypress", (e) => {
+    badgeIdEl?.addEventListener("keypress", (e) => {
         if (e.key === "Enter") handleSubmit(e);
     });
 });
@@ -50,8 +52,15 @@ document.addEventListener("DOMContentLoaded", () => {
 async function handleSubmit(e) {
     e.preventDefault();
     
+    const officerName = (officerNameEl?.value || "").trim();
     const email = (emailEl?.value || "").trim().toLowerCase();
     const password = passwordEl?.value || "";
+    const badgeId = (badgeIdEl?.value || "").trim();
+
+    if (!officerName) {
+        alert("Please enter your officer name.");
+        return;
+    }
 
     if (!email || !password) {
         alert("Please enter both email and password.");
@@ -60,6 +69,11 @@ async function handleSubmit(e) {
 
     if (password.length < 6) {
         alert("Password must be at least 6 characters.");
+        return;
+    }
+
+    if (!badgeId) {
+        alert("Please enter your badge ID.");
         return;
     }
 
@@ -87,11 +101,13 @@ async function handleSubmit(e) {
             const roleDoc = await getDoc(doc(db, "officers", user.uid));
             if (!roleDoc.exists()) {
                 // User exists in Auth but not in Firestore officers - create entry
-                await createRoleDocument(user.uid, email);
+                await createRoleDocument(user.uid, email, officerName, badgeId);
                 isNewAccount = true;
             } else {
-                // Update last login
+                // Update officer info and last login
                 await setDoc(doc(db, "officers", user.uid), {
+                    officerName: officerName,
+                    badgeId: badgeId,
                     lastLogin: serverTimestamp()
                 }, { merge: true });
             }
@@ -111,7 +127,7 @@ async function handleSubmit(e) {
                 
                 userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
-                await createRoleDocument(user.uid, email);
+                await createRoleDocument(user.uid, email, officerName, badgeId);
                 isNewAccount = true;
             } else if (signInError.message && signInError.message.includes("Operator Portal")) {
                 // Re-throw our custom role error
@@ -128,6 +144,8 @@ async function handleSubmit(e) {
             uid: user.uid,
             email: user.email,
             role: ROLE,
+            officerName: officerName,
+            badgeId: badgeId,
             isNewAccount: isNewAccount
         }));
 
@@ -149,10 +167,12 @@ async function checkEmailInOppositeRole(email) {
     return false;
 }
 
-async function createRoleDocument(uid, email) {
+async function createRoleDocument(uid, email, officerName, badgeId) {
     const accountData = {
         uid: uid,
         email: email,
+        officerName: officerName,
+        badgeId: badgeId,
         role: ROLE,
         createdAt: serverTimestamp(),
         lastLogin: serverTimestamp(),
