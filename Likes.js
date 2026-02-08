@@ -42,7 +42,7 @@ onAuthStateChanged(auth, (user) => {
     loadLikes(user.uid);
   } else {
     // Redirect to login if not authenticated
-    window.location.href = "login.html";
+    window.location.href = "signup.html";
   }
 });
 
@@ -50,7 +50,7 @@ onAuthStateChanged(auth, (user) => {
 document.querySelector(".logout-btn").addEventListener("click", async () => {
   try {
     await auth.signOut();
-    window.location.href = "login.html";
+    window.location.href = "signup.html";
   } catch (error) {
     console.error("Logout error:", error);
     alert("Error logging out. Please try again.");

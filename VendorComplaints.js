@@ -23,7 +23,7 @@ onAuthStateChanged(auth, async (user) => {
         vendorName.textContent = user.displayName || "Vendor";
         await findVendorStall(user.uid);
     } else {
-        window.location.href = "login.html"; 
+        window.location.href = "signup.html"; 
     }
 });
 
@@ -174,5 +174,5 @@ resolveBtn.addEventListener('click', async () => {
 });
 
 document.getElementById('logoutBtn').addEventListener('click', () => {
-    signOut(auth).then(() => window.location.href = "login.html");
+    signOut(auth).then(() => window.location.href = "signup.html");
 });

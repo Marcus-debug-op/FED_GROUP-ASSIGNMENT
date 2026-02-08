@@ -338,7 +338,7 @@ document.addEventListener("click", async (e) => {
   // Check if user is logged in
   if (!currentUserForLikes) {
     alert("Please log in to like items");
-    window.location.href = "sign up.html";
+    window.location.href = "signup.html";
     return;
   }
   
