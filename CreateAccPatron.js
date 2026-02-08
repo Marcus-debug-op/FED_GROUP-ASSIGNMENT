@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       alert("Patron Account Created Successfully!");
-      window.location.href = "Sign inPatron.html";
+      window.location.href = "SigninPatron.html";
     } catch (err) {
       alert(prettyFirebaseError(err));
     }
