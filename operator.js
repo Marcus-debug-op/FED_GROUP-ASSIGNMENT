@@ -37,6 +37,9 @@ async function loadManagerDashboard() {
         let totalRev = 0;
         let totalOrders = 0;
         
+        // NEW: Manually count active stalls to exclude '_config'
+        let activeStallCount = 0; 
+
         let totalStallRating = 0;
         let stallCountWithRating = 0;
 
@@ -44,8 +47,14 @@ async function loadManagerDashboard() {
         let dailyRevenueMap = {}; 
         let hygieneMap = {}; 
 
-        // --- C. PROCESS STALLS (Rating & Hygiene) ---
+        // --- C. PROCESS STALLS (Rating, Hygiene & Count) ---
         stallsSnapshot.forEach(doc => {
+            // FILTER: Skip the _config document
+            if (doc.id === "_config") return; 
+
+            // Increment real stall count
+            activeStallCount++;
+
             const data = doc.data();
             
             if(data.name) hygieneMap[data.name] = data.hygiene || "B";
@@ -61,7 +70,7 @@ async function loadManagerDashboard() {
         ordersSnapshot.forEach(doc => {
             const data = doc.data();
             
-            // UPDATED: Check 'orderStatus' OR 'status', and handle lowercase
+            // Check 'orderStatus' OR 'status', and handle lowercase
             const status = (data.orderStatus || data.status || "").toLowerCase();
             
             if(status === "paid" || status === "completed") {
@@ -79,7 +88,6 @@ async function loadManagerDashboard() {
                 }
 
                 // Stall Aggregation (For Top Stalls)
-                // Check root level first. If missing, check inside the first item.
                 const sName = data.stallName || (data.items && data.items[0] ? data.items[0].stallName : "Unknown");
                 stallRevMap[sName] = (stallRevMap[sName] || 0) + amount;
             }
@@ -90,7 +98,8 @@ async function loadManagerDashboard() {
             document.getElementById('centre-revenue').innerText = "$" + totalRev.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
         
         if(document.getElementById('active-stalls')) 
-            document.getElementById('active-stalls').innerText = stallsSnapshot.size;
+            // Use our manual count instead of .size
+            document.getElementById('active-stalls').innerText = activeStallCount;
         
         if(document.getElementById('total-traffic')) 
             document.getElementById('total-traffic').innerText = totalOrders;
@@ -151,6 +160,9 @@ async function loadStallManagement() {
         let html = "";
         
         snapshot.forEach(doc => {
+            // FILTER: Skip the _config document here too
+            if (doc.id === "_config") return;
+
             const data = doc.data();
             const id = doc.id;
             

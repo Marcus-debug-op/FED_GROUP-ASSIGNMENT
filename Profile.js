@@ -47,7 +47,7 @@ async function loadDiscounts() {
           <div class="vc-actions">
             <span class="status-active">${d.status || "Active"}</span>
             <button class="redeem-btn"
-              onclick="navigator.clipboard.writeText('${d.code || ""}'); alert('Copied!')">
+              onclick="navigator.clipboard.writeText('${d.code || ""}'); alert('Redeemed!')">
               Redeem
             </button>
             <span class="validity">Valid until <strong>${d.expiry || "No Deadline"}</strong></span>
@@ -136,8 +136,14 @@ onAuthStateChanged(auth, async (user) => {
 
     if (userSnap.exists()) {
       const userData = userSnap.data();
-      document.getElementById("profileName").textContent =
-        userData.fullName || userData.name || "User";
+
+      const displayName =
+        userData.fullName ||
+        userData.name ||
+        user.displayName ||
+        user.email.split("@")[0];
+
+      document.getElementById("profileName").textContent = displayName;
       document.getElementById("profileEmail").textContent = user.email;
     }
 
