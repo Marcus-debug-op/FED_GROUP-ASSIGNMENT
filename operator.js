@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, getDoc, doc, deleteDoc, query, where, limit } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
 // 1. CONFIG
 const firebaseConfig = {
@@ -14,6 +15,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 // GLOBAL VARIABLES (Only Revenue Chart remains)
 let revenueChartInstance = null;
@@ -74,7 +76,8 @@ async function loadManagerDashboard() {
                 }
 
                 // Stall Aggregation (For Top Stalls)
-                const sName = data.stallName || "Unknown";
+                // Check root level first. If missing, check inside the first item.
+                const sName = data.stallName || (data.items && data.items[0] ? data.items[0].stallName : "Unknown");
                 stallRevMap[sName] = (stallRevMap[sName] || 0) + amount;
             }
         });
@@ -209,7 +212,52 @@ window.deleteStall = async function(id) {
     }
 };
 
-// 6. NAVIGATION
+// 6. LOAD SETTINGS (Finds Operator by Role)
+async function loadSettings() {
+    console.log("Loading settings...");
+    
+    onAuthStateChanged(auth, async (user) => {
+        const nameField = document.getElementById('setting-name');
+        const idField = document.getElementById('setting-id');
+
+        try {
+            // QUERY: Find the document where role == 'operator'
+            // This ensures we get the operator profile even if IDs don't match exactly
+            const q = query(collection(db, "operators"), where("role", "==", "operator"), limit(1));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const operatorDoc = querySnapshot.docs[0].data();
+                if(nameField) nameField.value = operatorDoc.email || "No Email Found";
+                if(idField) idField.value = operatorDoc.uid || "No UID Found"; 
+            } else {
+                // Fallback: Use logged in user if no operator doc exists
+                if (user) {
+                    if(nameField) nameField.value = user.email;
+                    if(idField) idField.value = user.uid;
+                }
+            }
+        } catch (error) {
+            console.error("Error fetching operator profile:", error);
+        }
+    });
+}
+
+// 7. LOGOUT FUNCTION (Updated with Async/Await)
+window.logout = async function() {
+    if (!confirm("Are you sure you want to log out?")) return;
+    
+    try {
+        await signOut(auth);
+        alert("Logged out successfully.");
+        window.location.href = "Home Guest.html"; // Redirects after sign out completes
+    } catch (error) {
+        console.error("Logout Error:", error);
+        alert("Error logging out.");
+    }
+};
+
+// 8. NAVIGATION
 window.switchPage = function(pageId, element) {
     document.querySelectorAll('[id^="page-"]').forEach(p => p.classList.add('hidden'));
     document.getElementById('page-' + pageId).classList.remove('hidden');
@@ -218,6 +266,7 @@ window.switchPage = function(pageId, element) {
     element.classList.add('active');
 
     if(pageId === 'stalls') loadStallManagement();
+    if(pageId === 'settings') loadSettings();
 };
 
 // Start
