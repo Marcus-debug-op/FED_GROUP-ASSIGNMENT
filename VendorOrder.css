@@ -1,3 +1,4 @@
+/*  GENERAL RESET */
 body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -5,7 +6,7 @@ body {
     color: #333;
 }
 
-/* --- 2. BANNER --- */
+/*  BANNER  */
 .banner {
     background-color: #F37021;
     color: white;
@@ -39,6 +40,66 @@ body {
     gap: 20px;
     padding-top: 40px;
     padding-bottom: 60px;
+}
+
+/* --- 3A. TOOLBAR (Search + Filters) --- */
+.orders-toolbar {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 24px;
+    flex-wrap: wrap;
+}
+
+.orders-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    border: 1px solid #f0d6c6;
+    border-radius: 14px;
+    padding: 10px 14px;
+    min-width: 280px;
+    flex: 1;
+}
+
+.orders-search i {
+    color: #F37021;
+}
+
+#order-search {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 0.95rem;
+    background: transparent;
+}
+
+.orders-filters {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filter-chip {
+    border: 1px solid #f0d6c6;
+    background: #fff;
+    color: #333;
+    padding: 8px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: background-color 0.15s, border-color 0.15s, transform 0.05s;
+}
+
+.filter-chip:hover { transform: translateY(-1px); }
+
+.filter-chip.is-active {
+    background: #F37021;
+    border-color: #F37021;
+    color: #fff;
 }
 
 /* --- 4. ORDER CARD (Fixed Layout) --- */
@@ -174,10 +235,63 @@ body {
 
 .payment-method {
     font-weight: bold;
-    font-size: 1.1rem; /* Larger for readability */
+    font-size: 1.1rem; /* large for readability */
     color: #D32F2F;
     margin-bottom: 15px;
-    text-transform: capitalize; /* This forces capitalization via CSS too */
+    text-transform: capitalize; /* forces capitalization via CSS too */
+}
+
+/* order workflow status */
+.order-status-badge {
+    margin-top: 6px;
+    margin-bottom: 10px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.order-status-badge.new { background: #F06565; }
+.order-status-badge.preparing { background: #F37021; }
+.order-status-badge.ready { background: #2E7D32; }
+.order-status-badge.completed { background: #616161; }
+
+.status-actions {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.status-btn {
+    border: 1px solid #f0d6c6;
+    background: #fff;
+    color: #333;
+    padding: 7px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 800;
+    font-size: 0.82rem;
+    transition: transform 0.05s, background-color 0.15s, border-color 0.15s;
+}
+
+.status-btn:hover { transform: translateY(-1px); }
+
+.status-btn.primary {
+    background: #F37021;
+    border-color: #F37021;
+    color: #fff;
+}
+
+.status-btn[disabled] {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
 }
 
 .action-btn {

@@ -20,7 +20,23 @@
     </section>
 
     <main class="container">
-        
+
+        <!--  search + status filters -->
+        <section class="orders-toolbar" aria-label="Order controls">
+            <div class="orders-search">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input id="order-search" type="search" placeholder="Search by queue no. / item / payment..." autocomplete="off" />
+            </div>
+
+            <div class="orders-filters" role="tablist" aria-label="Order status filters">
+                <button class="filter-chip is-active" type="button" data-filter="all" role="tab" aria-selected="true">All</button>
+                <button class="filter-chip" type="button" data-filter="new" role="tab" aria-selected="false">New</button>
+                <button class="filter-chip" type="button" data-filter="preparing" role="tab" aria-selected="false">Preparing</button>
+                <button class="filter-chip" type="button" data-filter="ready" role="tab" aria-selected="false">Ready</button>
+                <button class="filter-chip" type="button" data-filter="completed" role="tab" aria-selected="false">Completed</button>
+            </div>
+        </section>
+
         <div id="orders-list" class="orders-list">
             <p class="loading-text">Connecting to HawkerHub...</p>
         </div>

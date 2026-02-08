@@ -8,8 +8,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 
-import { applyI18n, t } from "./i18n.js";
-
 const firebaseConfig = {
   apiKey: "AIzaSyDo8B0OLtAj-Upfz7yNFeGz4cx3KWLZLuQ",
   authDomain: "hawkerhub-64e2d.firebaseapp.com",
@@ -34,8 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderTrending(trendingGrid, trending);
     wireTrendingClicks(trendingGrid);
 
-
-    applyI18n(document);
+  
   } catch (err) {
     console.error("Home trending failed to load:", err);
     trendingGrid.innerHTML = `<p style="padding:12px;">Unable to load trending stalls right now.</p>`;
@@ -109,7 +106,7 @@ function renderTrending(container, list) {
         Number.isFinite(reviews) && reviews > 0 ? `${reviews} reviews` : "reviews";
       const popText = `${pop} popular`;
 
-
+      // Use the same star image as BrowseStalls if you want:
       const starsHTML = `<img src="img/star.png" class="rating-star" alt="rating"> ${ratingText}`;
 
       return `
@@ -126,7 +123,7 @@ function renderTrending(container, list) {
               type="button"
               data-i18n="btn_view"
               data-href="stalldetails.html?stall=${encodeURIComponent(s.id)}">
-              ${t("btn_view")}
+              View
             </button>
           </div>
         </article>
