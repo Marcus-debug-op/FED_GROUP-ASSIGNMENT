@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HawkerHub – My Stall</title> 
+  <link rel="stylesheet" href="VendorAccount.css">
+  <link rel="stylesheet" href="topnav.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <section class="banner">
+    <div class="container">
+      <div class="banner-tabs">
+        <a href="Profile(Patron & Vendor).html">Profile</a>
+        <span>|</span>
+        <a href="VendorComplaints.html">Complaints</a>
+        <span>|</span>
+        <a href="VenderAccount.html" class="active">Stall</a>
+      </div>
+
+      <div class="banner-text">
+        <h1 id="stallNameDisplay">My Stall</h1>
+        <p>Manage your Menu items and Rental Status</p>
+      </div>
+    </div>
+  </section>
+
+  <main class="container">
+    <div class="toolbar">
+      <div class="dropdown-container">
+        <div class="dropdown-trigger">
+          Menu <span>⌵</span>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="Vender Account.html">Menu</a></li>
+          <li><a href="Vender AccountRentalStatus.html">Rental Status</a></li>
+          <li><a href="analytics.html">Analytics</a></li>
+          <li><a href="VendorLikes.html">Customer Likes</a></li>
+        </ul>
+      </div>
+      
+      <button class="plus-btn" id="openModalBtn">+</button>
+    </div>
+
+    <div class="grid" id="menuGrid">
+      <p class="loading-message">Loading stall data...</p>
+    </div>
+  </main>
+
+  <div id="itemModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Add New Menu Item</h2>
+        <span class="close-btn" id="closeModal">&times;</span>
+      </div>
+      
+      <form id="addItemForm">
+        <div class="upload-section">
+          <div class="upload-box" id="uploadBox">
+            <i class="fa-solid fa-camera camera-icon"></i>
+            <p>Upload Photo</p>
+            <input type="file" id="fileInput" accept="image/*" hidden>
+            <button type="button" class="browse-btn" id="browseBtn">
+              <i class="fa-solid fa-folder-open"></i>
+            </button>
+            <img id="imagePreview" src="" alt="Preview">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>Name</label>
+          <input type="text" id="itemName" placeholder="Item (e.g. Hokkien Mee)" required>
+        </div>
+
+        <div class="input-group">
+          <label>Price (S$)</label>
+          <input type="number" id="itemPrice" step="0.01" placeholder="9.00" required>
+        </div>
+
+        <div class="input-group">
+          <label>Description</label>
+          <textarea id="itemDesc" placeholder="Description (Optional)"></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="cancel-btn" id="cancelBtn">Cancel</button>
+          <button type="submit" class="add-btn">Add Item</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="footer-spacer"></footer>
+
+  <script type="module" src="VendorAccount.js"></script>
+  <script type="module" src="navbar-init.js"></script>
+</body>
+</html>
