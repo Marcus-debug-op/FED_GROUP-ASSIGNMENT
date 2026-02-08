@@ -123,7 +123,7 @@ export function initNavbarAuth() {
       dashboardAuthBtn.onclick = async () => {
         if (!confirm("Sign out?")) return;
         await signOut(auth);
-        window.location.href = "HomeGuest.html"; // Redirect to home on logout
+        window.location.href = "index.html"; // Redirect to home on logout
       };
     }
 
