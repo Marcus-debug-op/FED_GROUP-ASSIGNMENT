@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vendor Promotions - HawkerHub</title>
+
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="VendorPromotions.css" />
+</head>
+
+<body>
+
+
+  <main class="container promo-page">
+    <!-- Top bar -->
+    <div class="promo-topbar">
+      <a class="promo-back" href="Profile(Patron & Vendor).html">← Back to Profile</a>
+      <div class="promo-topbar-title">Manage promo codes for your stall</div>
+    </div>
+
+    <section class="card promo-card">
+      <h2 class="promo-heading">Create Promotion</h2>
+
+      <form id="promoForm" class="promo-form">
+        <div class="promo-row">
+          <label for="code">Promo Code</label>
+          <input id="code" required placeholder="e.g. SAVE10" />
+        </div>
+
+        <div class="promo-grid-2">
+          <div class="promo-row">
+            <label for="type">Discount Type</label>
+            <select id="type">
+              <option value="percent">Percentage (%)</option>
+              <option value="fixed">Fixed ($)</option>
+            </select>
+          </div>
+
+          <div class="promo-row">
+            <label for="value">Value</label>
+            <input id="value" type="number" min="1" required placeholder="e.g. 10" />
+          </div>
+        </div>
+
+        <div class="promo-grid-2">
+          <div class="promo-row">
+            <label for="minSpend">Min Spend ($)</label>
+            <input id="minSpend" type="number" min="0" placeholder="e.g. 15" />
+          </div>
+
+          <div class="promo-row">
+            <label for="expiry">Expiry Date</label>
+            <input id="expiry" type="date" />
+          </div>
+        </div>
+
+        <div class="promo-row promo-row-inline">
+          <label class="promo-checkbox">
+            <input id="active" type="checkbox" checked />
+            Active
+          </label>
+        </div>
+
+        <div class="promo-actions-row">
+          <button class="btn-primary promo-save-btn" type="submit">Save Promotion</button>
+          <p id="promoMsg" class="promo-msg" aria-live="polite"></p>
+        </div>
+      </form>
+    </section>
+
+    <section class="card promo-card">
+      <div class="promo-list-head">
+        <h2 class="promo-heading">Your Promotions</h2>
+        <span class="promo-hint">Tip: You can Edit, Toggle Active, or Delete.</span>
+      </div>
+
+      <div id="promoList" class="promo-list"></div>
+    </section>
+  </main>
+
+  <script type="module" src="VendorPromotions.js"></script>
+  <script type="module" src="loadNavbar.js"></script>
+
+</body>
+</html>
