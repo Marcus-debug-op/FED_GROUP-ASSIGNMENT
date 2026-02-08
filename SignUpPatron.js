@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      window.location.href = "HomeGuest.html";
+      window.location.href = "index.html";
     } catch (err) {
       alert(prettyFirebaseError(err));
     }

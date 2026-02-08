@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
       sessionStorage.setItem("selectedStallName", chosen.find(s => s.id === stallId)?.name || "");
       
       // Redirect to home guest page
-      window.location.href = "HomeGuest.html";
+      window.location.href = "index.html";
     }
   });
 

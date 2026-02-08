@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Patron
-      window.location.href = "HomeGuest.html";
+      window.location.href = "index.html";
 
     } catch (err) {
       alert(err?.message || "Google sign-in failed.");
