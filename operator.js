@@ -250,7 +250,7 @@ window.logout = async function() {
     try {
         await signOut(auth);
         alert("Logged out successfully.");
-        window.location.href = "home-guest.html"; 
+        window.location.href = "HomeGuest.html"; 
     } catch (error) {
         console.error("Logout Error:", error);
         alert("Error logging out.");
