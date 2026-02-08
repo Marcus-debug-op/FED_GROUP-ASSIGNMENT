@@ -1,7 +1,13 @@
 // home-guest.js — Trending section loads from Firestore (no hardcoding)
-// Uses same retrieval style as browsestalls.js, then sorts in JS (avoids index issues)
+// Trending = highest popularity (likes/orders/reviews), then rating as tie-break.
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {getFirestore, collection, getDocs, query, orderBy, } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  orderBy,
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDo8B0OLtAj-Upfz7yNFeGz4cx3KWLZLuQ",
@@ -23,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     const stalls = await loadStallsSameAsBrowse();
-    const trending = getTopTrending(stalls, 3);
+    const trending = getTopTrendingByPopularity(stalls, 3);
     renderTrending(trendingGrid, trending);
     wireTrendingClicks(trendingGrid);
   } catch (err) {
@@ -32,24 +38,54 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-
 async function loadStallsSameAsBrowse() {
+  // Same style as your browsestalls.js: load all stalls ordered by name
   const q = query(collection(db, "stalls"), orderBy("name"));
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 }
 
+/*Trending = "most popular"*/
 
-function getTopTrending(stalls, n) {
+function getPopularityScore(stall) {
+  const likesCount = toNumber(stall.likesCount);
+  if (Number.isFinite(likesCount)) return likesCount;
+
+  const totalLikes = toNumber(stall.totalLikes);
+  if (Number.isFinite(totalLikes)) return totalLikes;
+
+  const ordersCount = toNumber(stall.ordersCount);
+  if (Number.isFinite(ordersCount)) return ordersCount;
+
+  const popularity = toNumber(stall.popularity);
+  if (Number.isFinite(popularity)) return popularity;
+
+  // fallback if you don't have a popularity field yet
+  const reviews = toNumber(stall.reviews);
+  if (Number.isFinite(reviews)) return reviews;
+
+  return 0;
+}
+
+function getTopTrendingByPopularity(stalls, n) {
   return [...stalls]
     .sort((a, b) => {
+      // 1) popularity desc
+      const ap = getPopularityScore(a);
+      const bp = getPopularityScore(b);
+      if (bp !== ap) return bp - ap;
+
+      // 2) rating desc (tie-break)
       const ar = toNumber(a.rating);
       const br = toNumber(b.rating);
-      if (br !== ar) return br - ar;
+      if (Number.isFinite(br) && Number.isFinite(ar) && br !== ar) return br - ar;
 
+      // 3) reviews desc (final tie-break)
       const av = toNumber(a.reviews);
       const bv = toNumber(b.reviews);
-      return bv - av;
+      if (Number.isFinite(bv) && Number.isFinite(av) && bv !== av) return bv - av;
+
+      return 0;
     })
     .slice(0, n);
 }
@@ -67,14 +103,20 @@ function renderTrending(container, list) {
 
       const rating = toNumber(s.rating);
       const reviews = toNumber(s.reviews);
+      const pop = getPopularityScore(s);
 
       const imageUrl = s.imageURL || "img/placeholder.jpg";
       const desc = s.shortDesc || "";
 
-      const ratingText = isFinite(rating) ? rating.toFixed(1) : "—";
-      const reviewsText = isFinite(reviews) && reviews > 0 ? `${reviews} reviews` : "reviews";
+      const ratingText = Number.isFinite(rating) ? rating.toFixed(1) : "—";
+      const reviewsText =
+        Number.isFinite(reviews) && reviews > 0 ? `${reviews} reviews` : "reviews";
 
-      const starsHTML = `<i class="fa-solid fa-star"></i> ${ratingText}`;
+      // show popularity number too (optional)
+      const popText = `${pop} popular`;
+
+      const starsHTML = ` <img src="img/star.png" class="rating-star" alt="rating star"> ${ratingText} `;
+
 
       return `
         <article class="food-card">
@@ -82,7 +124,7 @@ function renderTrending(container, list) {
           <div class="food-body">
             <div class="food-title">${escapeHtml(name)}</div>
             <div class="food-meta">
-              ${escapeHtml(cuisine)} ${starsHTML} (${escapeHtml(reviewsText)})
+              ${escapeHtml(cuisine)} ${starsHTML} (${escapeHtml(reviewsText)}) • ${escapeHtml(popText)}
             </div>
             <p class="food-desc">${escapeHtml(desc)}</p>
             <button
