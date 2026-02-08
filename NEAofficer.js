@@ -18,6 +18,9 @@ const db = getFirestore(app);
 
 let currentOfficerId = null;
 
+// ==========================================
+// 1. DATE PICKER HELPERS
+// ==========================================
 
 function initializeDatePicker() {
     const yearSelect = document.getElementById('picker-year');
@@ -32,15 +35,12 @@ function initializeDatePicker() {
     }
 }
 
-
 window.updateDayOptions = function() {
     const year = parseInt(document.getElementById('picker-year').value);
     const monthIndex = parseInt(document.getElementById('picker-month').value); 
     const daySelect = document.getElementById('picker-day');
     
-  
     const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
-    
     const currentSelection = daySelect.value;
     
     daySelect.innerHTML = "";
@@ -61,7 +61,6 @@ window.updateDayOptions = function() {
     updateFinalDate();
 };
 
-// Combine Year-Month-Day into YYYY-MM-DD string
 window.updateFinalDate = function() {
     const year = document.getElementById('picker-year').value;
     const month = (parseInt(document.getElementById('picker-month').value) + 1).toString().padStart(2, '0');
@@ -238,6 +237,9 @@ async function loadStallDirectory() {
     const snapshot = await getDocs(collection(db, "stalls"));
     let html = "";
     snapshot.forEach(doc => {
+        // --- KEY FIX: SKIP _CONFIG FILE ---
+        if (doc.id === "_config") return;
+
         const data = doc.data();
         let displayName = data.name || data.stallName || doc.id.charAt(0).toUpperCase() + doc.id.slice(1);
         const safeName = displayName.replace(/'/g, "\\'");
@@ -384,25 +386,21 @@ async function loadOfficerProfile() {
 
 onAuthStateChanged(auth, async (user) => {
     if (!user) {
-        // Not logged in, redirect to sign in
         window.location.href = "SignInOfficer.html";
         return;
     }
 
     currentOfficerId = user.uid;
 
-    // Verify they are an officer
     try {
         const officerDoc = await getDoc(doc(db, "officers", user.uid));
         if (!officerDoc.exists()) {
-            // Not an officer, sign out and redirect
             await signOut(auth);
             alert("Access denied. This account is not registered as an officer.");
             window.location.href = "SignInOfficer.html";
             return;
         }
 
-        // Load all data
         loadOfficerProfile();
         loadDashboard();
         loadStallDirectory();
