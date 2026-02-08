@@ -1,6 +1,4 @@
-/* =========================================
-   1. VARIABLES & RESET
-   ========================================= */
+/*  VARIABLES & RESET */
 :root {
   --orange: #ff8a1f;
   --orange-dark: #f37400;
@@ -29,9 +27,7 @@ body {
   color: var(--text);
 }
 
-/* =========================================
-   2. LAYOUT CONTAINERS
-   ========================================= */
+/*   LAYOUT CONTAINERS  */
 .container {
   max-width: 1600px;
 }
@@ -47,10 +43,8 @@ main.container{
 }
 
 
-/* =========================================
-   3. BANNER SECTION
-   ========================================= */
-/* BANNER */
+/*  BANNER SECTION  */
+ 
 .banner {
   position: relative;        
   width: 100%;
@@ -76,9 +70,7 @@ main.container{
 .banner-text h1 { margin: 0; font-size: 40px; font-weight: 900; }
 .banner-text p { margin: 5px 0 0; opacity: 0.9; font-size: 18px; }
 
-/* =========================================
-   4. NAVIGATION & TOOLBAR
-   ========================================= */
+/*  NAVIGATION & TOOLBAR  */
 .top-nav {
   height: 150px;
   background: var(--cream);
@@ -1066,9 +1058,7 @@ main.container{
   transform: none;
 }
 
-/* =========================================
-  LICENSE
-   ========================================= */
+/*  LICENSE */
 
 .license-container {
   min-height: 100vh;
@@ -1340,9 +1330,7 @@ main.container{
   background: #fafafa;
 }
 
-/* ========================================
-   PERFORMANCE OPTIMIZATIONS
-   ======================================== */
+/*  PERFORMANCE OPTIMIZATIONS */
 
 html {
   scroll-behavior: smooth;
