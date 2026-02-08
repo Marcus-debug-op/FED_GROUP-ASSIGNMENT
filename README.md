@@ -319,6 +319,9 @@ const firebaseConfig = {
   appId: "1:722888051277:web:59926d0a54ae0e4fe36a04"
 };
 ```
+## Deployment
+(https://marcus-debug-op.github.io/FED_GROUP-ASSIGNMENT/)
+
 
 ---
 
