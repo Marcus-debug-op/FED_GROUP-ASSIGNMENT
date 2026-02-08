@@ -1,3 +1,5 @@
+
+
 :root {
         --bg: #FFF7DC;
   --text: #1f1f1f;
@@ -34,9 +36,6 @@
 
     background: transparent;
     position: relative;
-    
-    display: flex;
-    flex-direction: column;
 }
 
     
@@ -110,17 +109,16 @@
     display: flex;
     justify-content: center;
     gap: 48px;
-    flex: 0 0 auto;
     }
 
 
     .patron-card,
     .vendor-card {
-    width: 320px;
-    height: 500px;
+    width: 320px;          /* adjust if needed */
+    height: 500px;         /* controls total card height */
     background: white;
     border-radius: 16px;
-    overflow: hidden;
+    overflow: hidden;      /* IMPORTANT: clips image to card */
     box-shadow: 0 10px 25px rgba(0,0,0,0.12);
 }
 
@@ -179,18 +177,10 @@
     text-align: center;
 }
 
-/* CTA Button container */
+/* CTA Link styling - Pill buttons */
 .patron-card .cta,
 .vendor-card .cta {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* CTA Button styling */
-.patron-card .cta button,
-.vendor-card .cta button {
-    margin: 0;
+    margin: 0 70 auto;
     padding: 12px 24px;
     font-weight: 600;
     font-size: 14px;
@@ -204,17 +194,17 @@
     border: 2px solid;
     transition: all 0.2s ease;
     text-decoration: none;
-    font-family: inherit;
+    align-self: center;
 }
 
 /* Patron specific - Calm Blue */
-.patron-card .cta button {
+.patron-card .cta {
     color: #2563EB;
     border-color: #2563EB;
     background: rgba(37, 99, 235, 0.05);
 }
 
-.patron-card .cta button:hover {
+.patron-card .cta:hover {
     background: #2563EB;
     color: white;
     text-decoration: none;
@@ -223,13 +213,13 @@
 }
 
 /* Vendor specific - Vibrant Red/Rose */
-.vendor-card .cta button {
+.vendor-card .cta {
     color: #E11D48;
     border-color: #E11D48;
     background: rgba(225, 29, 72, 0.05);
 }
 
-.vendor-card .cta button:hover {
+.vendor-card .cta:hover {
     background: #E11D48;
     color: white;
     text-decoration: none;
@@ -238,14 +228,14 @@
 }
 
 /* Arrow animation */
-.patron-card .cta button::after,
-.vendor-card .cta button::after {
+.patron-card .cta::after,
+.vendor-card .cta::after {
     content: "→";
     transition: transform 0.2s ease;
 }
 
-.patron-card .cta button:hover::after,
-.vendor-card .cta button:hover::after {
+.patron-card .cta:hover::after,
+.vendor-card .cta:hover::after {
     transform: translateX(4px);
 }
 
@@ -259,14 +249,14 @@
 }
 
 .illustration {
-    height: 45%;
+    height: 45%;           /* top half of the card */
     width: 100%;
 }
 
 .illustration img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: cover;     /* fills area without stretching */
     display: block;
 }
 
@@ -276,17 +266,17 @@
 }
 
 .card-content {
-  flex: 1;
+  flex: 1;                    /* fills remaining space */
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: center;    /* vertical centering */
 padding: 24px 24px 24px 32px;
 }
 
 
 /* Header becomes a "window" */
 .card-header {
-  height: 180px;
+  height: 180px;        /* controls how much of the top you see */
   overflow: hidden;
 }
 
@@ -295,7 +285,7 @@ padding: 24px 24px 24px 32px;
   width: 100%;
   height: auto;
   object-fit: cover;
-  transform: translateY(-20px);
+  transform: translateY(-20px); /* crops lower part, keeps top */
   display: block;
 }
     
@@ -357,8 +347,7 @@ padding: 24px 24px 24px 32px;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: auto;
-    margin-bottom: 40px;
+    margin-top: 30px;
     padding: 20px;
     gap: 16px;
 }
@@ -420,15 +409,15 @@ padding: 24px 24px 24px 32px;
 .operator-card {
     width: 320px;
     height: 260px;
-    min-height: auto;
+    min-height: auto;           /* Remove fixed height */
     background: white;
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 10px 25px rgba(0,0,0,0.12);
     display: flex;
     flex-direction: column;
-    padding: 28px 24px 24px;
-    text-align: center;
+    padding: 28px 24px 24px;    /* Unified padding */
+    text-align: center;         /* Center align content */
     position: relative;
 }
 
@@ -444,7 +433,7 @@ padding: 24px 24px 24px 32px;
 /* Header styling */
 .officer-card h2,
 .operator-card h2 {
-    margin: 0 0 12px 0;
+    margin: 0 0 12px 0;         /* Tight margin below title */
     padding: 0;
     font-size: 22px;
     font-weight: 700;
@@ -455,31 +444,23 @@ padding: 24px 24px 24px 32px;
 /* Description text */
 .officer-card p,
 .operator-card p {
-    margin: 0 0 20px 0;
+    margin: 0 0 20px 0;         /* Space before link */
     padding: 0;
     color: var(--faded-text);
     font-size: 14.5px;
     line-height: 1.6;
-    flex-grow: 1;
+    flex-grow: 1;               /* Pushes link to bottom if needed */
 }
 
 .officer-card .features li::before,
 .operator-card .features li::before {
-    content: none;
+    content: none;              /* Remove bullets for cleaner look */
 }
 
-/* CTA Button container */
+/* CTA Link styling */
 .officer-card .cta,
 .operator-card .cta {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* CTA Button styling */
-.officer-card .cta button,
-.operator-card .cta button {
-    margin: 0;
+    margin: 0;                  /* Remove auto margins */
     padding: 12px 24px;
     font-weight: 600;
     font-size: 14px;
@@ -493,32 +474,32 @@ padding: 24px 24px 24px 32px;
     border: 2px solid;
     transition: all 0.2s ease;
     text-decoration: none;
-    font-family: inherit;
+    align-self: center;         /* Center the button */
 }
 
-/* Officer specific button styling */
-.officer-card .cta button {
-    color: #f6964c;
-    border-color: #f6964c;
-    background: rgba(246, 150, 76, 0.05);
+/* Officer specific link styling */
+.officer-card .cta {
+    color: rgba(249, 115, 22, 0.25);;
+    border-color: #f6964c;;
+    background: rgba(59, 130, 246, 0.05);
 }
 
-.officer-card .cta button:hover {
-    background: #f6964c;
+.officer-card .cta:hover {
+    background: #f6964c;;
     color: white;
     text-decoration: none;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(246, 150, 76, 0.3);
+    box-shadow: rgba(249, 115, 22, 0.25);;
 }
 
-/* Operator specific button styling */
-.operator-card .cta button {
+/* Operator specific link styling */
+.operator-card .cta {
     color: #10B981;
     border-color: #10B981;
     background: rgba(16, 185, 129, 0.05);
 }
 
-.operator-card .cta button:hover {
+.operator-card .cta:hover {
     background: #10B981;
     color: white;
     text-decoration: none;
@@ -527,14 +508,14 @@ padding: 24px 24px 24px 32px;
 }
 
 /* Arrow animation */
-.officer-card .cta button::after,
-.operator-card .cta button::after {
+.officer-card .cta::after,
+.operator-card .cta::after {
     content: "→";
     transition: transform 0.2s ease;
 }
 
-.officer-card .cta button:hover::after,
-.operator-card .cta button:hover::after {
+.officer-card .cta:hover::after,
+.operator-card .cta:hover::after {
     transform: translateX(4px);
 }
 
