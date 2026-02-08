@@ -31,7 +31,7 @@
     <div class="toolbar">
       <div class="dropdown-container">
         <div class="dropdown-trigger">
-          Menu <span>⌵</span>
+          Menu <span class="dropdown-arrow">▾</span>
         </div>
         <ul class="dropdown-menu">
           <li><a href="VenderAccount.html">Menu</a></li>
@@ -59,11 +59,11 @@
       <form id="addItemForm">
         <div class="upload-section">
           <div class="upload-box" id="uploadBox">
-            <i class="fa-solid fa-camera camera-icon"></i>
+            <span class="camera-icon"><img src="img/avatars/camera.png"  alt="Camera" width="48" height="48"> </span>
             <p>Upload Photo</p>
             <input type="file" id="fileInput" accept="image/*" hidden>
             <button type="button" class="browse-btn" id="browseBtn">
-              <i class="fa-solid fa-folder-open"></i>
+              <span class="folder-icon"><img src="img/avatars/folder.png"  alt="Folder" width="48" height="48"></span>
             </button>
             <img id="imagePreview" src="" alt="Preview">
           </div>
