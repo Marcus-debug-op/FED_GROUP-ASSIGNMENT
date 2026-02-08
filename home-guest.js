@@ -1,5 +1,3 @@
-// home-guest.js — Trending section loads from Firestore (no hardcoding)
-// Trending = highest popularity (likes/orders/reviews), then rating as tie-break.
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
   getFirestore,
@@ -8,6 +6,9 @@ import {
   query,
   orderBy,
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// ✅ import i18n helpers
+import { applyI18n, t } from "./i18n.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDo8B0OLtAj-Upfz7yNFeGz4cx3KWLZLuQ",
@@ -32,6 +33,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const trending = getTopTrendingByPopularity(stalls, 3);
     renderTrending(trendingGrid, trending);
     wireTrendingClicks(trendingGrid);
+
+    // ✅ translate newly injected content
+    applyI18n(document);
   } catch (err) {
     console.error("Home trending failed to load:", err);
     trendingGrid.innerHTML = `<p style="padding:12px;">Unable to load trending stalls right now.</p>`;
@@ -39,13 +43,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 async function loadStallsSameAsBrowse() {
-  // Same style as your browsestalls.js: load all stalls ordered by name
   const q = query(collection(db, "stalls"), orderBy("name"));
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 }
-
-/*Trending = "most popular"*/
 
 function getPopularityScore(stall) {
   const likesCount = toNumber(stall.likesCount);
@@ -60,7 +61,6 @@ function getPopularityScore(stall) {
   const popularity = toNumber(stall.popularity);
   if (Number.isFinite(popularity)) return popularity;
 
-  // fallback if you don't have a popularity field yet
   const reviews = toNumber(stall.reviews);
   if (Number.isFinite(reviews)) return reviews;
 
@@ -70,17 +70,14 @@ function getPopularityScore(stall) {
 function getTopTrendingByPopularity(stalls, n) {
   return [...stalls]
     .sort((a, b) => {
-      // 1) popularity desc
       const ap = getPopularityScore(a);
       const bp = getPopularityScore(b);
       if (bp !== ap) return bp - ap;
 
-      // 2) rating desc (tie-break)
       const ar = toNumber(a.rating);
       const br = toNumber(b.rating);
       if (Number.isFinite(br) && Number.isFinite(ar) && br !== ar) return br - ar;
 
-      // 3) reviews desc (final tie-break)
       const av = toNumber(a.reviews);
       const bv = toNumber(b.reviews);
       if (Number.isFinite(bv) && Number.isFinite(av) && bv !== av) return bv - av;
@@ -100,7 +97,6 @@ function renderTrending(container, list) {
     .map((s) => {
       const name = s.name || "Unnamed Stall";
       const cuisine = (s.cuisine || "Food").toString();
-
       const rating = toNumber(s.rating);
       const reviews = toNumber(s.reviews);
       const pop = getPopularityScore(s);
@@ -111,12 +107,10 @@ function renderTrending(container, list) {
       const ratingText = Number.isFinite(rating) ? rating.toFixed(1) : "—";
       const reviewsText =
         Number.isFinite(reviews) && reviews > 0 ? `${reviews} reviews` : "reviews";
-
-      // show popularity number too (optional)
       const popText = `${pop} popular`;
 
-      const starsHTML = ` <img src="img/star.png" class="rating-star" alt="rating star"> ${ratingText} `;
-
+      // Use the same star image as BrowseStalls if you want:
+      const starsHTML = `<img src="img/star.png" class="rating-star" alt="rating"> ${ratingText}`;
 
       return `
         <article class="food-card">
@@ -130,8 +124,9 @@ function renderTrending(container, list) {
             <button
               class="food-btn"
               type="button"
+              data-i18n="btn_view"
               data-href="stalldetails.html?stall=${encodeURIComponent(s.id)}">
-              View
+              ${t("btn_view")}
             </button>
           </div>
         </article>
@@ -162,6 +157,7 @@ function escapeHtml(str = "") {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
+
 function escapeAttr(str = "") {
   return escapeHtml(str);
 }

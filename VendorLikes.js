@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (user) {
       await findAndLoadStall(user.uid);
     } else {
-      window.location.href = "sign up.html";
+      window.location.href = "signup.html";
     }
   });
 });

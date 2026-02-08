@@ -78,12 +78,12 @@ export function initNavbarAuth() {
     if (!user) {
       if (signinBtn) {
         signinBtn.textContent = "Sign in";
-        setNavTarget(signinBtn, "sign up.html");
+        setNavTarget(signinBtn, "signup.html");
       }
 
       if (dashboardAuthBtn) {
         dashboardAuthBtn.textContent = "Sign in";
-        dashboardAuthBtn.onclick = () => (window.location.href = "sign up.html");
+        dashboardAuthBtn.onclick = () => (window.location.href = "signup.html");
       }
 
       applyRoleBasedNav(null);
