@@ -1,4 +1,4 @@
-// SignInPatron.js (module) — Firestore + role check
+
 import { auth, fs } from "./firebase-init.js";
 
 import { signInWithEmailAndPassword } from
@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const cred = await signInWithEmailAndPassword(auth, email, password);
 
-      // Role check: users/{uid}.role must be "patron"
+  
       const userSnap = await getDoc(doc(fs, "users", cred.user.uid));
       const role = (userSnap.exists() ? (userSnap.data()?.role || "") : "").toString().toLowerCase();
 

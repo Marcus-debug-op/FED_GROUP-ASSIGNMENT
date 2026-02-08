@@ -1,4 +1,4 @@
-// ScriptCart.js
+
 const CART_KEY = "hawkerhub_cart";
 const ECO_KEY = "hawkerhub_eco_packaging";
 const ECO_FEE = 0.20;
@@ -6,9 +6,7 @@ const ECO_FEE = 0.20;
 const BROWSE_PAGE = "browsestalls.html";
 const CART_PAGE = "cart.html";
 
-/**
- * Where the cart red dot should appear
- */
+
 const DOT_ALLOWED_PAGES = new Set([
   "menus.html",
   "AhSengMenu.html",
@@ -29,9 +27,7 @@ function isDotAllowedHere() {
   return DOT_ALLOWED_PAGES.has(currentFileName());
 }
 
-/* ---------------------------
-   CART NORMALIZATION (supports old + new cart formats)
----------------------------- */
+
 function makeKey(item) {
   if (item && item.id) return String(item.id);
 
@@ -354,7 +350,6 @@ function bindAddToCartButtons() {
 
     const itemName = decodeURIComponent(btn.dataset.name || "Item");
 
-    // ✅ If menu.js already added to cart, still show toast + update dot
     if (btn.dataset.skipScriptcart === "1") {
       updateCartDot();
       showToast(`${itemName} added to cart`);

@@ -39,7 +39,7 @@ filterMenu?.addEventListener("click", (e) => {
 });
 
 
-  // Your existing controls
+
   const searchInput = document.querySelector(".search-input");
   const filterSelect = document.querySelector(".filter-select");
   const halalCheck = document.getElementById("halalCheck");

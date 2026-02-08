@@ -54,7 +54,6 @@ async function loadDiscounts() {
 
 // 3. Auth Listener & Profile Loader
 onAuthStateChanged(auth, async (user) => {
-    // We load discounts regardless of who is logged in so it's faster
     loadDiscounts();
 
     if (user) {
@@ -74,7 +73,6 @@ onAuthStateChanged(auth, async (user) => {
             logoutBtn.onclick = handleLogout;
         }
     } else {
-        // If they logged out or session expired, kick to signup
         window.location.href = "signup.html";
     }
 });                                                                 

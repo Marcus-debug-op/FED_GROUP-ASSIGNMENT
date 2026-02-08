@@ -1,4 +1,4 @@
-// CreateAccVendor.js (module) — Auth + Firestore with manual deletion handling
+
 import { auth, fs } from "./firebase-init.js";
 
 import {
@@ -74,12 +74,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const userSnap = await getDoc(userRef);
             
             if (userSnap.exists()) {
-              // User exists in both Auth and Firestore - this is a duplicate registration attempt
+              
               console.log("CreateAccVendor: User exists in Firestore - duplicate registration");
               await auth.signOut();
               throw new Error("ACCOUNT_EXISTS");
             } else {
-              // Auth exists but Firestore doesn't - reactivation case!
+              
               console.log("CreateAccVendor: Firestore doc missing - reactivating account");
               isReactivation = true;
             }
@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Vendor Account Created Successfully!");
       }
       
-      // Redirect to stall selection page in setup mode
+      
       window.location.href = "VendorStallDetails.html?mode=setup";
       
     } catch (err) {

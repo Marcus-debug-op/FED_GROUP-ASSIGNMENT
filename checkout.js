@@ -1,6 +1,4 @@
-// checkout.js (FULL CODE WITH CHANGES MADE)
 
-// Import FIRESTORE SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import {
@@ -37,10 +35,9 @@ const COUPON_KEY = "hawkerhub_coupon";
 const CARD_DETAILS_KEY = "hawkerhub_card_details";
 const ECO_FEE = 0.20;
 
-// ✅ NEW: last order number key (for PaymentSuccesss.html)
+
 const LAST_ORDER_NO_KEY = "hawkerhub_last_order_no";
 
-// ✅ Promo cache loaded from Firestore (no hardcoding)
 let PROMOS = {}; // key = CODE (uppercase)
 let PROMO_LIST = []; // array for dropdown
 
@@ -78,11 +75,10 @@ function saveCardDetails(details) {
 }
 
 function isWeekday() {
-  const d = new Date().getDay(); // 0 Sun ... 6 Sat
+  const d = new Date().getDay(); 
   return d >= 1 && d <= 5;
 }
 
-// Parse "30 Jun 2026" safely enough for your stored format
 function parseExpiryDate(expiryStr) {
   const s = String(expiryStr || "").trim();
   if (!s) return null;
@@ -93,7 +89,7 @@ function parseExpiryDate(expiryStr) {
   return null;
 }
 
-// Parse offer string like: "8% off with no min. spend" or "$5 off min spend $10"
+
 function parseOffer(offerStr) {
   const offer = String(offerStr || "").toLowerCase();
 
@@ -106,7 +102,7 @@ function parseOffer(offerStr) {
   return { type: "unknown", value: 0 };
 }
 
-// Parse min spend if present; otherwise 0
+
 function parseMinSpend(offerStr) {
   const offer = String(offerStr || "").toLowerCase();
 
@@ -127,11 +123,7 @@ function isExpired(expiryStr) {
   return Date.now() > end.getTime();
 }
 
-// =========================
-// ✅ ORDER NUMBER COUNTER (Firestore, starts 1,2,3...)
-// IMPORTANT: Create in Firestore:
-// counters / orders  { next: 1 }
-// =========================
+
 async function getNextOrderNo() {
   const counterRef = doc(db, "counters", "orders");
 
@@ -139,7 +131,7 @@ async function getNextOrderNo() {
     const snap = await tx.get(counterRef);
 
     if (!snap.exists()) {
-      // If missing, initialize safely
+
       tx.set(counterRef, { next: 2 });
       return 1;
     }
@@ -155,7 +147,7 @@ async function getNextOrderNo() {
 }
 
 // =========================
-// ✅ Load promo codes from Firestore (DEBUG + GUARANTEED)
+// Load promo codes from Firestore 
 // =========================
 async function loadPromosFromFirestore() {
   const selectEl = document.getElementById("promoCodeSelect");
@@ -222,7 +214,7 @@ async function loadPromosFromFirestore() {
 }
 
 // =========================
-// STRICT Validation Helpers
+// Validation Helpers
 // =========================
 function normalizePhone(raw) {
   const digits = digitsOnly(raw);
@@ -285,7 +277,7 @@ collectionMethod?.addEventListener("change", applyDeliveryUI);
 applyDeliveryUI();
 
 // =========================
-// STRICT Form Validation
+// Form Validation
 // =========================
 function validateCheckoutForm() {
   const name = String(fullNameInput?.value || "").trim();
@@ -315,9 +307,6 @@ function validateCheckoutForm() {
   return { ok: true, fullName: name, phone: normalizePhone(phoneRaw), method };
 }
 
-// =========================
-// VISUAL HIGHLIGHTING (FIXED)
-// =========================
 const paymentOptions = document.querySelectorAll(".pay-option");
 let lastPayValue = document.querySelector('input[name="pay"]:checked')?.value || "card";
 

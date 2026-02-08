@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebas
 import { getFirestore, collection, getDocs, getDoc, doc, deleteDoc, query, where, limit } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-// 1. CONFIG
+
 const firebaseConfig = {
     apiKey: "AIzaSyDo8B0OLtAj-Upfz7yNFeGz4cx3KWLZLuQ",
     authDomain: "hawkerhub-64e2d.firebaseapp.com",
@@ -17,10 +17,10 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// GLOBAL VARIABLES (Only Revenue Chart remains)
+
 let revenueChartInstance = null;
 
-// 2. LOAD DASHBOARD (Overview)
+
 async function loadManagerDashboard() {
     console.log("Loading dashboard...");
     
@@ -28,12 +28,12 @@ async function loadManagerDashboard() {
         const ordersSnapshot = await getDocs(collection(db, "orders"));
         const stallsSnapshot = await getDocs(collection(db, "stalls"));
         
-        // --- A. SETUP DATES ---
-        const today = new Date();
-        const thisMonth = today.getMonth();      // e.g., 1 (Feb)
-        const thisYear = today.getFullYear();    // e.g., 2026
 
-        // --- B. INITIALIZE COUNTERS ---
+        const today = new Date();
+        const thisMonth = today.getMonth();      
+        const thisYear = today.getFullYear();   
+
+
         let totalRev = 0;
         let totalOrders = 0;
         
@@ -44,20 +44,20 @@ async function loadManagerDashboard() {
         let dailyRevenueMap = {}; 
         let hygieneMap = {}; 
 
-        // --- C. PROCESS STALLS (Rating & Hygiene) ---
+
         stallsSnapshot.forEach(doc => {
             const data = doc.data();
             
             if(data.name) hygieneMap[data.name] = data.hygiene || "B";
 
-            // Calculate Rating from Stalls Collection
+
             if (data.rating && typeof data.rating === 'number') {
                 totalStallRating += data.rating;
                 stallCountWithRating++;
             }
         });
 
-        // --- D. PROCESS ORDERS (Revenue & Daily Graph) ---
+ 
         ordersSnapshot.forEach(doc => {
             const data = doc.data();
             
@@ -75,14 +75,13 @@ async function loadManagerDashboard() {
                     }
                 }
 
-                // Stall Aggregation (For Top Stalls)
-                // Check root level first. If missing, check inside the first item.
+
                 const sName = data.stallName || (data.items && data.items[0] ? data.items[0].stallName : "Unknown");
                 stallRevMap[sName] = (stallRevMap[sName] || 0) + amount;
             }
         });
 
-        // --- E. UPDATE HTML (TOTALS) ---
+
         if(document.getElementById('centre-revenue')) 
             document.getElementById('centre-revenue').innerText = "$" + totalRev.toLocaleString();
         
@@ -93,7 +92,7 @@ async function loadManagerDashboard() {
             document.getElementById('total-traffic').innerText = totalOrders;
 
 
-        // --- F. UPDATE AVERAGE RATING ---
+
         const avgRating = stallCountWithRating > 0 
             ? (totalStallRating / stallCountWithRating).toFixed(1) 
             : "0.0";
@@ -102,7 +101,7 @@ async function loadManagerDashboard() {
             document.getElementById('centre-rating').innerText = avgRating;
 
 
-        // --- G. TOP STALLS TABLE ---
+
         let sortedStalls = [];
         for (let [name, revenue] of Object.entries(stallRevMap)) {
             sortedStalls.push({ name, revenue, grade: hygieneMap[name] || "-" });
@@ -119,7 +118,7 @@ async function loadManagerDashboard() {
         document.getElementById('top-stalls-body').innerHTML = topStallHTML || '<tr><td colspan="3">No sales yet</td></tr>';
 
 
-        // --- H. RENDER DAILY CHART ---
+
         const currentMonthName = today.toLocaleString('default', { month: 'short' });
         const sortedDays = Object.keys(dailyRevenueMap).map(Number).sort((a,b) => a - b);
         
@@ -136,7 +135,7 @@ async function loadManagerDashboard() {
     }
 }
 
-// 3. LOAD STALL MANAGEMENT PAGE
+
 async function loadStallManagement() {
     const tableBody = document.getElementById('stall-management-body');
     if(!tableBody) return;
@@ -170,7 +169,7 @@ async function loadStallManagement() {
     }
 }
 
-// 4. CHART HELPER (Revenue Only)
+
 function renderRevenueChart(labels, data) {
     const ctx = document.getElementById('centreRevenueChart').getContext('2d');
     if(revenueChartInstance) revenueChartInstance.destroy();
@@ -198,7 +197,7 @@ function renderRevenueChart(labels, data) {
     });
 }
 
-// 5. DELETE STALL FUNCTION
+
 window.deleteStall = async function(id) {
     if(confirm("Are you sure you want to delete this stall? This cannot be undone.")) {
         try {
@@ -212,7 +211,7 @@ window.deleteStall = async function(id) {
     }
 };
 
-// 6. LOAD SETTINGS (Finds Operator by Role)
+
 async function loadSettings() {
     console.log("Loading settings...");
     
@@ -221,8 +220,7 @@ async function loadSettings() {
         const idField = document.getElementById('setting-id');
 
         try {
-            // QUERY: Find the document where role == 'operator'
-            // This ensures we get the operator profile even if IDs don't match exactly
+
             const q = query(collection(db, "operators"), where("role", "==", "operator"), limit(1));
             const querySnapshot = await getDocs(q);
 
@@ -231,7 +229,7 @@ async function loadSettings() {
                 if(nameField) nameField.value = operatorDoc.email || "No Email Found";
                 if(idField) idField.value = operatorDoc.uid || "No UID Found"; 
             } else {
-                // Fallback: Use logged in user if no operator doc exists
+
                 if (user) {
                     if(nameField) nameField.value = user.email;
                     if(idField) idField.value = user.uid;
@@ -243,21 +241,21 @@ async function loadSettings() {
     });
 }
 
-// 7. LOGOUT FUNCTION (Updated with Async/Await)
+
 window.logout = async function() {
     if (!confirm("Are you sure you want to log out?")) return;
     
     try {
         await signOut(auth);
         alert("Logged out successfully.");
-        window.location.href = "HomeGuest.html"; // Redirects after sign out completes
+        window.location.href = "HomeGuest.html"; 
     } catch (error) {
         console.error("Logout Error:", error);
         alert("Error logging out.");
     }
 };
 
-// 8. NAVIGATION
+
 window.switchPage = function(pageId, element) {
     document.querySelectorAll('[id^="page-"]').forEach(p => p.classList.add('hidden'));
     document.getElementById('page-' + pageId).classList.remove('hidden');
@@ -269,5 +267,5 @@ window.switchPage = function(pageId, element) {
     if(pageId === 'settings') loadSettings();
 };
 
-// Start
+
 loadManagerDashboard();

@@ -1,9 +1,9 @@
-// navbar-auth.js — MENU + Auth + Firestore role + nav filtering
+
 import { auth, fs } from "./firebase-init.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-// Helper: supports <a> or <button>
+
 function setNavTarget(el, url) {
   if (!el) return;
 
@@ -17,7 +17,7 @@ function setNavTarget(el, url) {
   el.onclick = () => (window.location.href = url);
 }
 
-// Apply role-based visibility everywhere (navbar + dashboard links)
+
 function applyRoleBasedNav(role) {
   document.querySelectorAll("[data-role]").forEach((el) => {
     const allowed = (el.dataset.role || "").toLowerCase(); // all/patron/vendor
@@ -35,7 +35,7 @@ async function fetchUserProfile(uid) {
   return snap.exists() ? snap.data() : null;
 }
 
-// ✅ Menu open/close
+
 function initMenuUI() {
   const menuBtn = document.getElementById("menu-btn");
   const dashboard = document.getElementById("dashboard");
@@ -62,14 +62,13 @@ function initMenuUI() {
 }
 
 export function initNavbarAuth() {
-  // Navbar must already be loaded by loadNavbar() before this runs
+
   initMenuUI();
 
   const signinBtn = document.getElementById("signinBtn"); // top right
   const dashboardAuthBtn = document.getElementById("dashboardAuthBtn"); // inside menu
 
-  // REMOVED: const profileUrl = "Profile(Patron & Vendor).html"; 
-  // We will define the URL inside the auth check below instead.
+
 
   onAuthStateChanged(auth, async (user) => {
     // ---------------------------

@@ -1,4 +1,4 @@
-// SignInVendor.js (module) — Firestore role check (NO stall picker)
+
 import { auth, fs } from "./firebase-init.js";
 
 import {
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // 3) Redirect vendor to Vendor Details page (stall selection happens there)
-      window.location.href = "VendorStallDetails.html"; // change if your filename differs
+      window.location.href = "VendorStallDetails.html"; 
     } catch (err) {
       alert(prettyFirebaseError(err));
     }

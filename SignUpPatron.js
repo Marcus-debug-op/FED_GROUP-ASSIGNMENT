@@ -1,4 +1,4 @@
-// SignInPatron.js (module)
+
 import { auth, db } from "./firebase-init.js";
 import { signInWithEmailAndPassword } from
   "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";

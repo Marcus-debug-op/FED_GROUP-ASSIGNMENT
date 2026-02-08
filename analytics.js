@@ -4,9 +4,6 @@ import {
   getDocs
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-/* ---------------------------
-   Safe DOM helper
---------------------------- */
 function setText(id, value) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -37,7 +34,7 @@ let salesChart;
 let categoryChart;
 
 /* ---------------------------
-   Find current vendor stallId (best-effort)
+   Find current vendor stallId 
 --------------------------- */
 function getCurrentStallId() {
   const keys = ["stallId", "vendorStallId", "selectedStallId", "currentStallId"];
@@ -77,7 +74,6 @@ function prevMonthKey(curMonthKey) {
 
 /* ---------------------------
    Render Monthly Trend (LINE)
-   NOTE: This now shows REVENUE instead of ORDER COUNT
 --------------------------- */
 function renderSalesTrendFromMap(dataMap) {
   const canvas = document.getElementById("salesLineChart");
@@ -102,7 +98,7 @@ function renderSalesTrendFromMap(dataMap) {
     data: {
       labels,
       datasets: [{
-        label: "Revenue ($)",          // ✅ changed
+        label: "Revenue ($)",          
         data: values,
         borderWidth: 2,
         tension: 0.35,
@@ -117,7 +113,7 @@ function renderSalesTrendFromMap(dataMap) {
         legend: { display: false },
         tooltip: {
           callbacks: {
-            label: (context) => `Revenue: $${safeNum(context.raw, 0).toFixed(2)}` // ✅ changed
+            label: (context) => `Revenue: $${safeNum(context.raw, 0).toFixed(2)}` 
           }
         }
       },
@@ -125,7 +121,7 @@ function renderSalesTrendFromMap(dataMap) {
         y: {
           beginAtZero: true,
           ticks: {
-            callback: (value) => `$${value}` // ✅ changed
+            callback: (value) => `$${value}` 
           }
         }
       }
@@ -228,19 +224,11 @@ function getCustomerKey(orderObj, docId) {
     orderObj?.customerPhone ||
     orderObj?.customerName ||
     orderObj?.name ||
-    // fallback: treat every order as a unique customer
+    
     `order:${docId}`
   );
 }
 
-/* ---------------------------
-   Load analytics from orders
-   KPI tiles (this month vs last month):
-   - Total Revenue
-   - Total Orders
-   - Avg Order Value
-   - Total Customers
---------------------------- */
 async function loadAnalyticsFromOrders() {
   setText("statsDocLabel", "DOC: ORDERS");
 
@@ -248,12 +236,12 @@ async function loadAnalyticsFromOrders() {
   const ordersSnap = await getDocs(collection(fs, "orders"));
 
   // Monthly trend (last 12)
-  const monthlyOrders = {};   // ✅ kept (not removed)
-  const monthlyRevenue = {};  // ✅ NEW (for chart)
+  const monthlyOrders = {};   
+  const monthlyRevenue = {};  
 
   for (const k of last12MonthKeys()) {
     monthlyOrders[k] = 0;
-    monthlyRevenue[k] = 0;    // ✅ NEW
+    monthlyRevenue[k] = 0;    
   }
 
   // Current / previous month KPI buckets
@@ -274,7 +262,7 @@ async function loadAnalyticsFromOrders() {
   let deliveryCount = 0;
   let otherCount = 0;
 
-  // Track whether we had to fallback customer counting
+
   let usedCustomerFallback = false;
 
   for (const docSnap of ordersSnap.docs) {
@@ -388,7 +376,7 @@ async function loadAnalyticsFromOrders() {
   }
 
   // Charts
-  renderSalesTrendFromMap(monthlyRevenue); // ✅ CHANGED: revenue map instead of order-count map
+  renderSalesTrendFromMap(monthlyRevenue); 
   renderPie(["Pickup", "Delivery", "Other"], [pickupCount, deliveryCount, otherCount]);
 }
 

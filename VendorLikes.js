@@ -75,10 +75,7 @@ async function findAndLoadStall(uid) {
   }
 }
 
-/**
- * Load all patron likes for this vendor's stall items
- * Strategy: Query all users' likes subcollections where stallId matches
- */
+
 async function loadAllLikes(stallId) {
   const container = document.getElementById("likesContainer");
   
@@ -110,8 +107,7 @@ async function loadAllLikes(stallId) {
     for (const likeDoc of likesSnapshot.docs) {
       const likeData = likeDoc.data();
       
-      // Extract userId from the document path
-      // Path format: users/{userId}/likes/{likeId}
+
       const pathSegments = likeDoc.ref.path.split('/');
       const userId = pathSegments[1]; // users/{userId}/likes/{likeId}
       

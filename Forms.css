@@ -224,10 +224,10 @@ input:focus, textarea:focus {
   background: transparent;
   border: none;
   padding: 0;
-  font-size: 28px;        /* makes it visible */
+  font-size: 28px;        
   line-height: 1;
   cursor: pointer;
-  color: #c9c9c9;         /* grey for unselected */
+  color: #c9c9c9;         
   transition: transform 0.12s ease, color 0.12s ease;
 }
 
@@ -236,5 +236,5 @@ input:focus, textarea:focus {
 }
 
 .rating-star.active{
-  color: #F97316;         /* orange when selected */
+  color: #F97316;         
 }

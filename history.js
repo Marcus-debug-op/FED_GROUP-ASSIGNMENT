@@ -1,4 +1,4 @@
-// Import FIRESTORE SDKs
+
 import { getApp, getApps, initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import {
@@ -14,7 +14,7 @@ import {
   deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-// --- YOUR CONFIG (must match navbar-init.js) ---
+
 const firebaseConfig = {
   apiKey: "AIzaSyDo8B0OLtAj-Upfz7yNFeGz4cx3KWLZLuQ",
   authDomain: "hawkerhub-64e2d.firebaseapp.com",
@@ -24,7 +24,7 @@ const firebaseConfig = {
   appId: "1:722888051277:web:59926d0a54ae0e4fe36a04"
 };
 
-// ✅ Reuse existing Firebase app if already initialized (prevents duplicate-app error)
+
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
@@ -83,7 +83,7 @@ async function fetchStallName(stallId) {
       return name || "";
     }
   } catch (e) {
-    // ignore
+    
   }
 
   stallNameCache.set(sid, "");
@@ -107,7 +107,7 @@ async function fetchMenuItemMeta(itemId) {
       return meta;
     }
   } catch (e) {
-    // ignore
+    
   }
 
   menuItemCache.set(iid, null);
@@ -122,11 +122,11 @@ async function buildStallSummary(order) {
   const items = Array.isArray(order.items) ? order.items : [];
   if (!items.length) return "Unknown stall";
 
-  // 1) If item already has stallName
+
   const directNames = uniqNonEmpty(items.map(i => i.stallName || i.StallName || ""));
   if (directNames.length) return directNames.join(", ");
 
-  // 2) If item already has stallId
+
   const directIds = uniqNonEmpty(items.map(i => i.stallId || i.stallID || i.StallID || i.stall || ""));
   if (directIds.length) {
     const names = await Promise.all(directIds.map(fetchStallName));
@@ -135,7 +135,7 @@ async function buildStallSummary(order) {
     return directIds.join(", ");
   }
 
-  // 3) Derive stallId from menu_items using itemId
+
   const itemIds = uniqNonEmpty(items.map(i => i.itemId || i.itemID || i.item || i.id || ""));
   if (!itemIds.length) return "Unknown stall";
 
@@ -165,10 +165,10 @@ async function deleteOrder(orderId) {
   try {
     await deleteDoc(doc(db, "orders", orderId));
 
-    // Remove from local state
+ 
     allOrders = allOrders.filter(o => o.id !== orderId);
 
-    // If currently on details view, go back to list
+ 
     const detailView = document.getElementById("detailView");
     if (detailView && !detailView.classList.contains("hidden")) {
       showList();
@@ -183,7 +183,7 @@ async function deleteOrder(orderId) {
   }
 }
 
-// ============== UI NAV (MATCHES YOUR HTML IDS) ==============
+
 function showList() {
   document.getElementById("listView")?.classList.remove("hidden");
   document.getElementById("detailView")?.classList.add("hidden");
@@ -277,7 +277,7 @@ function showDetail(orderId) {
   });
 }
 
-// ================= RENDER LIST (Fetch from FIRESTORE) =================
+
 async function loadHistory(uid) {
   const listEl = document.getElementById("historyList");
   const emptyEl = document.getElementById("historyEmpty");
@@ -307,7 +307,7 @@ async function loadHistory(uid) {
       allOrders.push({ id: d.id, ...d.data() });
     });
 
-    // compute stall names (no more hardcoded "Multiple stalls")
+  
     await Promise.all(allOrders.map(async (o) => {
       o._stallSummaryComputed = await buildStallSummary(o);
     }));

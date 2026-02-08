@@ -115,7 +115,7 @@ submitBtn.addEventListener('click', async () => {
         await addDoc(collection(fs, "stalls", stallId, "complaints"), {
             complaint: complaintText,
             improvement: improvementText,
-            photo: photoData, // Actually save the photo now!
+            photo: photoData, 
             userId: auth.currentUser ? auth.currentUser.uid : "Anonymous",
             userEmail: auth.currentUser ? auth.currentUser.email : "Anonymous",
             timestamp: serverTimestamp(),

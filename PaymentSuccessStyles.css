@@ -1,7 +1,3 @@
-/* =========================================
-   StylesSuccess.css
-   Matches Cart alignment + style
-========================================= */
 
 :root{
   --bg: #FFF7DC;
@@ -133,7 +129,7 @@ body{
   height: 36px;
   object-fit: contain;
 
-  /* Make ONLY this banner cart icon orange */
+
   filter: invert(54%) sepia(83%) saturate(1486%) hue-rotate(356deg) brightness(101%) contrast(102%);
 }
 
