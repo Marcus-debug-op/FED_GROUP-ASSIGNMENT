@@ -3,11 +3,11 @@
 
 (() => {
   // ✅ Change this if your patron login file has a different name
-  const PATRON_SIGNIN_PAGE = "Sign inPatron.html"; // your existing default in earlier scripts :contentReference[oaicite:0]{index=0}
-  const VENDOR_SIGNIN_PAGE = "Sign InVendor.html"; // :contentReference[oaicite:1]{index=1}
+  const PATRON_SIGNIN_PAGE = "SigninPatron.html"; // your existing default in earlier scripts :contentReference[oaicite:0]{index=0}
+  const VENDOR_SIGNIN_PAGE = "SignInVendor.html"; // :contentReference[oaicite:1]{index=1}
 
-  const PATRON_SIGNUP_PAGE = "Create AccountPatron.html"; // :contentReference[oaicite:2]{index=2}
-  const VENDOR_SIGNUP_PAGE = "Create AccountVendor.html"; // :contentReference[oaicite:3]{index=3}
+  const PATRON_SIGNUP_PAGE = "CreateAccountPatron.html"; // :contentReference[oaicite:2]{index=2}
+  const VENDOR_SIGNUP_PAGE = "CreateAccountVendor.html"; // :contentReference[oaicite:3]{index=3}
 
   // These IDs will be added to your buttons in the HTML edits below
   const btnUp = document.getElementById("tabSignUp");

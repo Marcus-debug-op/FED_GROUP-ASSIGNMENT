@@ -58,7 +58,7 @@ body {
 .filter-btn {
     padding: 0 18px;
     background: #fff;
-    font-weight: 800;
+    font-weight: 600;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -210,7 +210,7 @@ body {
     flex-grow: 1;
 }
 
-/* ✅ Center the word "View" */
+
 .view-btn {
     background: var(--accent-orange);
     color: white;

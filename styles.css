@@ -33,7 +33,11 @@ body{
   position: relative;
   min-height: 330px;
   overflow: hidden;
+
+  display: flex;
+  align-items: center;     
 }
+
 
 .hero-bg{
   position: absolute;
@@ -50,10 +54,12 @@ body{
 
 .hero-content{
   position: relative;
-  padding: 40px 0;
   color: #fff;
   z-index: 1;
+
+  width: 100%;
 }
+
 
 .hero-small{
   opacity: .92;
@@ -143,6 +149,11 @@ body{
   color: var(--faded-text);
   margin-bottom: 8px;
 }
+
+.food-meta .fa-star{
+  color: var(--accent);
+}
+
 
 .food-desc{
   font-size: 13px;
@@ -263,6 +274,13 @@ body{
 .guest-prompt-close:hover{
   background: rgba(0,0,0,0.10);
 }
+
+.rating-star{
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+}
+
 
 /* Mobile */
 @media (max-width: 480px){

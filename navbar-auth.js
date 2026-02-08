@@ -78,12 +78,12 @@ export function initNavbarAuth() {
     if (!user) {
       if (signinBtn) {
         signinBtn.textContent = "Sign in";
-        setNavTarget(signinBtn, "sign up.html");
+        setNavTarget(signinBtn, "signup.html");
       }
 
       if (dashboardAuthBtn) {
         dashboardAuthBtn.textContent = "Sign in";
-        dashboardAuthBtn.onclick = () => (window.location.href = "sign up.html");
+        dashboardAuthBtn.onclick = () => (window.location.href = "signup.html");
       }
 
       applyRoleBasedNav(null);
@@ -124,7 +124,7 @@ export function initNavbarAuth() {
       dashboardAuthBtn.onclick = async () => {
         if (!confirm("Sign out?")) return;
         await signOut(auth);
-        window.location.href = "Home Guest.html"; // Redirect to home on logout
+        window.location.href = "HomeGuest.html"; // Redirect to home on logout
       };
     }
 

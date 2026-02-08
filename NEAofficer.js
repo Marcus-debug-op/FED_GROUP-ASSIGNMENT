@@ -414,6 +414,6 @@ onAuthStateChanged(auth, async (user) => {
     } catch (error) {
         console.error("Error verifying officer status:", error);
         await signOut(auth);
-        window.location.href = "Sign InOfficer.html";
+        window.location.href = "SignInOfficer.html";
     }
 });

@@ -9,7 +9,7 @@ async function handleLogout() {
     if (confirm("Are you sure you want to logout?")) {
         try {
             await signOut(auth);
-            window.location.href = "Home Guest.html";
+            window.location.href = "HomeGuest.html";
         } catch (error) {
             console.error("Logout failed", error);
         }
@@ -75,6 +75,6 @@ onAuthStateChanged(auth, async (user) => {
         }
     } else {
         // If they logged out or session expired, kick to signup
-        window.location.href = "sign up.html";
+        window.location.href = "signup.html";
     }
-});
+});                                                                 

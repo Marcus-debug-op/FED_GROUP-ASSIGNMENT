@@ -4,16 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HawkerHub – Create Account</title>
-      <link rel="stylesheet" href="CreateAccVendorPatronStyle.css">
-  <script type="module" src="CreateAccPatron.js"></script>
+  <link rel="stylesheet" href="CreateAccVendorPatronStyle.css">
+  <link rel="stylesheet" href="CreateAccVendorFix.css">
+  <script type="module" src="CreateAccVendor.js"></script>
 
+<base target="_blank">
 </head>
 
-<body data-auth-role="patron">
+<body data-auth-role="vendor">
 
   <div class="app">
     <!-- Go Back Button -->
-    <button class="back-btn" type="button" onclick="window.location.href='sign up.html'">
+    <button class="back-btn" type="button" onclick="window.location.href='signup.html'">
       ← Go Back
     </button>
 
@@ -31,15 +33,14 @@
         </div>
 
         <div class="panel-body">
-          <div class="icon"><img src="img/avatars/patron.png"></div>
+          <div class="icon"><img src="img/avatars/vendor.png"></div>
           <div class="title">Create Account</div>
-          <div class="subtitle">Patron Registration</div>
+          <div class="subtitle">Vendor Registration</div>
 
-          <div class="segmented" data-role="patron">
+         <div class="segmented" data-role="vendor">
   <button class="active" id="tabSignUp" type="button">Sign Up</button>
   <button class="inactive" id="tabSignIn" type="button">Sign In</button>
 </div>
-
 
           <!-- Scrollable inputs container -->
           <div class="form-scroll">
@@ -59,38 +60,13 @@
             <label for="confirm">Confirm Password</label>
             <input id="confirm" type="password" placeholder="" />
 
-            <button class="submit-btn" type="button">
-              Create
-            </button>
-
+            <button class="submit-btn" id="createBtn" type="button">Create</button>
 
           </div>
-        </div>
-
-        <div class="panel-footer">
-          <div class="divider">More Methods</div>
-
-      <button class="google-btn" type="button">
-        <img src="img/google icon.png" alt="Google" class="google-icon">
-        <span class="google-label"></span>
-        <span class="google-spinner" aria-hidden="true"></span>
-      </button>
-
-
-
-
-          
         </div>
       </div>
     </div>
   </div>
-
-
-  <!-- Google Identity Services -->
-
-<!-- Your Google sign-in logic -->
-<script type="module" src="GoogleAuth.js"></script>
-
 
 <script src="AuthenticationTabs.js" defer></script>
 </body>
