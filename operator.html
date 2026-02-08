@@ -134,14 +134,20 @@
                 <div class="card" style="max-width:600px;">
                     <form>
                         <div class="form-group">
-                            <label style="display:block; margin-bottom:8px;">Centre Name</label>
-                            <input type="text" style="width:100%; padding:8px;" value="Tiong Bahru Hub" readonly>
+                            <label style="display:block; margin-bottom:8px; font-weight:600;">Operator Name</label>
+                            <input type="text" id="setting-name" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; background:#f9fafb;" value="Loading..." readonly>
                         </div>
-                        <div class="form-group" style="margin-top:15px;">
-                            <label style="display:block; margin-bottom:8px;">Manager Email</label>
-                            <input type="email" style="width:100%; padding:8px;" value="manager@hawkerhub.sg">
+                        
+                        <div class="form-group" style="margin-top:20px;">
+                            <label style="display:block; margin-bottom:8px; font-weight:600;">Operator ID (UID)</label>
+                            <input type="text" id="setting-id" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; background:#f9fafb; font-family:monospace;" value="Loading..." readonly>
                         </div>
-                        <button type="button" class="btn-primary" style="margin-top:20px; padding:10px 20px; background:#7c3aed; color:white; border:none; border-radius:5px;">Save Changes</button>
+
+                        <div style="margin-top:30px; border-top:1px solid #eee; padding-top:20px;">
+                            <button type="button" class="btn-danger" onclick="logout()" style="width:100%; padding:12px;">
+                                Log Out
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
