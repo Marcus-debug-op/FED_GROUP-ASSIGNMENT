@@ -1,0 +1,158 @@
+:root{
+  --bg: #FFF7DC;
+  --card: #ffffff;
+  --text: #1f1f1f;
+  --muted: #6b6b6b;
+  --border: rgba(0,0,0,0.10);
+
+  --accent: #F97316;
+  --accent-soft: rgba(249, 115, 22, 0.12);
+
+  --radius: 18px;
+  --shadow: 0 10px 26px rgba(0,0,0,0.08);
+}
+
+*{ box-sizing: border-box; }
+
+html, body{
+  height: 100%;
+}
+
+body{
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.container{
+  max-width: 980px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 16px;
+}
+
+.topbar{
+  padding: 18px 0 14px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--accent-soft), transparent);
+}
+
+.topbar-row{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.page-title{
+  margin: 0;
+  font-size: 28px;
+  letter-spacing: 0.2px;
+}
+
+.page-subtitle{
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.back-link{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  font-weight: 700;
+  color: var(--accent);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 10px 12px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+}
+
+.back-link:hover{
+  filter: brightness(0.98);
+}
+
+.tag-row{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.tag{
+  font-size: 12px;
+  color: #333;
+  background: #fffaf0;
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+
+.content{
+  padding: 18px 16px 26px;
+}
+
+.card{
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin: 14px 0;
+  box-shadow: var(--shadow);
+}
+
+.section-title{
+  margin: 0 0 10px;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #333;
+}
+
+.bullets{
+  margin: 0;
+  padding-left: 18px;
+}
+
+.bullets li{
+  margin: 7px 0;
+  line-height: 1.45;
+}
+
+.bullets.nested{
+  margin-top: 8px;
+  padding-left: 18px;
+}
+
+a{
+  color: var(--accent);
+  text-decoration: none;
+  word-break: break-word;
+}
+
+a:hover{
+  text-decoration: underline;
+}
+
+.note{
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: #fffaf0;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.footer{
+  margin-top: 16px;
+  padding: 10px 0 18px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+}
