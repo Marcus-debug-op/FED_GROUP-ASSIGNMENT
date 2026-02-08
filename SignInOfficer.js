@@ -305,10 +305,10 @@ onAuthStateChanged(auth, async (user) => {
             const officerDoc = await getDoc(doc(db, "officers", user.uid));
             if (officerDoc.exists()) {
                 // Only redirect if not already on the officer page
-                if (!window.location.href.includes("NEAofficer.html") && 
-                    !window.location.href.includes("SignInOfficer.html")) {
+                if (!window.location.href.includes("neaofficer.html") && 
+                    !window.location.href.includes("signinofficer.html")) {
                     console.log("Officer authenticated, redirecting to dashboard");
-                    window.location.href = "NEAofficer.html";
+                    window.location.href = "neaofficer.html";
                 }
             }
         } catch (error) {

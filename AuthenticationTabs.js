@@ -1,10 +1,10 @@
 (() => {
   
-  const PATRON_SIGNIN_PAGE = "SigninPatron.html"; 
-  const VENDOR_SIGNIN_PAGE = "SignInVendor.html"; 
+  const PATRON_SIGNIN_PAGE = "signinpatron.html"; 
+  const VENDOR_SIGNIN_PAGE = "signinvendor.html"; 
 
-  const PATRON_SIGNUP_PAGE = "CreateAccountPatron.html"; 
-  const VENDOR_SIGNUP_PAGE = "CreateAccountVendor.html"; 
+  const PATRON_SIGNUP_PAGE = "createaccountpatron.html"; 
+  const VENDOR_SIGNUP_PAGE = "createaccountvendor.html"; 
 
 
   const btnUp = document.getElementById("tabSignUp");
