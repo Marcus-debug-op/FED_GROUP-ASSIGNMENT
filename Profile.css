@@ -113,9 +113,7 @@ body {
     border: 2px solid white;
 }
 
-/* =========================================
-   PROFILE HEADER & LAYOUT
-========================================= */
+/*  PROFILE HEADER & LAYOUT */
 
 .profile-header {
     background-color: var(--brand-orange);
@@ -165,9 +163,7 @@ body {
 
 .content-wrapper { display: flex; gap: 50px; }
 
-/* =========================================
-   SIDEBAR
-========================================= */
+/*  SIDEBAR  */
 .left-sidebar {
     width: 300px;
     margin-top: -100px;
@@ -213,9 +209,7 @@ body {
     margin-top: 10px;
 }
 
-/* =========================================
-   DISCOUNT SECTION
-========================================= */
+/* DISCOUNT SECTION */
 .discount-section { flex-grow: 1; }
 
 .section-title {
@@ -305,9 +299,7 @@ body {
     .header-tabs { justify-content: center; }
     .navlinks { display: none; } /* Hide menu links on mobile */
 }
-/* =========================================
-   LIKES PAGE SPECIFIC STYLES
-========================================= */
+/*  LIKES PAGE SPECIFIC STYLES  */
 
 /* Empty state for no likes */
 .empty-state {
