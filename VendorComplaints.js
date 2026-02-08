@@ -1,6 +1,6 @@
 import { auth, fs } from "./firebase-init.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-import { collection, query, where, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { collection, query, where, getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 const stallNameDisplay = document.getElementById('stallNameDisplay');
 const complaintsList = document.getElementById('complaints-list');
@@ -11,7 +11,16 @@ const vendorEmail = document.getElementById('vendorEmail');
 const modal = document.getElementById('detailModal');
 const closeModal = document.getElementById('closeDetailModal');
 const closeBtnSecondary = document.getElementById('closeBtnSecondary');
-const resolveBtn = document.getElementById('resolveBtn');
+
+// Status & Delete Elements
+const statusSelect = document.getElementById('statusSelect');
+const saveIndicator = document.getElementById('saveStatusIndicator');
+const deleteIconBtn = document.getElementById('deleteIconBtn');
+
+// Reply Elements
+const replyInput = document.getElementById('vendorReplyInput');
+const sendReplyBtn = document.getElementById('sendReplyBtn');
+const replyStatusText = document.getElementById('replyStatusText');
 
 let currentStallId = null;
 let currentComplaintId = null;
@@ -30,38 +39,24 @@ onAuthStateChanged(auth, async (user) => {
 // 2. Find which stall belongs to this user
 async function findVendorStall(userId) {
     try {
-        console.log("Searching for stall with vendorID:", userId);
-
-        // Uses "vendorId" (lowercase d) to match your database
         const q = query(collection(fs, "stalls"), where("vendorId", "==", userId));
         const querySnapshot = await getDocs(q);
 
         if (!querySnapshot.empty) {
             const stallDoc = querySnapshot.docs[0];
             currentStallId = stallDoc.id;
-            
-            console.log("Found Stall:", stallDoc.data().name);
             stallNameDisplay.textContent = stallDoc.data().name;
-            
             loadComplaints(currentStallId);
         } else {
-            console.warn("No stall found in database with vendorID:", userId);
             stallNameDisplay.textContent = "No Stall Linked";
-            
-            // REMOVED INLINE CSS HERE
-            complaintsList.innerHTML = `
-                <div class="state-message error-state">
-                    <p>No stall linked to this account.</p>
-                    <small>Your User ID: ${userId}</small>
-                </div>`;
+            complaintsList.innerHTML = `<div class="state-message error-state"><p>No stall linked to this account.</p></div>`;
         }
     } catch (error) {
         console.error("Error finding stall:", error);
-        complaintsList.innerHTML = `<p class="loading-text error">Error loading data.</p>`;
     }
 }
 
-// 3. Load Complaints from Sub-collection
+// 3. Load Complaints
 async function loadComplaints(stallId) {
     complaintsList.innerHTML = "<p class='loading-text'>Loading complaints...</p>";
 
@@ -70,7 +65,6 @@ async function loadComplaints(stallId) {
         const snapshot = await getDocs(complaintsRef);
 
         if (snapshot.empty) {
-            // REMOVED INLINE CSS HERE
             complaintsList.innerHTML = `
                 <div class="state-message success-state">
                     <h3>No active complaints</h3>
@@ -83,7 +77,9 @@ async function loadComplaints(stallId) {
 
         snapshot.forEach(doc => {
             const data = doc.data();
-            
+            const currentStatus = data.status || "Pending"; 
+            const statusClass = currentStatus.toLowerCase().replace(" ", ""); 
+
             let dateStr = "Unknown Date";
             if (data.timestamp) {
                 dateStr = new Date(data.timestamp.seconds * 1000).toLocaleDateString("en-SG", {
@@ -92,10 +88,14 @@ async function loadComplaints(stallId) {
             }
             
             const card = document.createElement('div');
-            card.className = "complaint-card";
+            card.className = `complaint-card status-${statusClass}`;
+            
             card.innerHTML = `
                 <div class="card-header">
-                    <span class="user-badge">${data.userEmail ? data.userEmail.split('@')[0] : 'Anonymous'}</span>
+                    <div class="user-info">
+                        <span class="user-badge">${data.userEmail ? data.userEmail.split('@')[0] : 'Anonymous'}</span>
+                        <span class="status-pill ${statusClass}">${currentStatus}</span>
+                    </div>
                     <span class="date-text">${dateStr}</span>
                 </div>
                 <p class="reason-text"><strong>Reason:</strong> ${data.complaint}</p>
@@ -111,66 +111,127 @@ async function loadComplaints(stallId) {
 
     } catch (error) {
         console.error("Error fetching complaints:", error);
-        complaintsList.innerHTML = `<p class="loading-text error">Error loading complaints.</p>`;
     }
 }
 
-// 4. Modal Logic (Class toggling handled via CSS where possible, but display requires JS state)
+// 4. Modal Logic
 function openModal(docId, data, date) {
     currentComplaintId = docId;
     
+    // Fill Text Data
     document.getElementById('modalUser').textContent = data.userEmail || "Anonymous";
     document.getElementById('modalDate').textContent = date;
     document.getElementById('modalComplaint').textContent = data.complaint;
     document.getElementById('modalImprovement').textContent = data.improvement || "None provided";
     
+    // Fill Reply Data
+    replyInput.value = data.vendorReply || ""; 
+    replyStatusText.textContent = "";
+
+    // Set Status & Show/Hide Delete Icon
+    statusSelect.value = data.status || "Pending";
+    toggleDeleteIcon(statusSelect.value);
+    
+    saveIndicator.classList.remove('visible'); 
+
+    // Handle Image
     const imgEl = document.getElementById('modalImage');
     const noImgText = document.getElementById('noImageText');
     
     if (data.imageURL) {
         imgEl.src = data.imageURL;
-        imgEl.classList.add('show');     // Using class instead of inline style
+        imgEl.classList.add('show');
         imgEl.classList.remove('hide');
-        
         noImgText.classList.add('hide');
         noImgText.classList.remove('show');
     } else {
         imgEl.classList.add('hide');
         imgEl.classList.remove('show');
-        
         noImgText.classList.add('show');
         noImgText.classList.remove('hide');
     }
 
-    modal.classList.add('flex-show'); // Using class to show modal
+    modal.classList.add('flex-show');
 }
 
-// Close Modal Logic
+// Helper: Show Delete Icon only if Resolved/Rejected
+function toggleDeleteIcon(status) {
+    if (status === "Resolved" || status === "Rejected") {
+        deleteIconBtn.classList.add("visible");
+    } else {
+        deleteIconBtn.classList.remove("visible");
+    }
+}
+
+// 5. Update Status Listener
+statusSelect.addEventListener('change', async (e) => {
+    if (!currentStallId || !currentComplaintId) return;
+
+    const newStatus = e.target.value;
+    
+    // Immediate UI update
+    toggleDeleteIcon(newStatus);
+
+    try {
+        const docRef = doc(fs, "stalls", currentStallId, "complaints", currentComplaintId);
+        await updateDoc(docRef, { status: newStatus });
+
+        saveIndicator.classList.add('visible');
+        setTimeout(() => saveIndicator.classList.remove('visible'), 2000);
+        loadComplaints(currentStallId); // Refresh background list
+    } catch (error) {
+        console.error("Error updating status:", error);
+        alert("Failed to update status.");
+    }
+});
+
+// 6. Reply Logic
+sendReplyBtn.addEventListener('click', async () => {
+    if (!currentStallId || !currentComplaintId) return;
+    
+    const replyText = replyInput.value.trim();
+    if (!replyText) {
+        alert("Please type a reply first.");
+        return;
+    }
+
+    try {
+        sendReplyBtn.textContent = "Sending...";
+        const docRef = doc(fs, "stalls", currentStallId, "complaints", currentComplaintId);
+        
+        await updateDoc(docRef, { vendorReply: replyText });
+
+        replyStatusText.textContent = "Reply Sent Successfully!";
+        sendReplyBtn.textContent = "Send Reply";
+    } catch (error) {
+        console.error("Error sending reply:", error);
+        replyStatusText.textContent = "Error sending reply.";
+        sendReplyBtn.textContent = "Send Reply";
+    }
+});
+
+// 7. Delete Logic (Trash Icon)
+deleteIconBtn.addEventListener('click', async () => {
+    if (!currentStallId || !currentComplaintId) return;
+
+    if (confirm("Are you sure you want to permanently delete this record?")) {
+        try {
+            await deleteDoc(doc(fs, "stalls", currentStallId, "complaints", currentComplaintId));
+            modal.classList.remove('flex-show');
+            loadComplaints(currentStallId); 
+            alert("Record deleted.");
+        } catch (error) {
+            console.error("Error deleting:", error);
+            alert("Failed to delete.");
+        }
+    }
+});
+
+// Close Modal
 [closeModal, closeBtnSecondary].forEach(btn => {
     btn.addEventListener('click', () => {
         modal.classList.remove('flex-show');
     });
-});
-
-// 5. Resolve (Delete) Complaint
-resolveBtn.addEventListener('click', async () => {
-    if (!currentStallId || !currentComplaintId) return;
-
-    if (confirm("Are you sure you want to resolve and remove this complaint?")) {
-        try {
-            resolveBtn.textContent = "Deleting...";
-            await deleteDoc(doc(fs, "stalls", currentStallId, "complaints", currentComplaintId));
-            
-            alert("Complaint resolved!");
-            modal.classList.remove('flex-show');
-            loadComplaints(currentStallId); 
-            resolveBtn.textContent = "Resolve & Delete";
-        } catch (error) {
-            console.error("Error deleting:", error);
-            alert("Failed to delete.");
-            resolveBtn.textContent = "Resolve & Delete";
-        }
-    }
 });
 
 document.getElementById('logoutBtn').addEventListener('click', () => {

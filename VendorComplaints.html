@@ -55,9 +55,31 @@
       </div>
       
       <div class="modal-body">
-         <p><strong>From:</strong> <span id="modalUser">...</span></p>
-         <p><strong>Date:</strong> <span id="modalDate">...</span></p>
+         <div class="modal-meta-row">
+            <div>
+                <p><strong>From:</strong> <span id="modalUser">...</span></p>
+                <p><strong>Date:</strong> <span id="modalDate">...</span></p>
+            </div>
+            
+            <div class="status-control">
+                <label for="statusSelect">Current Status:</label>
+                <div class="status-action-row">
+                    <select id="statusSelect" class="status-dropdown">
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Resolved">Resolved</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+                    <button id="deleteIconBtn" class="delete-icon-btn" title="Delete this record">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+                <span id="saveStatusIndicator" class="save-indicator">Saved!</span>
+            </div>
+         </div>
+
          <hr class="modal-divider">
+         
          <p class="label">Complaint:</p>
          <p id="modalComplaint" class="text-content">...</p>
          
@@ -69,11 +91,19 @@
              <img id="modalImage" src="" alt="Evidence">
              <p id="noImageText">No image provided.</p>
          </div>
+
+         <hr class="modal-divider">
+         <div class="reply-section">
+             <label class="label">Vendor Reply:</label>
+             <textarea id="vendorReplyInput" placeholder="Type your response to the customer here..."></textarea>
+             <button id="sendReplyBtn" class="send-reply-btn">Send Reply</button>
+             <p id="replyStatusText" class="reply-status"></p>
+         </div>
+
       </div>
 
       <div class="modal-footer">
         <button type="button" class="cancel-btn" id="closeBtnSecondary">Close</button>
-        <button type="button" class="resolve-btn" id="resolveBtn">Resolve & Delete</button>
       </div>
     </div>
   </div>
