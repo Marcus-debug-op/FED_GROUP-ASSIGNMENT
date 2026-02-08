@@ -172,7 +172,7 @@ async function handleSubmit(e) {
 
         console.log("Redirecting to patron dashboard...");
         // Redirect to patron dashboard
-        window.location.href = "HomeGuest.html"; // Update with your actual patron dashboard page
+        window.location.href = "index.html"; // Update with your actual patron dashboard page
 
     } catch (err) {
         console.error("Authentication error:", err);
@@ -308,10 +308,10 @@ onAuthStateChanged(auth, async (user) => {
             const patronDoc = await getDoc(doc(db, "patrons", user.uid));
             if (patronDoc.exists()) {
                 // Only redirect if not already on the patron page
-                if (!window.location.href.includes("HomeGuest.html") && 
+                if (!window.location.href.includes("index.html") && 
                     !window.location.href.includes("SigninPatron.html")) {
                     console.log("Patron authenticated, redirecting to dashboard");
-                    window.location.href = "HomeGuest.html";
+                    window.location.href = "index.html";
                 }
             }
         } catch (error) {
