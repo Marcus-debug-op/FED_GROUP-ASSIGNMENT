@@ -350,7 +350,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Setup mode: user just created account, should be logged in
       if (!user) {
         // Not logged in, redirect to sign up
-        window.location.href = "Create AccountVendor.html";
+        window.location.href = "CreateAccountVendor.html";
         return;
       }
       uid = user.uid;
