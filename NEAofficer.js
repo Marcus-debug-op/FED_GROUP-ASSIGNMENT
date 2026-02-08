@@ -349,7 +349,7 @@ window.logoutOfficer = async function() {
     await signOut(auth);
     localStorage.clear();
     sessionStorage.clear();
-    window.location.href = "signinofficer.html"; 
+    window.location.href = "SignInOfficer.html"; 
 };
 
 // ==========================================
@@ -386,7 +386,7 @@ async function loadOfficerProfile() {
 
 onAuthStateChanged(auth, async (user) => {
     if (!user) {
-        window.location.href = "signinofficer.html";
+        window.location.href = "SignInOfficer.html";
         return;
     }
 
@@ -397,7 +397,7 @@ onAuthStateChanged(auth, async (user) => {
         if (!officerDoc.exists()) {
             await signOut(auth);
             alert("Access denied. This account is not registered as an officer.");
-            window.location.href = "signinofficer.html";
+            window.location.href = "SignInOfficer.html";
             return;
         }
 
@@ -408,6 +408,6 @@ onAuthStateChanged(auth, async (user) => {
     } catch (error) {
         console.error("Error verifying officer status:", error);
         await signOut(auth);
-        window.location.href = "signinofficer.html";
+        window.location.href = "SignInOfficer.html";
     }
 });

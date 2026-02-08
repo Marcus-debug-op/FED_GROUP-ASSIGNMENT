@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // 3) Redirect vendor to Vendor Details page (stall selection happens there)
-      window.location.href = "vendorstalldetails.html"; 
+      window.location.href = "VendorStallDetails.html"; 
     } catch (err) {
       alert(prettyFirebaseError(err));
     }

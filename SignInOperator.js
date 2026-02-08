@@ -286,7 +286,7 @@ onAuthStateChanged(auth, async (user) => {
             if (operatorDoc.exists()) {
                 // Only redirect if not already on the operator page
                 if (!window.location.href.includes("operator.html") && 
-                    !window.location.href.includes("signinoperator.html")) {
+                    !window.location.href.includes("SignInOperator.html")) {
                     console.log("Operator authenticated, redirecting to dashboard");
                     window.location.href = "operator.html";
                 }

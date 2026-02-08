@@ -1,7 +1,7 @@
 
 
 (() => {
-  const CREATE_ACCOUNT_PAGE = "createaccountvendor.html";
+  const CREATE_ACCOUNT_PAGE = "CreateAccountVendor.html";
 
 
   const vendorCta = document.querySelector(".content .card:nth-of-type(2) .cta");

@@ -682,7 +682,7 @@ function showSuccessModal(details) {
         </div>
       </div>
       
-      <button onclick="this.closest('.modal-overlay').remove(); window.location.href='vendoraccountrentalstatus.html'" class="btn btn-primary" style="width: 100%; margin-top: 20px;">
+      <button onclick="this.closest('.modal-overlay').remove(); window.location.href='VendorAccountRentalStatus.html'" class="btn btn-primary" style="width: 100%; margin-top: 20px;">
         Go to Dashboard
       </button>
     </div>
