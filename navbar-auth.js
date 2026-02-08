@@ -104,7 +104,7 @@ export function initNavbarAuth() {
     // 1. DETERMINE TARGET URL BASED ON ROLE
     let targetUrl = "PatronProfile.html"; // Default for customers
     if (role === "vendor") {
-        targetUrl = "Vender Account.html"; // Redirect vendors here
+        targetUrl = "VenderAccount.html"; // Redirect vendors here
     }
 
     const fullName =
