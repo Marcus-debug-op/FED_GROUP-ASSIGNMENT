@@ -1,7 +1,3 @@
-/* =========================================
-   StylesCheckout.css (Checkout page)
-   Matches Cart alignment (1100px centered)
-========================================= */
 
 :root{
   --bg: #FFF7DC;
@@ -29,7 +25,7 @@ body{
   margin: 0 auto;
 }
 
-/* ===== Navbar (same as your cart/home) ===== */
+
 .topbar{
   position: sticky;
   top: 0;
@@ -197,7 +193,7 @@ input:focus, select:focus{
   box-shadow: 0 0 0 3px rgba(249,115,22,0.18);
 }
 
-/* Make special instructions span full row */
+
 #specialInstructions{
   grid-column: 1 / -1;
 }
@@ -305,12 +301,12 @@ input:focus, select:focus{
   text-align:center;
 }
 
-/* ===== Discount row (optional) ===== */
+
 #discountRow{
   display:none;
 }
 
-/* ===== Eco row (optional) ===== */
+
 #checkoutEcoRow{
   display:none;
 }
@@ -459,7 +455,7 @@ input:focus, select:focus{
   background:#ffffff;
 }
 
-/* Keep support if any page still uses input */
+
 .promo-row input{
   flex:1;
   min-width:0;

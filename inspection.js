@@ -22,7 +22,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// Function to update the UI with data
+
 function displayStallData(data, stallId) {
     // 1. Basic Info
     document.getElementById("stall-name").textContent = data.name || "Unknown Stall";
@@ -74,12 +74,12 @@ onAuthStateChanged(auth, async (user) => {
     document.getElementById("stall-name").textContent = "Finding your stall...";
 
     try {
-      // QUERY: Go to 'stalls' and find the one where vendorId == current user's ID
+      
       const q = query(collection(db, "stalls"), where("vendorId", "==", user.uid));
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
-        // We found a matching stall!
+
         const stallDoc = querySnapshot.docs[0]; // Take the first match
         console.log("Found stall:", stallDoc.id);
         displayStallData(stallDoc.data(), stallDoc.id);
@@ -98,6 +98,6 @@ onAuthStateChanged(auth, async (user) => {
     // Not logged in
     console.log("User not logged in");
     document.getElementById("stall-name").textContent = "Please Log In";
-    // Optional: window.location.href = "login.html";
+
   }
 });

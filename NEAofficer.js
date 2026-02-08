@@ -18,11 +18,7 @@ const db = getFirestore(app);
 
 let currentOfficerId = null;
 
-// ==========================================
-// 1. DATE PICKER LOGIC (Custom)
-// ==========================================
 
-// Populate Years (Current Year + 5)
 function initializeDatePicker() {
     const yearSelect = document.getElementById('picker-year');
     const currentYear = new Date().getFullYear();
@@ -36,13 +32,13 @@ function initializeDatePicker() {
     }
 }
 
-// Calculate Days in Month (Handles Leap Years)
+
 window.updateDayOptions = function() {
     const year = parseInt(document.getElementById('picker-year').value);
-    const monthIndex = parseInt(document.getElementById('picker-month').value); // 0=Jan, 1=Feb
+    const monthIndex = parseInt(document.getElementById('picker-month').value); 
     const daySelect = document.getElementById('picker-day');
     
-    // JS Trick: Day 0 of next month gives the last day of current month
+  
     const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
     
     const currentSelection = daySelect.value;

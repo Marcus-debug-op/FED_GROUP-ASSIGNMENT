@@ -37,7 +37,7 @@ let salesChart;
 let categoryChart;
 
 /* ---------------------------
-   Find current vendor stallId (best-effort)
+    Find current vendor stallId
 --------------------------- */
 function getCurrentStallId() {
   const keys = ["stallId", "vendorStallId", "selectedStallId", "currentStallId"];
@@ -45,11 +45,18 @@ function getCurrentStallId() {
     const v = localStorage.getItem(k);
     if (v && v.trim()) return v.trim();
   }
+  
+  // sessionStorage
+  for (const k of keys) {
+    const v = sessionStorage.getItem(k);
+    if (v && v.trim()) return v.trim();
+  }
+  
   return null;
 }
 
 /* ---------------------------
-   Helpers: date + buckets
+  date + buckets
 --------------------------- */
 function monthKey(dateObj) {
   const y = dateObj.getFullYear();
@@ -77,7 +84,7 @@ function prevMonthKey(curMonthKey) {
 
 /* ---------------------------
    Render Monthly Trend (LINE)
-   NOTE: This now shows REVENUE instead of ORDER COUNT
+   shows REVENUE
 --------------------------- */
 function renderSalesTrendFromMap(dataMap) {
   const canvas = document.getElementById("salesLineChart");
@@ -102,7 +109,7 @@ function renderSalesTrendFromMap(dataMap) {
     data: {
       labels,
       datasets: [{
-        label: "Revenue ($)",          // ✅ changed
+        label: "Revenue ($)",
         data: values,
         borderWidth: 2,
         tension: 0.35,
@@ -117,7 +124,7 @@ function renderSalesTrendFromMap(dataMap) {
         legend: { display: false },
         tooltip: {
           callbacks: {
-            label: (context) => `Revenue: $${safeNum(context.raw, 0).toFixed(2)}` // ✅ changed
+            label: (context) => `Revenue: $${safeNum(context.raw, 0).toFixed(2)}`
           }
         }
       },
@@ -125,7 +132,7 @@ function renderSalesTrendFromMap(dataMap) {
         y: {
           beginAtZero: true,
           ticks: {
-            callback: (value) => `$${value}` // ✅ changed
+            callback: (value) => `$${value}`
           }
         }
       }
@@ -213,7 +220,6 @@ function calcStallRevenueFromOrder(orderObj, stallId) {
 }
 
 function getCustomerKey(orderObj, docId) {
-  // Try common patterns
   return (
     orderObj?.userId ||
     orderObj?.uid ||
@@ -228,32 +234,39 @@ function getCustomerKey(orderObj, docId) {
     orderObj?.customerPhone ||
     orderObj?.customerName ||
     orderObj?.name ||
-    // fallback: treat every order as a unique customer
     `order:${docId}`
   );
 }
 
 /* ---------------------------
    Load analytics from orders
-   KPI tiles (this month vs last month):
-   - Total Revenue
-   - Total Orders
-   - Avg Order Value
-   - Total Customers
 --------------------------- */
 async function loadAnalyticsFromOrders() {
-  setText("statsDocLabel", "DOC: ORDERS");
-
+  // Get stallId first and show error if missing
   const stallId = getCurrentStallId();
+  
+  if (!stallId) {
+    setText("statsDocLabel", "ERROR: NO STALL ID");
+    setText("stallSubtitle", "⚠️ Cannot load analytics - vendor stall ID not found in localStorage/sessionStorage. Please log in again.");
+    setText("kpiTotalRevenue", "$0.00");
+    setText("kpiTotalOrders", "0");
+    setText("kpiAvgOrderValue", "$0.00");
+    setText("kpiTotalCustomers", "0");
+    console.error("❌ STALL ID NOT FOUND. Check these keys:", ["stallId", "vendorStallId", "selectedStallId", "currentStallId"]);
+    return;
+  }
+
+  setText("statsDocLabel", `DOC: ORDERS (Stall: ${stallId})`);
+
   const ordersSnap = await getDocs(collection(fs, "orders"));
 
   // Monthly trend (last 12)
-  const monthlyOrders = {};   // ✅ kept (not removed)
-  const monthlyRevenue = {};  // ✅ NEW (for chart)
+  const monthlyOrders = {};
+  const monthlyRevenue = {};
 
   for (const k of last12MonthKeys()) {
     monthlyOrders[k] = 0;
-    monthlyRevenue[k] = 0;    // ✅ NEW
+    monthlyRevenue[k] = 0;
   }
 
   // Current / previous month KPI buckets
@@ -274,10 +287,14 @@ async function loadAnalyticsFromOrders() {
   let deliveryCount = 0;
   let otherCount = 0;
 
-  // Track whether we had to fallback customer counting
   let usedCustomerFallback = false;
 
+  // Track filtered vs total orders for debugging
+  let totalOrdersInDB = 0;
+  let filteredOrdersForStall = 0;
+
   for (const docSnap of ordersSnap.docs) {
+    totalOrdersInDB++;
     const o = docSnap.data();
 
     // createdAt timestamp
@@ -287,22 +304,27 @@ async function loadAnalyticsFromOrders() {
       : null;
     if (!createdAt) continue;
 
-    // Stall filter: match top-level stallId OR any item stallId
-    if (stallId) {
-      const topStall = o.stallId || o.StallID || null;
-      const hasItemMatch = Array.isArray(o.items)
-        ? o.items.some(it => (it?.stallId || it?.StallID) === stallId)
-        : false;
-      if (topStall !== stallId && !hasItemMatch) continue;
+    // Strict stall filter - ALWAYS check stallId
+    const topStall = o.stallId || o.StallID || null;
+    const hasItemMatch = Array.isArray(o.items)
+      ? o.items.some(it => (it?.stallId || it?.StallID) === stallId)
+      : false;
+    
+    // match either top-level stallId OR have matching items
+    if (topStall !== stallId && !hasItemMatch) {
+      continue; // Skip this order - it's not from this stall
     }
+
+    // order belongs to current stall
+    filteredOrdersForStall++;
 
     // Revenue for this order (for this stall)
     const rev = calcStallRevenueFromOrder(o, stallId);
 
     // Monthly trend
     const mk = monthKey(createdAt);
-    if (monthlyOrders[mk] !== undefined) monthlyOrders[mk] += 1;     // ✅ kept
-    if (monthlyRevenue[mk] !== undefined) monthlyRevenue[mk] += rev; // ✅ NEW
+    if (monthlyOrders[mk] !== undefined) monthlyOrders[mk] += 1;
+    if (monthlyRevenue[mk] !== undefined) monthlyRevenue[mk] += rev;
 
     // KPI buckets (this month vs last month)
     const custKey = getCustomerKey(o, docSnap.id);
@@ -330,6 +352,14 @@ async function loadAnalyticsFromOrders() {
     else if (method.includes("deliver")) deliveryCount += 1;
     else otherCount += 1;
   }
+
+  // Check in browser console
+  console.log("📊 ANALYTICS DEBUG:");
+  console.log(`   Stall ID: ${stallId}`);
+  console.log(`   Total orders in database: ${totalOrdersInDB}`);
+  console.log(`   Orders for this stall: ${filteredOrdersForStall}`);
+  console.log(`   Current month orders: ${ordersCur}`);
+  console.log(`   Current month revenue: $${revenueCur.toFixed(2)}`);
 
   // Derived KPIs
   const aovCur = ordersCur ? (revenueCur / ordersCur) : 0;
@@ -379,7 +409,7 @@ async function loadAnalyticsFromOrders() {
     }
   }
 
-  // Optional hint if customer field is missing
+  // if customer field is missing
   if (usedCustomerFallback) {
     const subtitle = document.getElementById("stallSubtitle");
     if (subtitle) {
@@ -388,7 +418,7 @@ async function loadAnalyticsFromOrders() {
   }
 
   // Charts
-  renderSalesTrendFromMap(monthlyRevenue); // ✅ CHANGED: revenue map instead of order-count map
+  renderSalesTrendFromMap(monthlyRevenue);
   renderPie(["Pickup", "Delivery", "Other"], [pickupCount, deliveryCount, otherCount]);
 }
 

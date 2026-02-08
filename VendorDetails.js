@@ -1,4 +1,4 @@
-// VendorStallDetails.js - Handles both first-time setup and normal stall management modes
+
 import { auth, fs } from "./firebase-init.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import {
@@ -39,14 +39,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // Update UI based on mode
   function updateUIMode() {
     if (isSetupMode) {
-      // Setup mode: First-time vendor selecting stalls
       if (pageTitle) pageTitle.textContent = "Select Stalls to Manage";
       if (saveBtn) saveBtn.textContent = "Save & Continue to Sign In";
       if (clearBtn) clearBtn.style.display = "inline-block";
       if (addBtn) addBtn.style.display = "inline-block";
       if (stallSelect) stallSelect.style.display = "block";
     } else {
-      // Normal mode: Returning vendor managing their stalls
       if (pageTitle) pageTitle.textContent = "Your Managed Stalls";
       if (saveBtn) saveBtn.textContent = "Manage Selected Stall";
       if (clearBtn) clearBtn.style.display = "none";
@@ -192,7 +190,6 @@ document.addEventListener("DOMContentLoaded", () => {
   async function claimStall(stallId) {
     if (!uid) return;
 
-    // SAFETY CHECK: prevent claiming if someone else already took it
     const stallRef = doc(fs, "stalls", stallId);
     const stallSnap = await getDoc(stallRef);
     if (!stallSnap.exists()) {
@@ -337,8 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
           saveBtn.textContent = "Save & Continue to Sign In";
         }
       } else {
-        // Normal mode: should not happen (stalls are clicked directly)
-        // But if clicked, show message
+
         alert("Please click on a stall card to manage it.");
       }
     });

@@ -1,5 +1,4 @@
-// SignInOfficer.js - Officer Sign In with Auto-Account Creation & Role Isolation
-// CORRECTED VERSION - Ensures accounts can sign in repeatedly without issues
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { 
     getAuth, 
@@ -125,16 +124,11 @@ async function handleSubmit(e) {
         } catch (signInError) {
             console.log("Sign in error:", signInError.code);
             
-            // CRITICAL FIX: Only create new account if user truly doesn't exist
-            // NOT if they just entered wrong password
+
             if (signInError.code === "auth/user-not-found" || 
                 signInError.code === "auth/invalid-credential") {
                 
-                // These errors could mean either:
-                // 1. User doesn't exist (need to create)
-                // 2. User exists but wrong password (should NOT create)
-                
-                // SOLUTION: Try to create account - Firebase will tell us if email exists
+
                 console.log("User may not exist - attempting account creation");
                 
                 // Before creating, check if email exists with opposite role
@@ -157,7 +151,7 @@ async function handleSubmit(e) {
                     console.log("Account creation error:", createError.code);
                     
                     if (createError.code === "auth/email-already-in-use") {
-                        // Email exists - this means they entered wrong password
+
                         alert("Incorrect password. Please try again or use the 'Forgot Password' link.");
                         setLoading(false);
                         return;
@@ -166,13 +160,13 @@ async function handleSubmit(e) {
                     }
                 }
             } else if (signInError.code === "auth/wrong-password") {
-                // Explicit wrong password - do NOT create account
+
                 console.log("Wrong password - account exists");
                 alert("Incorrect password. Please try again or use the 'Forgot Password' link.");
                 setLoading(false);
                 return;
             } else {
-                // Some other authentication error - throw it
+
                 throw signInError;
             }
         }

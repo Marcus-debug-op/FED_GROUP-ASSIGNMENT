@@ -8,7 +8,6 @@ body {
     margin: 0;
     min-height: 100vh;
     font-family: system-ui, -apple-system, sans-serif;
-    /* Ensure this path matches where your image is */
     background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
                 url('img/hawker_background1.avif');
     background-size: cover;

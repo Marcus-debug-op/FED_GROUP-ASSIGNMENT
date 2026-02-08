@@ -222,14 +222,6 @@ body{
 }
 
 @media (max-width:860px){
-  /*
-    MOBILE NAV FIX
-    We used to hide .navlinks entirely on <= 860px.
-    That made it look like the navbar was missing buttons.
-
-    Now we keep the links visible as a horizontally-scrollable row,
-    while still keeping the hamburger/dashboard available.
-  */
 
   .topbar-inner{
     gap:10px;

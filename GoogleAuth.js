@@ -1,4 +1,4 @@
-// GoogleAuth.js (module) — Firestore version (works for both Vendor & Patron pages)
+
 import { auth, fs } from "./firebase-init.js";
 
 import {
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setLoading(btn, true);
 
     try {
-      // Read intended role from <body data-auth-role="vendor|patron">
+      
       const intendedRole = String(document.body?.dataset?.authRole || "patron").toLowerCase();
 
       const provider = new GoogleAuthProvider();
@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Redirect / vendor stall picker
       if (intendedRole === "vendor") {
-        // If the page has a stall picker UI, show it (same ids as SignInVendor.js)
+        
         const pickerWrap = document.getElementById("stallPicker");
         const stallSelect = document.getElementById("stallAfterLogin");
         const continueBtn = document.getElementById("continueBtn");
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
             stallSelect.appendChild(opt);
           }
 
-          // If user has no stalls set up, just go vendor home
+          
           if (stallIds.length === 0) {
             window.location.href = "HomeVendor.html";
             return;
@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
             window.location.href = "HomeVendor.html";
           };
 
-          return; // stop here, wait for user to pick stall
+          return; 
         }
 
         // Fallback: no picker on page

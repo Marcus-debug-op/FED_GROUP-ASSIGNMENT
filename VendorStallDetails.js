@@ -1,4 +1,4 @@
-// VendorStallDetails.js - Handles both first-time setup and normal stall management modes
+
 import { auth, fs } from "./firebase-init.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import {
@@ -15,24 +15,23 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  // ====== CHANGE THESE IDs TO MATCH YOUR HTML ======
-  const stallSelect = document.getElementById("stallSelect");     // <select>
-  const addBtn = document.getElementById("addStallBtn");          // "Add Stall"
-  const clearBtn = document.getElementById("clearBtn");           // "Clear"
-  const chosenList = document.getElementById("selectedChips");    // div/ul to show chosen
-  const saveBtn = document.getElementById("saveVendorSetupBtn");  // Save/Continue button
-  const pageTitle = document.getElementById("pageTitle");         // Optional: page title element
-  const refreshBtn = document.getElementById("refreshBtn");       // Manual refresh button
-  const lastUpdatedEl = document.getElementById("lastUpdated");   // Last updated timestamp
-  const statusIndicator = document.getElementById("statusIndicator"); // Status indicator
-  // ===============================================
+  const stallSelect = document.getElementById("stallSelect");     
+  const addBtn = document.getElementById("addStallBtn");         
+  const clearBtn = document.getElementById("clearBtn");           
+  const chosenList = document.getElementById("selectedChips");    
+  const saveBtn = document.getElementById("saveVendorSetupBtn");  
+  const pageTitle = document.getElementById("pageTitle");         
+  const refreshBtn = document.getElementById("refreshBtn");       
+  const lastUpdatedEl = document.getElementById("lastUpdated");   
+  const statusIndicator = document.getElementById("statusIndicator"); 
+
 
   if (!stallSelect || !addBtn || !clearBtn || !chosenList) {
     console.error("Missing HTML elements for stall picker. Check your IDs.");
     return;
   }
 
-  // Determine mode: "setup" for first-time vendors, "normal" for returning vendors
+
   const urlParams = new URLSearchParams(window.location.search);
   const isSetupMode = urlParams.get("mode") === "setup";
 
@@ -257,7 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function claimStall(stallId) {
     if (!uid) return;
 
-    // SAFETY CHECK: prevent claiming if someone else already took it
+
     const stallRef = doc(fs, "stalls", stallId);
     const stallSnap = await getDoc(stallRef);
     if (!stallSnap.exists()) {
@@ -410,8 +409,7 @@ document.addEventListener("DOMContentLoaded", () => {
           saveBtn.textContent = "Save & Continue to Sign In";
         }
       } else {
-        // Normal mode: should not happen (stalls are clicked directly)
-        // But if clicked, show message
+
         alert("Please click on a stall card to manage it.");
       }
     });

@@ -231,14 +231,14 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* SPECIFIC TRANSITIONS ONLY to prevent layout jitter */
+
     transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
     font-size: 14px;
     position: relative;
     z-index: 20; 
 }
 
-/* THE FIX: Forces browser to ignore the icon for mouse events */
+
 .action-btn i, .action-btn svg {
     pointer-events: none !important; 
 }

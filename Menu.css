@@ -107,7 +107,7 @@
 }
 
 .heart-icon.liked {
-    /* This filter will make the heart red when liked */
+
     filter: brightness(0) saturate(100%) invert(27%) sepia(89%) saturate(2527%) hue-rotate(346deg) brightness(95%) contrast(93%);
 }
 

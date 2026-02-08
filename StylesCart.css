@@ -1,6 +1,4 @@
-/* =========================================
-   StylesCart.css (Cart page)
-========================================= */
+
 
 :root{
   --bg: #FFF7DC;
@@ -151,7 +149,7 @@ body{
   height: 36px;
   object-fit: contain;
 
-  /* Orange tint only for this banner cart icon */
+
   filter: invert(54%) sepia(83%) saturate(1486%) hue-rotate(356deg) brightness(101%) contrast(102%);
 }
 

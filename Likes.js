@@ -29,7 +29,7 @@ const auth = getAuth(app);
 
 let currentUser = null;
 
-// Wait for auth state
+
 onAuthStateChanged(auth, (user) => {
   if (user) {
     currentUser = user;

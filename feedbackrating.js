@@ -1,5 +1,3 @@
-// feedbackUi.js
-// Handles visual interactions only (stars, photo preview showing/hiding)
 
 document.addEventListener("DOMContentLoaded", () => {
     
@@ -67,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // Click "X" -> Hide preview box
+        
         if(removeBtn) {
             removeBtn.addEventListener('click', () => {
                 fileIn.value = ""; // Clear the input

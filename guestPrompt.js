@@ -1,17 +1,9 @@
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-/**
- * Guest prompt:
- * - Shows ONLY when user is NOT logged in
- * - Shows again in the future if user is still not logged in
- * - If user dismisses it, it hides only for this browser TAB session (sessionStorage)
- */
-
 const overlay = document.getElementById("guestPromptOverlay");
 const closeBtn = document.getElementById("guestPromptClose");
 const guestBtn = document.getElementById("guestPromptGuestBtn");
 
-// Hide only for the current tab session (not forever)
+
 const SESSION_KEY = "hawkerhub_guest_prompt_hidden_this_session";
 
 function showPrompt(){
@@ -33,7 +25,7 @@ function hiddenThisSession(){
 if (closeBtn) closeBtn.addEventListener("click", hidePromptForSession);
 if (guestBtn) guestBtn.addEventListener("click", hidePromptForSession);
 
-// Click outside to close (optional)
+
 if (overlay){
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) hidePromptForSession();

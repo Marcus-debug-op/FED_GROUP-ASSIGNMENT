@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentMenuData = {}; // Cache to store item details
 
     // 3. EVENT DELEGATION (THE FIX FOR CLICKS)
-    // This listens for clicks on the entire grid and catches the buttons
+
     if (menuGrid) {
         menuGrid.addEventListener("click", (e) => {
             // Check if Edit Button (or icon inside) was clicked

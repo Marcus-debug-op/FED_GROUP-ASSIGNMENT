@@ -8,7 +8,7 @@
   </head>
 
   <body>
-    <!-- Navbar (same alignment as cart page) -->
+
     <header class="topbar">
       <div class="container topbar-inner">
         <img src="img/Dashboard button.png" alt="Menu" class="icon-btn" />
@@ -27,7 +27,7 @@
       </div>
     </header>
 
-    <!-- Full-width orange strip (matches cart style) -->
+
     <section class="banner-wrap">
       <div class="banner">
         <div class="banner-left">
@@ -74,7 +74,7 @@
       </section>
     </main>
 
-    <!-- ✅ Queue number from localStorage (set during checkout) -->
+
     <script>
       const queueEl = document.getElementById("queueNumber");
 
@@ -84,7 +84,7 @@
       function formatQueueNo(n) {
         const num = Number(n);
         if (!Number.isFinite(num)) return "--";
-        return String(num).padStart(2, "0"); // 01, 02, 03...
+        return String(num).padStart(2, "0"); 
       }
 
       function setQueueNo(n) {

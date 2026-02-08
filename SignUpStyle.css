@@ -118,7 +118,7 @@
     height: 500px;         /* controls total card height */
     background: white;
     border-radius: 16px;
-    overflow: hidden;      /* IMPORTANT: clips image to card */
+    overflow: hidden;      
     box-shadow: 0 10px 25px rgba(0,0,0,0.12);
 }
 
@@ -130,7 +130,7 @@
     border-top: 4px solid #E11D48;
 }
 
-/* Top accent borders - Patron: Blue, Vendor: Red/Rose */
+
 .patron-card {
     border-top: 4px solid #2563EB;
 }
@@ -274,9 +274,9 @@ padding: 24px 24px 24px 32px;
 }
 
 
-/* Header becomes a "window" */
+
 .card-header {
-  height: 180px;        /* controls how much of the top you see */
+  height: 180px;        
   overflow: hidden;
 }
 
@@ -339,9 +339,7 @@ padding: 24px 24px 24px 32px;
         text-decoration: underline;
     }
 
-/* ----------------------------------------
-   MORE OPTIONS BUTTON (on main sign up page)
-   ---------------------------------------- */
+
 .more-options-container {
     display: flex;
     flex-direction: column;
@@ -519,7 +517,7 @@ padding: 24px 24px 24px 32px;
     transform: translateX(4px);
 }
 
-/* Hide any image/illustration elements if they exist in HTML */
+
 .officer-card .illustration,
 .operator-card .illustration,
 .officer-card .card-header,

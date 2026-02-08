@@ -1,11 +1,11 @@
-// 1. Import from your shared file (CLEANER)
+
 import { fs } from "./firebase-init.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-// 2. Helper to get ID from URL (Checks for both "id" and "stall")
+
 function getStallId() {
     const params = new URLSearchParams(window.location.search);
-    const id = params.get("id") || params.get("stall"); // Support both ?id= and ?stall=
+    const id = params.get("id") || params.get("stall"); 
     return id ? id.trim() : null;
 }
 
@@ -21,8 +21,7 @@ async function loadDetails() {
 
     console.log("Loading details for:", stallId); // Debugging
 
-    // --- FETCH DATA FROM FIRESTORE ---
-    // Note: We use 'fs' here, which is the database imported from firebase-init.js
+
     const snap = await getDoc(doc(fs, "stalls", stallId));
 
     if (!snap.exists()) {
@@ -70,7 +69,7 @@ async function loadDetails() {
     document.getElementById("stall-price").textContent = s.priceRange || "-";
     document.getElementById("stall-phone").textContent = s.phone || "-";
 
-    // --- UPDATE BUTTON LINKS (THE IMPORTANT PART) ---
+
 
     // 1. Update Menu Link
     const menuLink = document.getElementById("menu-link");
@@ -84,12 +83,10 @@ async function loadDetails() {
         feedbackLink.href = `stallFeedback.html?id=${encodeURIComponent(stallId)}`;
     }
 
-    // 3. Update "Add Complaint" Link (Finds it automatically)
-    // We look for the link that points to "complaint.html" OR has the ID "add-complaint-btn"
     const complaintBtn = document.getElementById("add-complaint-btn") || document.querySelector('a[href*="complaint.html"]');
     
     if (complaintBtn) {
-        // This ensures the link becomes "complaint.html?id=ahseng"
+
         complaintBtn.href = `complaint.html?id=${encodeURIComponent(stallId)}`;
     }
 }

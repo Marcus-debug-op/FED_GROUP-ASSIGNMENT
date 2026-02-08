@@ -1,10 +1,9 @@
-// SignUpVendor.js
-// Only wires the Vendor "Continue as Stall Owner" CTA to Create AccountVendor.html
+
 
 (() => {
   const CREATE_ACCOUNT_PAGE = "Create AccountVendor.html";
 
-  // Vendor card is the second .card in signup.html :contentReference[oaicite:4]{index=4}
+
   const vendorCta = document.querySelector(".content .card:nth-of-type(2) .cta");
 
   if (!vendorCta) return;

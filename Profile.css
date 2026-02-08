@@ -1,4 +1,4 @@
-/* General Reset */
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -11,7 +11,6 @@
     --brand-orange: #f58220;
     --btn-red: #f25520;
     
-    /* Variables from your styles.css */
     --bg: #FFF7DC;
     --text: #1f1f1f;
     --faded-text: #6b6b6b;
@@ -22,9 +21,7 @@ body {
     background-color: var(--brand-orange);
 }
 
-/* =========================================
-   NAV BAR (Integrated from styles.css)
-========================================= */
+
 .topbar{
   position: sticky;
   top: 0;
@@ -295,7 +292,7 @@ body {
     display: none;
 }
 
-/* Replaces the inline styles on the "Open" links */
+
 .tool-link {
     text-decoration: none;
     display: inline-block;

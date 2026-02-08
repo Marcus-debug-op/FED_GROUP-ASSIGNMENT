@@ -28,9 +28,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-/** =============================
- * CART STORAGE (matches checkout.js)
- * ============================= */
+
 const CART_KEY = "hawkerhub_cart";
 
 function readCart() {
@@ -46,10 +44,10 @@ function readCart() {
 function saveCart(cart) {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
 
-  // Update dot (if present)
+  
   updateCartDot();
 
-  // Tell other scripts (e.g., ScriptCart.js) to refresh dot and UI
+
   window.dispatchEvent(new Event("cart-updated"));
 }
 
@@ -65,13 +63,13 @@ function updateCartDot() {
 function addToCart({ stallId, stallName, itemId, name, price, image }) {
   const cart = readCart();
 
-  // Same item = same stallId + itemId
+
   const existing = cart.find(i => i.stallId === stallId && i.itemId === itemId);
 
   if (existing) {
     existing.qty = (Number(existing.qty) || 0) + 1;
   } else {
-    // create an id field used by ScriptCart
+
     const id = `${stallId}__${itemId}`;
     cart.push({
       id,
@@ -93,7 +91,7 @@ function addToCart({ stallId, stallName, itemId, name, price, image }) {
  * ============================= */
 function getStallIdFromUrl() {
   const params = new URLSearchParams(window.location.search);
-  // --- THE FIX: Check for 'id' OR 'stall' ---
+
   return (params.get("id") || params.get("stall") || "").trim();
 }
 
@@ -113,7 +111,7 @@ function setHero(stallData) {
   const reviews = stallData.reviews ?? "-";
   document.getElementById("stall-rating").textContent = `★ ${rating} (${reviews} reviews)`;
 
-  // Optional: set banner background from Firestore
+
   if (stallData.heroImage) {
     const hero = document.getElementById("hero");
     hero.style.backgroundImage = `url('${stallData.heroImage}')`;
@@ -133,12 +131,7 @@ function renderMenuItemCard(stallId, stallName, itemId, item) {
   const div = document.createElement("div");
   div.className = "menu-card";
 
-  /**
-   * We add:
-   * - data-add-to-cart attributes (ScriptCart listens for these)
-   * - data-skip-scriptcart="1" so ScriptCart won't double-add (menu.js handles the add)
-   * - the data-id used by ScriptCart for cart item id
-   */
+
   div.innerHTML = `
     <div class="image-container">
       ${img ? `<img src="${img}" alt="${name}" class="food-img">` : ""}
@@ -188,7 +181,7 @@ function renderMenuItemCard(stallId, stallName, itemId, item) {
  * MAIN LOAD
  * ============================= */
 async function loadMenuPage() {
-  // Ensure dot is correct on page load
+
   updateCartDot();
 
   const stallId = getStallIdFromUrl();
@@ -231,7 +224,7 @@ async function loadMenuPage() {
     container.appendChild(card);
   });
 
-  // 3) Add to cart click handler (menu.js handles add)
+
   container.addEventListener("click", (e) => {
     const btn = e.target.closest(".add-to-cart");
     if (!btn) return;
@@ -250,7 +243,7 @@ async function loadMenuPage() {
       image
     });
 
-    // Optional feedback (no feature removed)
+
     btn.textContent = "Added!";
     btn.disabled = true;
     setTimeout(() => {
@@ -273,11 +266,9 @@ loadMenuPage().catch((err) => {
  * LIKES FUNCTIONALITY
  * ============================= */
 
-// Store user's likes in memory for quick UI updates
 const userLikesCache = new Set();
 let currentUserForLikes = null;
 
-// Track auth state for likes
 onAuthStateChanged(auth, (user) => {
   currentUserForLikes = user;
   
@@ -384,7 +375,7 @@ document.addEventListener("click", async (e) => {
       heart.src = "img/heart-filled.png";
       heart.classList.add("liked");
       
-      // Optional: show brief feedback
+
       showLikeFeedback(heart);
     }
   } catch (error) {
@@ -393,13 +384,13 @@ document.addEventListener("click", async (e) => {
   }
 });
 
-// Save like to Firestore
+
 async function likeItem(data) {
   if (!currentUserForLikes) return;
   
   const { stallId, stallName, itemId, itemName, price, image } = data;
   
-  // Use stallId__itemId as the document ID for easy lookup
+
   const likeId = `${stallId}__${itemId}`;
   const likeRef = doc(db, "users", currentUserForLikes.uid, "likes", likeId);
   

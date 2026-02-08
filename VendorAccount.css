@@ -15,10 +15,9 @@
   font-family: "Segoe UI", system-ui, -apple-system, sans-serif; 
 }
 
-/* ✅ FIX #1: Remove overflow hidden on html/body - this was preventing mobile scrolling */
+
 html, body {
   height: 100%;
-  /* REMOVED: overflow: hidden; */
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -549,13 +548,6 @@ main.container{
   height: 60px;
 }
 
-/* =========================================
-   RENTAL DETAILS CARD CONTAINER
-   ========================================= */
-
-/* =========================================
-   DASHBOARD RENTAL DETAILS (NO CLASH)
-   ========================================= */
 
 .rental-wrap {
   width: 100%;
@@ -1202,9 +1194,7 @@ main.container{
   font-weight: 600;
 }
 
-/* VendorLikes.css - Additional styles for Customer Likes page */
 
-/* ✅ Stats Summary - UPDATED FOR HORIZONTAL MOBILE LAYOUT */
 .stats-summary {
   display: flex;
   gap: 20px;
@@ -1391,11 +1381,7 @@ body {
   }
 }
 
-/* ========================================
-   ✅ MOBILE RESPONSIVE FIXES
-   ======================================== */
 
-/* Tablet breakpoint */
 @media (max-width: 992px) {
   .grid { 
     grid-template-columns: repeat(2, 1fr); 
@@ -1482,7 +1468,7 @@ body {
     font-size: 16px;
   }
   
-  /* ✅ UPDATED: Stats summary - HORIZONTAL layout on mobile */
+
   .stats-summary {
     flex-direction: row;
     gap: 12px;
@@ -1654,7 +1640,7 @@ body {
     font-size: 20px;
   }
   
-  /* ✅ UPDATED: Keep stats horizontal but more compact */
+
   .stat-box {
     min-width: 110px;
     padding: 12px;

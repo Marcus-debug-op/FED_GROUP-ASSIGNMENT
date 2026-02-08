@@ -137,13 +137,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
-      // --- THE FIX IS HERE ---
-      // We calculate the raw average, then fix it to 1 decimal place (e.g. "3.9")
-      // Number(...) turns the string "3.9" back into the number 3.9
+
       const rawAverage = reviewCount > 0 ? totalRating / reviewCount : 0;
       const averageRating = Number(rawAverage.toFixed(1)); 
 
-      // 3. Update the main stall document with the CLEAN number
+    
       const stallRef = doc(fs, "stalls", stallId);
       await updateDoc(stallRef, {
         rating: averageRating,

@@ -195,7 +195,7 @@ h3 { margin: 0 0 8px 0; font-size: 1.1rem; font-weight: 600; color: #1a1a1a; }
     width: 100%;
 }
 
-/* Adjust widths: Day (small), Month (medium), Year (small) */
+
 #picker-day { flex: 1; }
 #picker-month { flex: 2; }
 #picker-year { flex: 1; }
@@ -206,6 +206,5 @@ h3 { margin: 0 0 8px 0; font-size: 1.1rem; font-weight: 600; color: #1a1a1a; }
     height: auto;
     object-fit: contain;
     border-radius: 8px;
-    /* Optional: Adds a small margin if the text feels too close */
     margin-right: 12px; 
 }

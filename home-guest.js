@@ -7,7 +7,7 @@ import {
   orderBy,
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// ✅ import i18n helpers
+
 import { applyI18n, t } from "./i18n.js";
 
 const firebaseConfig = {
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderTrending(trendingGrid, trending);
     wireTrendingClicks(trendingGrid);
 
-    // ✅ translate newly injected content
+
     applyI18n(document);
   } catch (err) {
     console.error("Home trending failed to load:", err);
@@ -109,7 +109,7 @@ function renderTrending(container, list) {
         Number.isFinite(reviews) && reviews > 0 ? `${reviews} reviews` : "reviews";
       const popText = `${pop} popular`;
 
-      // Use the same star image as BrowseStalls if you want:
+
       const starsHTML = `<img src="img/star.png" class="rating-star" alt="rating"> ${ratingText}`;
 
       return `
