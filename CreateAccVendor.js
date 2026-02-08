@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       
       
-      window.location.href = "VendorStallDetails.html?mode=setup";
+      window.location.href = "vendorstalldetails.html?mode=setup";
       
     } catch (err) {
       const errorMessage = prettyFirebaseError(err);

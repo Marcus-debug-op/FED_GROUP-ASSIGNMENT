@@ -309,7 +309,7 @@ onAuthStateChanged(auth, async (user) => {
             if (patronDoc.exists()) {
                 // Only redirect if not already on the patron page
                 if (!window.location.href.includes("index.html") && 
-                    !window.location.href.includes("SigninPatron.html")) {
+                    !window.location.href.includes("sgninpatron.html")) {
                     console.log("Patron authenticated, redirecting to dashboard");
                     window.location.href = "index.html";
                 }

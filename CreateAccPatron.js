@@ -133,7 +133,7 @@ async function handleCreateAccount(e) {
         console.log("Redirecting to patron sign-in page...");
         
         // Redirect to patron dashboard or sign-in page
-        window.location.href = "SigninPatron.html";
+        window.location.href = "signinpatron.html";
 
     } catch (err) {
         console.error("Account creation error:", err);
