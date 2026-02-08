@@ -37,6 +37,136 @@ let allOrders = [];
 const stallNameCache = new Map(); // stallId -> name or ""
 const menuItemCache = new Map();  // itemId -> { stallId, stallName } or null
 
+// ============== ✅ NEW: AUTH CHECK FUNCTIONS ==============
+/**
+ * Check if user is authenticated and has valid role
+ * Returns user data if authenticated, null otherwise
+ */
+async function checkAuthentication(user) {
+  if (!user) {
+    return null;
+  }
+
+  try {
+    // Get user document from Firestore
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    
+    if (!userDoc.exists()) {
+      console.warn("User document not found in Firestore");
+      return null;
+    }
+
+    const userData = userDoc.data();
+    const userRole = userData.role || "";
+
+    // Allow patrons, vendors, officers, and operators to view history
+    // Block guests
+    if (userRole === "guest") {
+      return null;
+    }
+
+    return {
+      uid: user.uid,
+      email: user.email,
+      role: userRole,
+      ...userData
+    };
+  } catch (error) {
+    console.error("Error checking authentication:", error);
+    return null;
+  }
+}
+
+/**
+ * Redirect to sign-in page with return URL
+ */
+function redirectToSignIn() {
+  // Store current page to return after sign-in
+  sessionStorage.setItem("returnAfterLogin", window.location.href);
+  
+  // Redirect to sign-up page (you can change this to sign-in.html if you have one)
+  window.location.href = "signup.html";
+}
+
+/**
+ * Show auth required message
+ */
+function showAuthRequired() {
+  const listEl = document.getElementById("historyList");
+  const emptyEl = document.getElementById("historyEmpty");
+  const loadingEl = document.getElementById("loadingMsg");
+
+  if (loadingEl) loadingEl.style.display = "none";
+  
+  if (listEl) {
+    listEl.innerHTML = `
+      <div style="text-align: center; padding: 60px 20px;">
+        <h2 style="margin-bottom: 20px; color: #333;">Sign In Required</h2>
+        <p style="margin-bottom: 30px; color: #666;">
+          You need to be signed in to view your order history.
+        </p>
+        <button 
+          onclick="window.location.href='signup.html'" 
+          style="
+            background: #f97316;
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+          "
+        >
+          Sign In / Sign Up
+        </button>
+      </div>
+    `;
+  }
+  
+  if (emptyEl) emptyEl.style.display = "none";
+}
+
+/**
+ * Show guest access blocked message
+ */
+function showGuestBlocked() {
+  const listEl = document.getElementById("historyList");
+  const emptyEl = document.getElementById("historyEmpty");
+  const loadingEl = document.getElementById("loadingMsg");
+
+  if (loadingEl) loadingEl.style.display = "none";
+  
+  if (listEl) {
+    listEl.innerHTML = `
+      <div style="text-align: center; padding: 60px 20px;">
+        <h2 style="margin-bottom: 20px; color: #333;">Guest Access Not Available</h2>
+        <p style="margin-bottom: 30px; color: #666;">
+          Order history is not available for guest users.<br>
+          Please create an account to track your orders.
+        </p>
+        <button 
+          onclick="window.location.href='signup.html'" 
+          style="
+            background: #f97316;
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+          "
+        >
+          Create Account
+        </button>
+      </div>
+    `;
+  }
+  
+  if (emptyEl) emptyEl.style.display = "none";
+}
+
 // ============== UTILS ==============
 function escapeHtml(s) {
   return String(s || "")
@@ -375,14 +505,41 @@ async function loadHistory(uid) {
   }
 }
 
+// ============== ✅ MAIN AUTH LISTENER WITH PROTECTION ==============
 document.addEventListener("DOMContentLoaded", () => {
-  onAuthStateChanged(auth, (user) => {
-    loadHistory(user ? user.uid : null);
+  onAuthStateChanged(auth, async (user) => {
+    // Check authentication
+    const userData = await checkAuthentication(user);
+    
+    if (!userData) {
+      // User not authenticated or is a guest
+      if (user) {
+        // User is signed in but might be a guest
+        showGuestBlocked();
+      } else {
+        // User is not signed in at all
+        showAuthRequired();
+      }
+      return;
+    }
+
+    // User is authenticated and has valid role
+    console.log("Authenticated user:", userData.role);
+    
+    // Load their order history
+    loadHistory(userData.uid);
   });
 
+  // Back to list button
   document.getElementById("backToListBtn")?.addEventListener("click", showList);
 
-  document.getElementById("refreshBtn")?.addEventListener("click", () => {
-    loadHistory(auth.currentUser ? auth.currentUser.uid : null);
+  // Refresh button
+  document.getElementById("refreshBtn")?.addEventListener("click", async () => {
+    const user = auth.currentUser;
+    const userData = await checkAuthentication(user);
+    
+    if (userData) {
+      loadHistory(userData.uid);
+    }
   });
 });
