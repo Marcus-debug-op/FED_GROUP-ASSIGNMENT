@@ -1,40 +1,123 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HawkerHub - Lease Renewal</title>
-  <link rel="stylesheet" href="VendorAccount.css">
+  <link rel="stylesheet" href="VendorLeaseRenewal.css">
 </head>
 <body>
 
-<div class="renewal-container">
-  <div class="renewal-card">
+<div class="renewal-wrapper">
+  <div class="renewal-header">
+    <div class="header-content">
+      <h1>Lease Renewal</h1>
+      <p class="subtitle">Manage your stall lease extension</p>
+    </div>
+    <div class="header-icon">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+        <line x1="16" y1="2" x2="16" y2="6"></line>
+        <line x1="8" y1="2" x2="8" y2="6"></line>
+        <line x1="3" y1="10" x2="21" y2="10"></line>
+        <path d="M8 14h.01"></path>
+        <path d="M12 14h.01"></path>
+        <path d="M16 14h.01"></path>
+        <path d="M8 18h.01"></path>
+        <path d="M12 18h.01"></path>
+        <path d="M16 18h.01"></path>
+      </svg>
+    </div>
+  </div>
 
-    <h2>Lease Renewal</h2>
-    <p class="muted">Extend your lease period (Maximum 3 months)</p>
-
-    <div class="renewal-field">
-      <label>Current Lease End</label>
-      <div id="currentLease">Loading...</div>
+  <div class="renewal-grid">
+    <!-- Current Lease Status Card -->
+    <div class="info-card status-card">
+      <div class="card-header">
+        <h3>Current Lease Status</h3>
+        <span id="leaseStatusBadge" class="status-badge">Loading...</span>
+      </div>
+      
+      <div class="status-details">
+        <div class="status-item">
+          <span class="label">Current Lease End</span>
+          <span id="currentLease" class="value highlight">Loading...</span>
+        </div>
+        <div class="status-item">
+          <span class="label">Stall ID</span>
+          <span id="stallId" class="value">Loading...</span>
+        </div>
+        <div class="status-item">
+          <span class="label">Monthly Rate</span>
+          <span id="currentRate" class="value">Loading...</span>
+        </div>
+      </div>
     </div>
 
-    <div class="renewal-field">
-      <label>New Lease End Date</label>
-      <input type="date" id="newLeaseEnd">
-      <small class="hint">Select a date up to 3 months from current end date</small>
+    <!-- Renewal Configuration Card -->
+    <div class="info-card renewal-form-card">
+      <div class="card-header">
+        <h3>Renewal Details</h3>
+      </div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label for="newLeaseEnd">New Lease End Date</label>
+          <div class="input-wrapper">
+            <input type="date" id="newLeaseEnd" class="date-input">
+            <span class="input-icon"></span>
+          </div>
+          <small class="hint" id="dateHint">Select your preferred end date</small>
+        </div>
+
+        <div class="duration-slider" id="durationSlider" style="display: none;">
+          <label>Quick Select Duration</label>
+          <div class="slider-options">
+            <button type="button" class="duration-btn" data-months="1">1 Month</button>
+            <button type="button" class="duration-btn" data-months="2">2 Months</button>
+            <button type="button" class="duration-btn" data-months="3">3 Months</button>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div id="paymentInfo" class="payment-info"></div>
-
-    <div class="renewal-actions">
-      <button id="saveRenewal" class="btn-primary">Update Lease</button>
-      <button id="resetLeaseBtn" class="btn-warning">Reset to Today</button>
-      <button onclick="window.location='Vender AccountRentalStatus.html'" class="btn-ghost">
-        Cancel
-      </button>
+    <!-- Payment Summary Card -->
+    <div class="info-card payment-card" id="paymentCard" style="display: none;">
+      <div class="card-header">
+        <h3>Payment Summary</h3>
+      </div>
+      
+      <div id="paymentInfo" class="payment-details">
+        <!-- Dynamically populated -->
+      </div>
     </div>
 
+    <!-- Terms & Conditions Card -->
+    <div class="info-card terms-card">
+      <div class="checkbox-group">
+        <input type="checkbox" id="agreeTerms">
+        <label for="agreeTerms">
+          I agree to the <a href="#" class="link">lease renewal terms and conditions</a>, 
+          including payment obligations and stall maintenance responsibilities.
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="renewal-actions">
+    <button id="resetLeaseBtn" class="btn btn-secondary">
+      <span class="btn-icon">↺</span>
+      Reset to Today
+    </button>
+    <button class="btn btn-ghost" onclick="window.location.href='VendorAccountRentalStatus.html'">
+      Cancel
+    </button>
+    <button id="saveRenewal" class="btn btn-primary" disabled>
+      <span class="btn-text">Confirm Renewal</span>
+      <span class="btn-icon">→</span>
+      <span class="btn-loader"></span>
+    </button>
   </div>
 </div>
 

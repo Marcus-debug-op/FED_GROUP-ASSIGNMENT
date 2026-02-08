@@ -633,6 +633,41 @@ main.container{
   color: #111;
 }
 
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.active {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.status-badge.warning {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.status-badge.critical {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.status-badge.expired {
+  background: #f5c6cb;
+  color: #721c24;
+  border: 1px solid #f1b0b7;
+  text-decoration: line-through;
+}
+
 /* Top tiles */
 .rental-grid{
   display: grid;
@@ -656,7 +691,7 @@ main.container{
   box-shadow: 0 8px 24px rgba(0,0,0,.12);
 }
 
-.tile-icon{
+.tile-space{
   font-size: 28px;
   display: flex;
   align-items: center;
@@ -664,7 +699,7 @@ main.container{
   flex-shrink: 0;
 }
 
-.tile-icon img {
+.tile-space img {
   width: 38px;
   height: 38px;
   object-fit: contain;
