@@ -9,7 +9,7 @@ console.log("Lease License Script Loaded");
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    window.location.href = "sign up.html";
+    window.location.href = "signup.html";
     return;
   }
 
@@ -25,7 +25,7 @@ async function loadLicenseData(user) {
 
     if (querySnapshot.empty) {
       alert("No stall assigned to your account");
-      window.location.href = "Vender AccountRentalStatus.html";
+      window.location.href = "VenderAccountRentalStatus.html";
       return;
     }
 

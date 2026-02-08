@@ -364,7 +364,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!uid) {
           alert("Session expired. Please sign up again.");
-          window.location.href = "Create AccountVendor.html";
+          window.location.href = "CreateAccountVendor.html";
           return;
         }
 
@@ -402,7 +402,7 @@ document.addEventListener("DOMContentLoaded", () => {
           
           // Sign out and redirect to sign in page
           await auth.signOut();
-          window.location.href = "Sign InVendor.html";
+          window.location.href = "SignInVendor.html";
         } catch (e) {
           console.error(e);
           alert("Failed to save stalls. Please try again.");
@@ -423,7 +423,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Setup mode: user just created account, should be logged in
       if (!user) {
         // Not logged in, redirect to sign up
-        window.location.href = "Create AccountVendor.html";
+        window.location.href = "CreateAccountVendor.html";
         return;
       }
       uid = user.uid;
@@ -435,7 +435,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       // Normal mode: must be logged in
       if (!user) {
-        window.location.href = "Sign InVendor.html";
+        window.location.href = "SignInVendor.html";
         return;
       }
       uid = user.uid;

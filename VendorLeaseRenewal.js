@@ -23,7 +23,7 @@ const paymentInfoEl = document.getElementById("paymentInfo");
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    window.location.href = "sign up.html";
+    window.location.href = "signup.html";
     return;
   }
 
@@ -263,7 +263,7 @@ saveBtn.addEventListener("click", async () => {
     });
 
     alert(`✅ Lease renewed successfully!\n\nRenewal Period: ${paymentDetails.months} month(s)\nTotal Amount: $${paymentDetails.totalAmount.toLocaleString()}`);
-    window.location.href = "Vender AccountRentalStatus.html";
+    window.location.href = "VenderAccountRentalStatus.html";
 
   } catch (error) {
     console.error("Error renewing lease:", error);

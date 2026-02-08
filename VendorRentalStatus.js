@@ -33,7 +33,7 @@ onAuthStateChanged(auth, async (user) => {
   if (user) {
     await loadRentalInfo(user.uid);
   } else {
-    window.location.href = "sign up.html";
+    window.location.href = "signup.html";
   }
 });
 
