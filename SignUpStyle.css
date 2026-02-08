@@ -1,5 +1,3 @@
-
-
 :root {
         --bg: #FFF7DC;
   --text: #1f1f1f;
@@ -36,6 +34,9 @@
 
     background: transparent;
     position: relative;
+    
+    display: flex;
+    flex-direction: column;
 }
 
     
@@ -109,16 +110,17 @@
     display: flex;
     justify-content: center;
     gap: 48px;
+    flex: 0 0 auto;
     }
 
 
     .patron-card,
     .vendor-card {
-    width: 320px;          /* adjust if needed */
-    height: 500px;         /* controls total card height */
+    width: 320px;
+    height: 500px;
     background: white;
     border-radius: 16px;
-    overflow: hidden;      
+    overflow: hidden;
     box-shadow: 0 10px 25px rgba(0,0,0,0.12);
 }
 
@@ -130,7 +132,7 @@
     border-top: 4px solid #E11D48;
 }
 
-
+/* Top accent borders - Patron: Blue, Vendor: Red/Rose */
 .patron-card {
     border-top: 4px solid #2563EB;
 }
@@ -177,10 +179,18 @@
     text-align: center;
 }
 
-/* CTA Link styling - Pill buttons */
+/* CTA Button container */
 .patron-card .cta,
 .vendor-card .cta {
-    margin: 0 70 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* CTA Button styling */
+.patron-card .cta button,
+.vendor-card .cta button {
+    margin: 0;
     padding: 12px 24px;
     font-weight: 600;
     font-size: 14px;
@@ -194,17 +204,17 @@
     border: 2px solid;
     transition: all 0.2s ease;
     text-decoration: none;
-    align-self: center;
+    font-family: inherit;
 }
 
 /* Patron specific - Calm Blue */
-.patron-card .cta {
+.patron-card .cta button {
     color: #2563EB;
     border-color: #2563EB;
     background: rgba(37, 99, 235, 0.05);
 }
 
-.patron-card .cta:hover {
+.patron-card .cta button:hover {
     background: #2563EB;
     color: white;
     text-decoration: none;
@@ -213,13 +223,13 @@
 }
 
 /* Vendor specific - Vibrant Red/Rose */
-.vendor-card .cta {
+.vendor-card .cta button {
     color: #E11D48;
     border-color: #E11D48;
     background: rgba(225, 29, 72, 0.05);
 }
 
-.vendor-card .cta:hover {
+.vendor-card .cta button:hover {
     background: #E11D48;
     color: white;
     text-decoration: none;
@@ -228,14 +238,14 @@
 }
 
 /* Arrow animation */
-.patron-card .cta::after,
-.vendor-card .cta::after {
+.patron-card .cta button::after,
+.vendor-card .cta button::after {
     content: "→";
     transition: transform 0.2s ease;
 }
 
-.patron-card .cta:hover::after,
-.vendor-card .cta:hover::after {
+.patron-card .cta button:hover::after,
+.vendor-card .cta button:hover::after {
     transform: translateX(4px);
 }
 
@@ -249,14 +259,14 @@
 }
 
 .illustration {
-    height: 45%;           /* top half of the card */
+    height: 45%;
     width: 100%;
 }
 
 .illustration img {
     width: 100%;
     height: 100%;
-    object-fit: cover;     /* fills area without stretching */
+    object-fit: cover;
     display: block;
 }
 
@@ -266,17 +276,17 @@
 }
 
 .card-content {
-  flex: 1;                    /* fills remaining space */
+  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;    /* vertical centering */
+  justify-content: center;
 padding: 24px 24px 24px 32px;
 }
 
 
-
+/* Header becomes a "window" */
 .card-header {
-  height: 180px;        
+  height: 180px;
   overflow: hidden;
 }
 
@@ -285,7 +295,7 @@ padding: 24px 24px 24px 32px;
   width: 100%;
   height: auto;
   object-fit: cover;
-  transform: translateY(-20px); /* crops lower part, keeps top */
+  transform: translateY(-20px);
   display: block;
 }
     
@@ -339,13 +349,16 @@ padding: 24px 24px 24px 32px;
         text-decoration: underline;
     }
 
-
+/* ----------------------------------------
+   MORE OPTIONS BUTTON (on main sign up page)
+   ---------------------------------------- */
 .more-options-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 30px;
+    margin-top: auto;
+    margin-bottom: 40px;
     padding: 20px;
     gap: 16px;
 }
@@ -407,15 +420,15 @@ padding: 24px 24px 24px 32px;
 .operator-card {
     width: 320px;
     height: 260px;
-    min-height: auto;           /* Remove fixed height */
+    min-height: auto;
     background: white;
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 10px 25px rgba(0,0,0,0.12);
     display: flex;
     flex-direction: column;
-    padding: 28px 24px 24px;    /* Unified padding */
-    text-align: center;         /* Center align content */
+    padding: 28px 24px 24px;
+    text-align: center;
     position: relative;
 }
 
@@ -431,7 +444,7 @@ padding: 24px 24px 24px 32px;
 /* Header styling */
 .officer-card h2,
 .operator-card h2 {
-    margin: 0 0 12px 0;         /* Tight margin below title */
+    margin: 0 0 12px 0;
     padding: 0;
     font-size: 22px;
     font-weight: 700;
@@ -442,23 +455,31 @@ padding: 24px 24px 24px 32px;
 /* Description text */
 .officer-card p,
 .operator-card p {
-    margin: 0 0 20px 0;         /* Space before link */
+    margin: 0 0 20px 0;
     padding: 0;
     color: var(--faded-text);
     font-size: 14.5px;
     line-height: 1.6;
-    flex-grow: 1;               /* Pushes link to bottom if needed */
+    flex-grow: 1;
 }
 
 .officer-card .features li::before,
 .operator-card .features li::before {
-    content: none;              /* Remove bullets for cleaner look */
+    content: none;
 }
 
-/* CTA Link styling */
+/* CTA Button container */
 .officer-card .cta,
 .operator-card .cta {
-    margin: 0;                  /* Remove auto margins */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* CTA Button styling */
+.officer-card .cta button,
+.operator-card .cta button {
+    margin: 0;
     padding: 12px 24px;
     font-weight: 600;
     font-size: 14px;
@@ -472,32 +493,32 @@ padding: 24px 24px 24px 32px;
     border: 2px solid;
     transition: all 0.2s ease;
     text-decoration: none;
-    align-self: center;         /* Center the button */
+    font-family: inherit;
 }
 
-/* Officer specific link styling */
-.officer-card .cta {
-    color: rgba(249, 115, 22, 0.25);;
-    border-color: #f6964c;;
-    background: rgba(59, 130, 246, 0.05);
+/* Officer specific button styling */
+.officer-card .cta button {
+    color: #f6964c;
+    border-color: #f6964c;
+    background: rgba(246, 150, 76, 0.05);
 }
 
-.officer-card .cta:hover {
-    background: #f6964c;;
+.officer-card .cta button:hover {
+    background: #f6964c;
     color: white;
     text-decoration: none;
     transform: translateY(-2px);
-    box-shadow: rgba(249, 115, 22, 0.25);;
+    box-shadow: 0 4px 12px rgba(246, 150, 76, 0.3);
 }
 
-/* Operator specific link styling */
-.operator-card .cta {
+/* Operator specific button styling */
+.operator-card .cta button {
     color: #10B981;
     border-color: #10B981;
     background: rgba(16, 185, 129, 0.05);
 }
 
-.operator-card .cta:hover {
+.operator-card .cta button:hover {
     background: #10B981;
     color: white;
     text-decoration: none;
@@ -506,18 +527,18 @@ padding: 24px 24px 24px 32px;
 }
 
 /* Arrow animation */
-.officer-card .cta::after,
-.operator-card .cta::after {
+.officer-card .cta button::after,
+.operator-card .cta button::after {
     content: "→";
     transition: transform 0.2s ease;
 }
 
-.officer-card .cta:hover::after,
-.operator-card .cta:hover::after {
+.officer-card .cta button:hover::after,
+.operator-card .cta button:hover::after {
     transform: translateX(4px);
 }
 
-
+/* Hide any image/illustration elements if they exist in HTML */
 .officer-card .illustration,
 .operator-card .illustration,
 .officer-card .card-header,
