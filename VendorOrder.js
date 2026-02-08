@@ -65,7 +65,7 @@ function nextActionLabel(s) {
     if (s === "new") return "Start Preparing";
     if (s === "preparing") return "Mark Ready";
     if (s === "ready") return "Complete";
-    return "Completed";
+    return null;
 }
 
 function safeLower(v) {
@@ -217,11 +217,17 @@ function renderOrders(orders) {
                 <span class="payment-method">${paymentText}</span>
                 <span class="order-status-badge ${workflowStatus}">${workflowText}</span>
 
+                ${nextText ? `
                 <div class="status-actions">
-                    <button class="status-btn primary" type="button" data-action="advance" data-id="${order.id}" data-next="${nextStatus}" ${canAdvance ? "" : "disabled"}>
-                        ${nextText}
+                    <button class="status-btn primary"
+                    data-action="advance"
+                    data-id="${order.id}"
+                    data-next="${nextStatus}">
+                    ${nextText}
                     </button>
                 </div>
+                ` : ""}
+
 
                 <button class="action-btn ${claimClass}" type="button" data-action="claim" data-id="${order.id}" data-claimed="${isClaimed}">
                     ${displayClaim}
