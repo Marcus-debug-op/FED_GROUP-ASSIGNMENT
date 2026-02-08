@@ -66,7 +66,7 @@ HawkerHub is a modern web application designed to digitize and enhance the hawke
 
 | Role | Description | Entry Points |
 |------|-------------|--------------|
-| **Guest** | Unauthenticated users browsing the platform | `HomeGuest.html` |
+| **Guest** | Unauthenticated users browsing the platform | `index.html` |
 | **Patron** | Registered customers who can order food | `SigninPatron.html` → `CreateAccountPatron.html` |
 | **Vendor** | Hawker stall owners managing their business | `SigninVendor.html` → `CreateAccountVendor.html` |
 | **Operator** | Hawker centre management staff | `SigninOperator.html` |
@@ -102,7 +102,7 @@ FED_GROUP-ASSIGNMENT/
 │   └── [food-images].jpg         # Food and stall photos
 │
 ├── HTML Pages/
-│   ├── HomeGuest.html            # Landing page for guests
+│   ├── index.html            # Landing page for guests
 │   ├── signup.html               # Sign-up selection page
 │   ├── signupOfficeroperator.html # Officer/Operator sign-up
 │   │
@@ -209,7 +209,7 @@ FED_GROUP-ASSIGNMENT/
 ### Accessing the Application
 
 1. **Start from Home Page:**
-   Open `HomeGuest.html` in your browser to access the landing page.
+   Open `index.html` in your browser to access the landing page.
 
 2. **Sign Up:**
    - Click "Sign In" from the home page
@@ -224,7 +224,7 @@ FED_GROUP-ASSIGNMENT/
 
 | Role | Start Page |
 |------|------------|
-| Guest | `HomeGuest.html` |
+| Guest | `index.html` |
 | Patron | `signup.html` → Select "As Patron" |
 | Vendor | `signup.html` → Select "As Vendor" |
 | Operator | `signupOfficeroperator.html` → Select "As Operator" |
@@ -238,7 +238,7 @@ FED_GROUP-ASSIGNMENT/
 
 | Page | File | Description |
 |------|------|-------------|
-| Home | `HomeGuest.html` | Landing page with trending dishes |
+| Home | `index.html` | Landing page with trending dishes |
 | Browse Stalls | `browsestalls.html` | View all available stalls |
 | Stall Details | `stalldetails.html` | Individual stall information |
 | Menu | `menus.html` | View stall menus |

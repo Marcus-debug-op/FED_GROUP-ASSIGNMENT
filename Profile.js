@@ -9,7 +9,7 @@ async function handleLogout() {
   if (confirm("Are you sure you want to logout?")) {
     try {
       await signOut(auth);
-      window.location.href = "HomeGuest.html";
+      window.location.href = "index.html";
     } catch (error) {
       console.error("Logout failed", error);
     }
