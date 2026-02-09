@@ -28,7 +28,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// ===== Storage keys =====
+//Storage keys
 const CART_KEY = "hawkerhub_cart";
 const ECO_KEY = "hawkerhub_eco_packaging";
 const COUPON_KEY = "hawkerhub_coupon";
@@ -41,7 +41,7 @@ const LAST_ORDER_NO_KEY = "hawkerhub_last_order_no";
 let PROMOS = {}; // key = CODE (uppercase)
 let PROMO_LIST = []; // array for dropdown
 
-// ---------- Helpers ----------
+//Helpers 
 function readCart() {
   try {
     return JSON.parse(localStorage.getItem(CART_KEY)) || [];
@@ -146,9 +146,7 @@ async function getNextOrderNo() {
   return nextNo; // 1,2,3,...
 }
 
-// =========================
 // Load promo codes from Firestore 
-// =========================
 async function loadPromosFromFirestore() {
   const selectEl = document.getElementById("promoCodeSelect");
   if (!selectEl) {
@@ -213,9 +211,7 @@ async function loadPromosFromFirestore() {
   }
 }
 
-// =========================
 // Validation Helpers
-// =========================
 function normalizePhone(raw) {
   const digits = digitsOnly(raw);
   if (digits.startsWith("65") && digits.length === 10) return digits.slice(2);
@@ -256,9 +252,7 @@ function isValidCvv(cvv) {
   return d.length === 3 || d.length === 4;
 }
 
-// =========================
 // Form elements
-// =========================
 const collectionMethod = document.getElementById("collectionMethod");
 const deliveryAddressField = document.getElementById("deliveryAddressField");
 const postalCodeField = document.getElementById("postalCodeField");
@@ -276,9 +270,7 @@ function applyDeliveryUI() {
 collectionMethod?.addEventListener("change", applyDeliveryUI);
 applyDeliveryUI();
 
-// =========================
 // Form Validation
-// =========================
 function validateCheckoutForm() {
   const name = String(fullNameInput?.value || "").trim();
   const phoneRaw = String(phoneInput?.value || "").trim();
@@ -348,9 +340,7 @@ paymentOptions.forEach((option) => {
 
 updateRedBorder();
 
-// =========================
 // Modals
-// =========================
 const cardOverlay = document.getElementById("cardModalOverlay");
 const paynowOverlay = document.getElementById("paynowModalOverlay");
 const cardMsg = document.getElementById("cardModalError");
@@ -453,9 +443,7 @@ document.getElementById("paynowCloseBtn")?.addEventListener("click", () => {
   setTimeout(closeModals, 1000);
 });
 
-// =========================
 // Promo Logic (Firestore-backed)
-// =========================
 function computeDiscount(subtotal, code) {
   if (!code) return { ok: true, discount: 0, message: "" };
 
@@ -528,13 +516,11 @@ document.getElementById("applyPromoBtn")?.addEventListener("click", () => {
   updateCheckoutSummary();
 });
 
-// ✅ On page load: load promos then compute totals
+//On page load: load promos then compute totals
 await loadPromosFromFirestore();
 updateCheckoutSummary();
 
-// =========================
 // SUBMIT TO FIRESTORE
-// =========================
 const submitBtn = document.querySelector(".cta");
 
 submitBtn?.addEventListener("click", async () => {
@@ -562,12 +548,12 @@ submitBtn?.addEventListener("click", async () => {
   submitBtn.disabled = true;
 
   try {
-    // ✅ Get sequential order number from Firestore counter (1,2,3...)
+    //Get sequential order number from Firestore counter (1,2,3...)
     const nextOrderNo = await getNextOrderNo();
 
     await addDoc(collection(db, "orders"), {
       userId: auth.currentUser ? auth.currentUser.uid : "guest",
-      orderNo: nextOrderNo, // ✅ sequential
+      orderNo: nextOrderNo, //sequential
       createdAt: serverTimestamp(),
 
       stallId: rootStallId,
@@ -585,7 +571,7 @@ submitBtn?.addEventListener("click", async () => {
       collection: { method: form.method }
     });
 
-    // ✅ NEW: save last order no so PaymentSuccesss.html can show it
+    //save last order no so PaymentSuccesss.html can show it
     localStorage.setItem(LAST_ORDER_NO_KEY, String(nextOrderNo));
 
     localStorage.removeItem(CART_KEY);

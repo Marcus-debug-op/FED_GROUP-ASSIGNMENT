@@ -30,14 +30,14 @@ const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// ============== STATE ==============
+//STATE 
 let allOrders = [];
 
 // Caches to reduce reads
 const stallNameCache = new Map(); // stallId -> name or ""
 const menuItemCache = new Map();  // itemId -> { stallId, stallName } or null
 
-// ============== ✅ NEW: AUTH CHECK FUNCTIONS ==============
+//AUTH CHECK FUNCTIONS 
 /**
  * Check if user is authenticated and has valid role
  * Returns user data if authenticated, null otherwise
@@ -167,7 +167,7 @@ function showGuestBlocked() {
   if (emptyEl) emptyEl.style.display = "none";
 }
 
-// ============== UTILS ==============
+//UTILS 
 function escapeHtml(s) {
   return String(s || "")
     .replace(/&/g, "&amp;")
@@ -197,7 +197,7 @@ function uniqNonEmpty(arr) {
   return [...new Set((arr || []).map(v => String(v || "").trim()).filter(Boolean))];
 }
 
-// ============== STALL NAME LOOKUP (stalls only) ==============
+//STALL NAME LOOKUP (stalls only)
 async function fetchStallName(stallId) {
   const sid = String(stallId || "").trim();
   if (!sid) return "";
@@ -285,7 +285,7 @@ async function buildStallSummary(order) {
   return "Unknown stall";
 }
 
-// ============== DELETE FEATURE ==============
+//DELETE FEATURE 
 async function deleteOrder(orderId) {
   if (!orderId) return;
 
@@ -505,7 +505,7 @@ async function loadHistory(uid) {
   }
 }
 
-// ============== ✅ MAIN AUTH LISTENER WITH PROTECTION ==============
+//MAIN AUTH LISTENER WITH PROTECTION
 document.addEventListener("DOMContentLoaded", () => {
   onAuthStateChanged(auth, async (user) => {
     // Check authentication
