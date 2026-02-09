@@ -308,17 +308,7 @@ All images used in this project are sourced from royalty-free stock photo websit
 
 The application uses Firebase for backend services. Configuration is located in `firebase-init.js`:
 
-```javascript
-const firebaseConfig = {
-  apiKey: "AIzaSyDo8B0OLtAj-Upfz7yNFeGz4cx3KWLZLuQ",
-  authDomain: "hawkerhub-64e2d.firebaseapp.com",
-  databaseURL: "https://hawkerhub-64e2d-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "hawkerhub-64e2d",
-  storageBucket: "hawkerhub-64e2d.firebasestorage.app",
-  messagingSenderId: "722888051277",
-  appId: "1:722888051277:web:59926d0a54ae0e4fe36a04"
-};
-```
+
 ## Deployment
 (https://marcus-debug-op.github.io/FED_GROUP-ASSIGNMENT/)
 
