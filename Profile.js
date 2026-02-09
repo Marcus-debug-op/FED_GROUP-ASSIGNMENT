@@ -31,7 +31,7 @@ async function loadDiscounts() {
     snap.forEach((docSnap) => {
       const d = docSnap.data();
 
-      // ✅ Treat missing scope as "global" so old promos still show
+      // Treat missing scope as "global" so old promos still show
       const scope = (d.scope || "global").toLowerCase();
       if (scope !== "global") return;
 
@@ -56,7 +56,7 @@ async function loadDiscounts() {
       `;
     });
 
-    // ✅ If nothing matched global scope, don't leave it blank
+    // If nothing matched global scope, don't leave it blank
     discountContainer.innerHTML = html || "<p>No global discounts available right now.</p>";
   } catch (err) {
     console.error("Error loading discounts:", err);

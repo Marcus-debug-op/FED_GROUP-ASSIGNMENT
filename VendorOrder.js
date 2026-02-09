@@ -290,7 +290,7 @@ function initVendorApp() {
                 if (!snapshot.empty) {
                     const stallDoc = snapshot.docs[0];
                     const stallId = stallDoc.id;
-                    console.log(" Found Vendor's Stall ID:", stallId);
+                    console.log("Found Vendor's Stall ID:", stallId);
                     listenForOrders(stallId);
                 } else {
                     ordersListElement.innerHTML = `<div class="loading-text">Error: No stall found linked to this account.</div>`;
