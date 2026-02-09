@@ -32,33 +32,33 @@ HawkerHub is a modern web application designed to digitize and enhance the hawke
 ## Features
 
 ### For Patrons (Customers)
-- 🔍 **Browse Stalls** - Search and filter stalls by cuisine type, dietary requirements (Halal, Vegetarian)
-- 🛒 **Online Ordering** - Add items to cart, customize orders, and checkout
-- ❤️ **Favorites** - Save liked stalls and dishes for quick access
-- 📜 **Order History** - View past orders and reorder with ease
-- ⭐ **Reviews & Feedback** - Rate stalls and leave feedback
-- 👤 **Profile Management** - Manage personal details and preferences
+- **Browse Stalls** - Search and filter stalls by cuisine type, dietary requirements (Halal, Vegetarian)
+- **Online Ordering** - Add items to cart, customize orders, and checkout
+- **Favorites** - Save liked stalls and dishes for quick access
+- **Order History** - View past orders and reorder with ease
+- **Reviews & Feedback** - Rate stalls and leave feedback
+- **Profile Management** - Manage personal details and preferences
 
 ### For Vendors (Stall Owners)
-- 📋 **Menu Management** - Add, edit, and remove menu items
-- 📦 **Order Management** - View and update order status in real-time
-- 📊 **Analytics Dashboard** - Track revenue, popular items, and customer trends
-- 📝 **Complaint Handling** - View and respond to customer complaints
-- 🏪 **Stall Profile** - Manage stall information, images, and hygiene grades
-- 📄 **Lease Management** - Track license status and renewal applications
+- **Menu Management** - Add, edit, and remove menu items
+- **Order Management** - View and update order status in real-time
+- **Analytics Dashboard** - Track revenue, popular items, and customer trends
+- **Complaint Handling** - View and respond to customer complaints
+- **Stall Profile** - Manage stall information, images, and hygiene grades
+- **Lease Management** - Track license status and renewal applications
 
 ### For Operators
-- 📈 **Centre Overview** - Monitor total revenue, occupied stalls, and traffic
-- 🏗️ **Stall Management** - View and manage registered vendors
-- 📉 **Revenue Analytics** - Track centre-wide revenue trends
-- ⭐ **Performance Metrics** - View top-performing stalls
+- **Centre Overview** - Monitor total revenue, occupied stalls, and traffic
+- **Stall Management** - View and manage registered vendors
+- **Revenue Analytics** - Track centre-wide revenue trends
+- **Performance Metrics** - View top-performing stalls
 
 ### For NEA Officers
-- 🔍 **Inspection Scheduling** - Schedule and manage hygiene inspections
-- 📋 **Stall Directory** - Access complete list of registered stalls
-- 📝 **Inspection Reports** - Submit hygiene scores and observations
-- ⚠️ **Violation Tracking** - Monitor stalls with critical violations
-- 📊 **Dashboard Analytics** - View hygiene standards across the centre
+- **Inspection Scheduling** - Schedule and manage hygiene inspections
+- **Stall Directory** - Access complete list of registered stalls
+- **Inspection Reports** - Submit hygiene scores and observations
+- **Violation Tracking** - Monitor stalls with critical violations
+- **Dashboard Analytics** - View hygiene standards across the centre
 
 ---
 
@@ -327,10 +327,10 @@ const firebaseConfig = {
 
 ## Browser Compatibility
 
-- ✅ Chrome 90+
-- ✅ Firefox 88+
-- ✅ Safari 14+
-- ✅ Edge 90+
+- Chrome 90+
+- Firefox 88+
+- Safari 14+
+- Edge 90+
 
 ---
 
