@@ -24,8 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let editingItemId = null; // If null, we are adding. If set, we are editing.
     let currentMenuData = {}; // Cache to store item details
 
-    // 3. EVENT DELEGATION (THE FIX FOR CLICKS)
-
+    // 3. EVENT DELEGATION
     if (menuGrid) {
         menuGrid.addEventListener("click", (e) => {
             // Check if Edit Button (or icon inside) was clicked
@@ -127,17 +126,22 @@ document.addEventListener("DOMContentLoaded", () => {
     if (closeBtn) closeBtn.onclick = closeModal;
     if (cancelBtn) cancelBtn.onclick = closeModal;
 
-    // 8. IMAGE PREVIEW
+
     if (uploadBox && fileInput) {
         uploadBox.onclick = () => fileInput.click();
+        
         fileInput.onchange = (e) => {
             const file = e.target.files[0];
             if (file) {
-                const tempUrl = URL.createObjectURL(file);
-                imagePreview.src = tempUrl;
-                imagePreview.style.display = "block";
-                uploadBox.querySelector(".camera-icon").style.visibility = "hidden";
-                uploadBox.querySelector("p").style.visibility = "hidden";
+                // FIXED: Use FileReader instead of URL.createObjectURL
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result; // This is a Base64 string
+                    imagePreview.style.display = "block";
+                    uploadBox.querySelector(".camera-icon").style.visibility = "hidden";
+                    uploadBox.querySelector("p").style.visibility = "hidden";
+                }
+                reader.readAsDataURL(file); // Reads the file as a text string
             }
         };
     }
@@ -153,12 +157,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function findAndLoadStall(uid) {
         try {
-            // Check if there's a selected stall in sessionStorage (from VendorStallDetails.js)
             const selectedStallId = sessionStorage.getItem("selectedStallId");
             const selectedStallName = sessionStorage.getItem("selectedStallName");
 
             if (selectedStallId) {
-                // Load the specific selected stall
                 const stallRef = doc(fs, "stalls", selectedStallId);
                 const stallSnap = await getDoc(stallRef);
                 
@@ -168,13 +170,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (display) display.textContent = selectedStallName || stallSnap.data().name;
                     loadMenu(currentStallId);
                 } else {
-                    // Selected stall doesn't exist or doesn't belong to this vendor
                     sessionStorage.removeItem("selectedStallId");
                     sessionStorage.removeItem("selectedStallName");
                     await loadFirstStall(uid);
                 }
             } else {
-                // No selected stall, load the first stall owned by this vendor
                 await loadFirstStall(uid);
             }
         } catch (err) {
@@ -206,7 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const menuRef = collection(fs, "stalls", stallId, "menu");
         const menuSnap = await getDocs(menuRef);
         let html = "";
-        currentMenuData = {}; // Clear cache
+        currentMenuData = {}; 
 
         if (menuSnap.empty) {
             if (menuGrid) menuGrid.innerHTML = "<p class='loading-message'>Menu is empty.</p>";
@@ -216,7 +216,9 @@ document.addEventListener("DOMContentLoaded", () => {
         menuSnap.forEach((doc) => {
             const item = doc.data();
             const id = doc.id;
-            currentMenuData[id] = item; // Store for editing
+            currentMenuData[id] = item;
+            
+            // Fallback image if empty
             const imgSrc = item.image ? item.image : 'img/Ah Seng Chicken Rice.jpg';
 
             html += `
@@ -245,7 +247,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (menuGrid) menuGrid.innerHTML = html;
     }
 
-    // 10. SAVE / UPDATE SUBMISSION
     if (addItemForm) {
         addItemForm.onsubmit = async (e) => {
             e.preventDefault();
@@ -255,17 +256,16 @@ document.addEventListener("DOMContentLoaded", () => {
             const price = document.getElementById("itemPrice").value;
             const desc = document.getElementById("itemDesc").value;
             
-            // Handle Image: If editing and no new image, keep old one
-            let finalImage = imagePreview.src;
-            if (editingItemId && currentMenuData[editingItemId] && imagePreview.src.startsWith("blob:")) {
-                // New local file selected
-                finalImage = imagePreview.src; 
-            } else if (editingItemId && currentMenuData[editingItemId]) {
-                 // Existing item, no new file
-                finalImage = currentMenuData[editingItemId].image;
-            } else {
-                // New Item
-                finalImage = imagePreview.src || "";
+            // Logic: Determine which image string to save
+            let finalImage = "";
+
+            // Check if user uploaded a NEW photo (starts with data:image)
+            if (imagePreview.src && imagePreview.src.startsWith("data:")) {
+                finalImage = imagePreview.src;
+            } 
+            // Check if editing and user kept the OLD photo
+            else if (editingItemId && currentMenuData[editingItemId]) {
+                finalImage = currentMenuData[editingItemId].image || "";
             }
 
             const itemData = {
@@ -282,7 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     await updateDoc(docRef, itemData);
                     alert("Updated successfully!");
                 } else {
-                    // ADD - removed likes field
+                    // ADD
                     const colRef = collection(fs, "stalls", currentStallId, "menu");
                     await addDoc(colRef, itemData);
                     alert("Added successfully!");
@@ -291,6 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 loadMenu(currentStallId);
             } catch (err) {
                 console.error("Error saving:", err);
+                alert("Error saving item.");
             }
         };
     }
